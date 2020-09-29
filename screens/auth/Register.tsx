@@ -1,9 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Button, Input, Spinner } from '@ui-kitten/components';
 import * as React from 'react';
-import { StatusBar, Text, Dimensions, AsyncStorage } from 'react-native';
+import { StatusBar, Text, Dimensions, AsyncStorage, View } from 'react-native';
 import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import { View } from '../../components/Themed';
 import Colors from '../../constants/Colors';
 import { authKey, configFirebaseGoogleAuth, firebaseConfig } from '../../constants/KeyConfig';
 
@@ -18,7 +17,7 @@ import * as Google from 'expo-google-app-auth';
 import * as firebase from 'firebase';
 
 if (!firebase.apps.length) {
-    firebase.initializeApp({});
+    firebase.initializeApp(firebaseConfig);
 }
 
 export default class RegisterScreen extends React.Component<any, any> { 
@@ -38,8 +37,9 @@ export default class RegisterScreen extends React.Component<any, any> {
         const { emailInput, passInput, passRepeatInput } = this.state;
         if (this.validateEmail(emailInput)) {
             if (passInput === passRepeatInput) {
-                firebase.auth().createUserWithEmailAndPassword(emailInput, passInput).then(function (user: any) {
-                    console.log(user)
+                firebase.auth().createUserWithEmailAndPassword(emailInput, passInput).then(async (user: any) => {
+                    await AsyncStorage.setItem(authKey, JSON.stringify(user.user.providerData))
+                    this.redirectTo('Root')
                 }).catch((err: any) => {
                     alert(err)
                 })

@@ -4,22 +4,18 @@ import * as React from 'react';
 import { ColorSchemeName } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-import NotFoundScreen from '../screens/NotFoundScreen';
 import { RootStackParamList } from '../types';
-import BottomTabNavigator from './BottomTabNavigator';
-import LinkingConfiguration from './LinkingConfiguration';
+import {BottomTabNavigator} from './BottomTabNavigator';
 
 
 
 import LoginScreen from '../screens/auth/Login'
 import RegisterScreen from '../screens/auth/Register'
-import { View } from '../components/Themed';
 
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
     <NavigationContainer
-      linking={LinkingConfiguration}
       theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <RootNavigator />
     </NavigationContainer>
@@ -50,7 +46,6 @@ function RootNavigator() {
         }}
       />
       <Stack.Screen name="Root" component={BottomTabNavigator} />
-      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
     </Stack.Navigator>
   );
 }

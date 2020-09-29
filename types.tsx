@@ -4,8 +4,3 @@ export type RootStackParamList = {
   LoginScreen: undefined;
   RegisterScreen: undefined;
 };
-
-export type BottomTabParamList = {
-  Inicio: undefined;
-  TabTwo: undefined;
-};

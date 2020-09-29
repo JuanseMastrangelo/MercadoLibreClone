@@ -1,9 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Button, Input, Spinner } from '@ui-kitten/components';
 import * as React from 'react';
-import { StatusBar, Text, Dimensions, AsyncStorage } from 'react-native';
+import { StatusBar, Text, Dimensions, AsyncStorage, View } from 'react-native';
 import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import { View } from '../../components/Themed';
 import Colors from '../../constants/Colors';
 import { authKey, configFirebaseGoogleAuth, firebaseConfig } from '../../constants/KeyConfig';
 
@@ -18,7 +17,7 @@ import * as Google from 'expo-google-app-auth';
 import * as firebase from 'firebase';
 
 if (!firebase.apps.length) {
-    firebase.initializeApp({});
+    firebase.initializeApp(firebaseConfig);
 }
 
 export default class LoginScreen extends React.Component<any, any> { 
@@ -150,7 +149,7 @@ export default class LoginScreen extends React.Component<any, any> {
                 : 
                 <View style={{width, height, alignItems: 'center', justifyContent: 'center'}}>
                     <Spinner></Spinner>
-                    <Text>Verficando sesión...</Text>
+                    <Text>Verificando sesión...</Text>
                 </View>
                 }
                 
