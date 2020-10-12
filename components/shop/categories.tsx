@@ -18,7 +18,7 @@ export class CategoriesComponent extends React.Component<any> {
     }
 
     viewCategorie = (item:any) => {
-        this.props.navigation.navigate('GridView', {name: item.name, data: ProductBestSellers});
+        this.props.navigation.navigate('ColumnGridView', {title: item.name, data: ProductBestSellers, showTitleBar: false});
     }
     
     render() {

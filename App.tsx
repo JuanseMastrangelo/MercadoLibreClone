@@ -8,7 +8,9 @@ import Navigation from './navigation';
 // Ui Kitten
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider } from '@ui-kitten/components';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+
+import { Root } from 'native-base';
 
 // Redux
 import { Provider } from 'react-redux';
@@ -41,10 +43,10 @@ export default function App() {
     return (
       <Provider store={store}>
         <ApplicationProvider {...eva} theme={eva.light}>
-          <SafeAreaProvider>
+          <Root>
             <Navigation colorScheme={colorScheme} />
             <StatusBar style="inverted" />
-          </SafeAreaProvider>
+          </Root>
         </ApplicationProvider>
       </Provider>
     );

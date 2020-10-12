@@ -125,7 +125,7 @@ function TabOneNavigator({ navigation }: any) {
                         </TouchableOpacity>
                     ),
                     headerRight: () => (
-                        <CartIcon style={{backgroundColor: '#FFF', marginTop: 8}} />
+                        <CartIcon navigation={navigation} style={{backgroundColor: '#FFF', marginTop: 8}} />
                     ),
                 }}
             />
@@ -142,7 +142,7 @@ function TabTwoNavigator() {
                 component={Buys}
                 options={{
                     cardStyle: { backgroundColor: '#FFF' },
-                    headerShown: false
+                    headerShown: false,
                 }}
             />
         </TabTwoStack.Navigator>
@@ -150,7 +150,7 @@ function TabTwoNavigator() {
 }
 
 const TabTreeStack = createStackNavigator<any>();
-function TabTreeNavigator() {
+function TabTreeNavigator({navigation}: any) {
     return (
         <TabTreeStack.Navigator>
             <TabTreeStack.Screen
@@ -162,7 +162,7 @@ function TabTreeNavigator() {
                     headerStyle: { backgroundColor: '#FFF', shadowColor: 'transparent' },
                     headerStatusBarHeight: 40,
                     headerRight: () => (
-                        <CartIcon style={{backgroundColor: '#FFF', marginTop: 8}} />
+                        <CartIcon navigation={navigation} style={{backgroundColor: '#FFF', marginTop: 8}} />
                     ),
                     headerTitle: () => (
                         <View style={{alignSelf: 'center', height: 40, justifyContent: 'center'}}>
@@ -184,7 +184,8 @@ function TabFourNavigator() {
                 name="Carro"
                 component={Cart}
                 options={{
-                    cardStyle: { backgroundColor: '#FFF' },
+                    headerTransparent: true,
+                    cardStyle: { backgroundColor: '#FFF'  },
                     headerTitleStyle: { textAlign: 'center', color: '#000', fontWeight: 'bold', fontSize: 24, alignSelf: 'center',height: '100%' },
                     headerStyle: { backgroundColor: '#FFF', shadowColor: 'transparent' },
                     headerStatusBarHeight: 40,
@@ -193,7 +194,10 @@ function TabFourNavigator() {
                             <Text style={{fontSize: 15, fontFamily: 'Poppins-Medium', fontWeight: 'bold'}}>Carro</Text>
                             <ItemsOnWhiteList />
                         </View>
-                    )
+                    ),
+                    headerBackTitleVisible: false,
+                    headerBackTitleStyle: {display: 'none'},
+                    headerBackImage: () => null
                 }}
             />
         </TabFourStack.Navigator>
@@ -202,7 +206,7 @@ function TabFourNavigator() {
 
 
 const TabFiveStack = createStackNavigator<any>();
-function TabFiveNavigator() {
+function TabFiveNavigator({ navigation }: any) {
     return (
         <TabFiveStack.Navigator>
             <TabFiveStack.Screen
@@ -215,7 +219,7 @@ function TabFiveNavigator() {
                     headerStyle: { backgroundColor: '#FFF', shadowColor: 'transparent' },
                     headerStatusBarHeight: 40,
                     headerRight: () => (
-                        <CartIcon style={{backgroundColor: '#FFF', marginTop: 8}} />
+                        <CartIcon navigation={navigation} style={{backgroundColor: '#FFF', marginTop: 8}} />
                     ),
                 }}
             />

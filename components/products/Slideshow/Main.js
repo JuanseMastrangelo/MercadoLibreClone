@@ -1,7 +1,8 @@
 import { FontAwesome, Ionicons } from '@expo/vector-icons'
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, Dimensions, FlatList, Animated } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, FlatList, Animated, Share } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import Colors from '../../../constants/Colors'
 import CarouselItem from './CarouselItem'
 
 const { width, heigth } = Dimensions.get('window')
@@ -11,10 +12,33 @@ const CarouselSingleProduct = ({ data }) => {
     const scrollX = new Animated.Value(0)
     let position = Animated.divide(scrollX, width)
     const [dataList, setDataList] = useState(data)
+    const [whitelist, setWhitelist] = useState(false)
 
     useEffect(()=> {
         setDataList(data)
     })
+
+    
+
+    async function share() {
+        const result = await Share.share({
+          message: 'Market deep url compartida',
+        });
+        
+        if (result.action === Share.sharedAction) {
+          if (result.activityType) {
+            // shared with activity type of result.activityType
+          } else {
+            // shared
+          }
+        } else if (result.action === Share.dismissedAction) {
+          // dismissed
+        }
+      }
+
+    function setToWhiteList() {
+        setWhitelist(!whitelist);
+    }
 
 
     if (data && data.length) {
@@ -61,11 +85,11 @@ const CarouselSingleProduct = ({ data }) => {
 
                     </View>
                     <View style={{flexDirection: 'row', marginRight: 20}}>
-                        <TouchableOpacity style={{marginRight: 5, paddingHorizontal: 10}}>
-                            <Ionicons size={20} name="md-download" color="#777"></Ionicons>
+                        <TouchableOpacity style={{marginRight: 5, paddingHorizontal: 10}} onPress={() => share()}>
+                            <Ionicons size={20} name="md-download" color={Colors.default.greyColor}></Ionicons>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{paddingHorizontal: 10}}>
-                        <FontAwesome size={20} name="heart-o" color="#777"></FontAwesome>
+                        <TouchableOpacity onPress={() => setToWhiteList()} style={{paddingHorizontal: 10}}>
+                            <FontAwesome size={20} name={whitelist ? 'heart' : 'heart-o'} color="red"></FontAwesome>
                         </TouchableOpacity>
                     </View>
                 </View>

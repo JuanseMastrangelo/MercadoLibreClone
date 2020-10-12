@@ -4,6 +4,9 @@ export type RootStackParamList = {
   LoginScreen: undefined;
   RegisterScreen: undefined;
   SingleProduct: undefined;
-  GridView: undefined;
   Description: undefined;
+  Comments: undefined;
+
+  // GridViews
+  ColumnGridView: undefined;
 };

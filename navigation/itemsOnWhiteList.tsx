@@ -9,7 +9,7 @@ import Colors from '../constants/Colors';
 export class ItemsOnWhiteList extends React.Component<any> {
     render() {
         return (
-            <Text style={{fontSize: 12, fontFamily: 'Poppins-Medium', fontWeight: 'bold', textAlign: 'center', color: Colors.default.greyColor}}>0 items</Text>
+            <Text style={{fontSize: 12, fontFamily: 'Poppins-Medium', fontWeight: 'bold', textAlign: 'center', color: Colors.default.greyColor}}>{this.props.state.products.length} items</Text>
         )
     }
 }

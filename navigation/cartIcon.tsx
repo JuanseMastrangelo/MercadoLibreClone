@@ -1,4 +1,4 @@
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { StackActions } from '@react-navigation/native';
 import * as React from 'react';
 import { Image, Text, View, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -6,9 +6,20 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 
 export class CartIcon extends React.Component<any> {
+
+    
+    goToCart() {
+        this.props.navigation.dispatch(StackActions.replace('Root', {screen: 'Carro'}));
+    }
+
+    componentDidMount() {
+        console.log(this.props.state)
+    }
+
     render() {
         return (
-            <TouchableOpacity style={{ marginRight: 10, alignSelf: 'center',height: '100%', marginBottom: 10, width: 100, alignItems: 'flex-end' }}>
+            <TouchableOpacity style={{ marginRight: 10, alignSelf: 'center',height: '100%', marginBottom: 10, width: 100, alignItems: 'flex-end' }}
+            onPress={() => this.goToCart()}>
                 <Image
                     source={{uri: 'https://i.pinimg.com/originals/09/88/dc/0988dc27ab24d196b91d085c786c292d.png'}}
                     fadeDuration={0}

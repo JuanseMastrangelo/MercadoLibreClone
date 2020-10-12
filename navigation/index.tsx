@@ -12,9 +12,11 @@ import CartIcon from './cartIcon';
 
 import LoginScreen from '../screens/auth/Login'
 import RegisterScreen from '../screens/auth/Register'
-import {SingleProduct} from '../components/products/single-product'
-import { GridViewComponent } from '../components/products/gridView';
+import { ColumnGridViewComponent } from '../components/FlatLists/columnGridView';
 import { ProductDescriptionComponent } from '../components/products/product-description';
+import { ProductCommentsComponent } from '../components/products/product-comments';
+import SingleProduct from '../components/products/single-product';
+import { VerticalGridViewComponent } from '../components/FlatLists/verticalGridView';
 
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
@@ -28,58 +30,73 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
 
 const Stack = createStackNavigator<RootStackParamList>();
 
-const defaultOptions = { headerShown: false, cardStyle: { backgroundColor: '#FFF' }, headerStyle: { backgroundColor: 'red'}, headerTintColor: '#FFF', };
+const optionsEmpty = { headerShown: false, cardStyle: { backgroundColor: '#FFF' }, headerTintColor: '#FFF', };
 
-function RootNavigator() {
+const optionBack = {cardStyle: { backgroundColor: '#FFF' }, headerStyle: { backgroundColor: '#FFF' }, headerTitleStyle: { color: '#000'}, headerBackTitleVisible: false, headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="black" style={{marginLeft: 30,fontSize: 24}} />),}
+
+
+function RootNavigator({ navigation }: any) {
   return (
     <Stack.Navigator>
       <Stack.Screen
         name="LoginScreen"
         component={LoginScreen}
-        options={defaultOptions}
+        options={optionsEmpty}
       />
       <Stack.Screen
         name="RegisterScreen"
         component={RegisterScreen}
-        options={defaultOptions}
+        options={optionsEmpty}
       />
 
       <Stack.Screen
         name="Description"
         component={ProductDescriptionComponent}
-        options={defaultOptions}
+        options={optionBack}
       />
+
+      <Stack.Screen
+        name="Comments"
+        component={ProductCommentsComponent}
+        options={optionBack}
+      />
+      
       
       <Stack.Screen
         name="SingleProduct"
-        component={SingleProduct}
-        options={{
-          headerTransparent: true,
-          cardStyle: { backgroundColor: '#FFF' },
-          headerTintColor: 'transparent',
-          headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="black" style={{marginLeft: 30,fontSize: 24}} />),
-          headerBackTitleVisible: false,
-          headerRight: () => (
-            <CartIcon style={{backgroundColor: 'transparent', marginTop: 15}} />
-          ),
-        }}
+        component={SingleProductNavigator}
+        options={{headerShown: false}}
       />
       
       <Stack.Screen
-        name="GridView"
-        component={GridViewComponent}
-        options={{
-          headerTransparent: true,
-          headerTitleStyle: {color: '#000'},
-          cardStyle: { backgroundColor: '#FFF' },
-          headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="black" style={{marginLeft: 30,fontSize: 24}} />),
-          headerBackTitleVisible: false,
-          headerRight: () => (
-            <CartIcon style={{backgroundColor: 'transparent', marginTop: 15}} />
-          ),
-        }}
+        name="ColumnGridView"
+        component={ColumnGridViewComponent}
+        options={optionBack}
       />
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{headerShown: false}} />
     </Stack.Navigator>
   );
+}
+
+
+const SingleProductStack = createStackNavigator<any>();
+function SingleProductNavigator({ navigation }: any) {
+    return (
+        <SingleProductStack.Navigator>
+            <SingleProductStack.Screen
+                name="SingleProduct"
+                component={SingleProduct}
+                options={{
+                  headerTransparent: true,
+                  cardStyle: { backgroundColor: '#FFF' },
+                  headerTintColor: 'transparent',
+                  headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="black" style={{marginLeft: 30,fontSize: 24}} />),
+                  headerBackTitleVisible: false,
+                  headerRight: () => (
+                    <CartIcon navigation={navigation} style={{backgroundColor: 'transparent', marginTop: 15}} />
+                  ),
+                }}
+            />
+        </SingleProductStack.Navigator>
+    );
 }
