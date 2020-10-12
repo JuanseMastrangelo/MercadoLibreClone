@@ -31,19 +31,23 @@ export const Products = [
 export const Categories = [
     {
         name: 'Samsung',
-        image: 'https://andro4all.com/files/2020/03/Galaxy-S20-Ultra-5G.jpg'
+        image: 'https://andro4all.com/files/2020/03/Galaxy-S20-Ultra-5G.jpg',
+        stock: 20
     },
     {
         name: 'Iphone',
-        image: 'https://d500.epimg.net/cincodias/imagenes/2019/11/29/smartphones/1575040739_322747_1575040826_noticia_normal.jpg'
+        image: 'https://d500.epimg.net/cincodias/imagenes/2019/11/29/smartphones/1575040739_322747_1575040826_noticia_normal.jpg',
+        stock: 12
     },
     {
         name: 'Xiaomi',
         image: 'https://i.blogs.es/a652cf/huawei-mate-30-pro-26/1366_2000.jpg',
+        stock: 2
     },
     {
         name: 'Huawei',
         image: 'https://www.enter.co/wp-content/uploads/2017/11/Huawei-Y7-1024x768.jpg',
+        stock: 32
     }
 ]
 

@@ -7,8 +7,18 @@ import { Text, View } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
 import Colors from '../constants/Colors';
+
+
 import Home from '../screens/home';
+import Buys from '../screens/buys';
+import WhiteList from '../screens/whitelist';
+import Cart from '../screens/cart';
+import Profile from '../screens/profile';
+
+
 import CartIcon from './cartIcon';
+import ItemsOnWhiteList from './itemsOnWhiteList';
+
 import TabTwoScreen from '../screens/TabTwoScreen';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
@@ -59,16 +69,16 @@ export function BottomTabNavigator(props: any) {
                 }}
             />
             <BottomTab.Screen
-                name="Notificaciones"
-                component={TabTreeNavigator}
+                name="Carro"
+                component={TabFourNavigator}
                 options={{
                     tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 10, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Carro</Text>,
                     tabBarIcon: ({ color }) => <FontAwesome name="shopping-bag" color={color} size={20} style={{marginTop: 5}} />,
                 }}
             />
             <BottomTab.Screen
-                name="Más"
-                component={TabTreeNavigator}
+                name="Profile"
+                component={TabFiveNavigator}
                 options={{
                     tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 10, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Perfil</Text>,
                     tabBarIcon: ({ color }) => <FontAwesome name="user-circle-o" color={color} size={20} style={{marginTop: 5}} />,
@@ -104,8 +114,9 @@ function TabOneNavigator({ navigation }: any) {
                 name="Home"
                 component={Home}
                 options={{
+                    headerTitle: 'Market',
                     cardStyle: { backgroundColor: '#FFF' },
-                    headerTitleStyle: { textAlign: 'center', color: '#000', fontWeight: 'bold', fontSize: 24, fontFamily: 'Potra', alignSelf: 'center',height: '100%' },
+                    headerTitleStyle: { textAlign: 'center', color: '#000', fontWeight: 'bold', fontSize: 24, fontFamily: 'Poppins-SemiBold', alignSelf: 'center',height: '100%' },
                     headerStyle: { backgroundColor: '#FFF', shadowColor: 'transparent' },
                     headerStatusBarHeight: 40,
                     headerLeft: () => (
@@ -114,7 +125,7 @@ function TabOneNavigator({ navigation }: any) {
                         </TouchableOpacity>
                     ),
                     headerRight: () => (
-                        <CartIcon />
+                        <CartIcon style={{backgroundColor: '#FFF', marginTop: 8}} />
                     ),
                 }}
             />
@@ -127,9 +138,12 @@ function TabTwoNavigator() {
     return (
         <TabTwoStack.Navigator>
             <TabTwoStack.Screen
-                name="TabTwoScreen"
-                component={TabTwoScreen}
-                options={{ headerTitle: 'Tab Two Title' }}
+                name="Buys"
+                component={Buys}
+                options={{
+                    cardStyle: { backgroundColor: '#FFF' },
+                    headerShown: false
+                }}
             />
         </TabTwoStack.Navigator>
     );
@@ -140,10 +154,71 @@ function TabTreeNavigator() {
     return (
         <TabTreeStack.Navigator>
             <TabTreeStack.Screen
-                name="TabTwoScreen"
-                component={TabTwoScreen}
-                options={{ headerTitle: 'Tab Two Title' }}
+                name="WhiteList"
+                component={WhiteList}
+                options={{
+                    cardStyle: { backgroundColor: '#FFF' },
+                    headerTitleStyle: { textAlign: 'center', color: '#000', fontWeight: 'bold', fontSize: 24, alignSelf: 'center',height: '100%' },
+                    headerStyle: { backgroundColor: '#FFF', shadowColor: 'transparent' },
+                    headerStatusBarHeight: 40,
+                    headerRight: () => (
+                        <CartIcon style={{backgroundColor: '#FFF', marginTop: 8}} />
+                    ),
+                    headerTitle: () => (
+                        <View style={{alignSelf: 'center', height: 40, justifyContent: 'center'}}>
+                            <Text style={{fontSize: 15, fontFamily: 'Poppins-Medium', fontWeight: 'bold'}}>WhiteList</Text>
+                            <ItemsOnWhiteList />
+                        </View>
+                    )
+                }}
             />
         </TabTreeStack.Navigator>
+    );
+}
+
+const TabFourStack = createStackNavigator<any>();
+function TabFourNavigator() {
+    return (
+        <TabFourStack.Navigator>
+            <TabFourStack.Screen
+                name="Carro"
+                component={Cart}
+                options={{
+                    cardStyle: { backgroundColor: '#FFF' },
+                    headerTitleStyle: { textAlign: 'center', color: '#000', fontWeight: 'bold', fontSize: 24, alignSelf: 'center',height: '100%' },
+                    headerStyle: { backgroundColor: '#FFF', shadowColor: 'transparent' },
+                    headerStatusBarHeight: 40,
+                    headerTitle: () => (
+                        <View style={{alignSelf: 'center', height: 40, justifyContent: 'center'}}>
+                            <Text style={{fontSize: 15, fontFamily: 'Poppins-Medium', fontWeight: 'bold'}}>Carro</Text>
+                            <ItemsOnWhiteList />
+                        </View>
+                    )
+                }}
+            />
+        </TabFourStack.Navigator>
+    );
+}
+
+
+const TabFiveStack = createStackNavigator<any>();
+function TabFiveNavigator() {
+    return (
+        <TabFiveStack.Navigator>
+            <TabFiveStack.Screen
+                name="Profile"
+                component={Profile}
+                options={{
+                    headerTitle: 'Perfil',
+                    cardStyle: { backgroundColor: '#FFF' },
+                    headerTitleStyle: { textAlign: 'center', color: '#000', fontWeight: 'bold', alignSelf: 'center',height: '100%', marginTop: 10 },
+                    headerStyle: { backgroundColor: '#FFF', shadowColor: 'transparent' },
+                    headerStatusBarHeight: 40,
+                    headerRight: () => (
+                        <CartIcon style={{backgroundColor: '#FFF', marginTop: 8}} />
+                    ),
+                }}
+            />
+        </TabFiveStack.Navigator>
     );
 }

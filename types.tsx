@@ -3,4 +3,7 @@ export type RootStackParamList = {
   NotFound: undefined;
   LoginScreen: undefined;
   RegisterScreen: undefined;
+  SingleProduct: undefined;
+  GridView: undefined;
+  Description: undefined;
 };

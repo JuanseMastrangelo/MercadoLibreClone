@@ -32,6 +32,8 @@ export default function App() {
     'Elena': require('./assets/fonts/Elena.otf'),
   });
 
+  console.disableYellowBox = true;
+
 
   if (!isLoadingComplete || !fontsLoaded) {
     return null;

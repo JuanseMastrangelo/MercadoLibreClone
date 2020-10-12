@@ -21,6 +21,8 @@ export default {
     secondaryColor: '#90CAF9',
     accentColor: '#f85f6a',
     darkColor: '#35424a',
-    greyColor: '#989eb1'
+    greyColor: '#989eb1',
+    yellow: '#FFC831',
+    green: '#45BF55'
   },
 };

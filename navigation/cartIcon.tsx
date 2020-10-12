@@ -1,6 +1,6 @@
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import * as React from 'react';
-import { Text, View } from 'react-native';
+import { Image, Text, View, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { connect } from 'react-redux';
@@ -8,8 +8,13 @@ import { connect } from 'react-redux';
 export class CartIcon extends React.Component<any> {
     render() {
         return (
-            <TouchableOpacity style={{ marginRight: 10, alignSelf: 'center',height: '100%', marginBottom: 10 }}>
-                <FontAwesome.Button name="shopping-bag" color="#000" style={{ backgroundColor: '#FFF', borderRadius: 0 }} size={18}></FontAwesome.Button>
+            <TouchableOpacity style={{ marginRight: 10, alignSelf: 'center',height: '100%', marginBottom: 10, width: 100, alignItems: 'flex-end' }}>
+                <Image
+                    source={{uri: 'https://i.pinimg.com/originals/09/88/dc/0988dc27ab24d196b91d085c786c292d.png'}}
+                    fadeDuration={0}
+                    style={[styles.iconBag, this.props.style]}
+                />
+                
                 <View style={{ backgroundColor: 'red', width: 20, height: 20, borderRadius: 10000, justifyContent: 'center', alignItems: 'center', position: 'absolute', bottom: 20, right: 10 }}>
                     <Text style={{ color: '#FFF' }}>{this.props.state.products.length}</Text>
                 </View>
@@ -17,7 +22,13 @@ export class CartIcon extends React.Component<any> {
         )
     }
 }
-
+const styles = StyleSheet.create({
+    iconBag: {
+        width: 21,
+        height: 21,
+        marginRight: 20
+    },
+})
 
 
 function mapStateToProps(state: any) {

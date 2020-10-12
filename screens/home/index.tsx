@@ -18,15 +18,14 @@ export default class Home extends React.Component<any> {
 
     constructor(props: any) {
         super(props)
-        this.props.navigation.setOptions({ title: 'ACCTECNO' })
     }
     
     render() {
         return (
             <ScrollView showsVerticalScrollIndicator={false}>
                 <Carousel data={SlideImages}/>
-                <CategoriesComponent></CategoriesComponent>
-                <CategoryComponent title="Más Vendidos" data={ProductBestSellers}></CategoryComponent>
+                <CategoriesComponent navigation={this.props.navigation} ></CategoriesComponent>
+                <CategoryComponent navigation={this.props.navigation} title="Más Vendidos" data={ProductBestSellers}></CategoryComponent>
                 <Image source={{uri: Coupon}} resizeMode="contain" style={{width, height: 140, marginVertical: 40}}></Image>
                 <CategoryComponent title="Nuevos" data={ProductBestSellers}></CategoryComponent>
             </ScrollView>
