@@ -20,12 +20,11 @@ export class ProductCommentsComponent extends React.Component<any, any> {
 
     render() {
         const { selectedIndex } = this.state;
-        const shouldLoadComponent = (index: any) => index === selectedIndex;
         return (
             <ScrollView style={{ paddingVertical: 20, paddingHorizontal: 15 }}>
                 <TabView
                     selectedIndex={selectedIndex}
-                    shouldLoadComponent={shouldLoadComponent}
+                    // shouldLoadComponent={shouldLoadComponent}
                     onSelect={index => this.setState({ selectedIndex: index })}>
                     <Tab title='POSITIVAS (1)'>
                         <Layout>

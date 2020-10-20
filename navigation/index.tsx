@@ -71,7 +71,7 @@ function RootNavigator({ navigation }: any) {
       <Stack.Screen
         name="ColumnGridView"
         component={ColumnGridViewComponent}
-        options={optionBack}
+        options={{cardStyle: { backgroundColor: '#F9F9F9' }, headerStyle: { backgroundColor: '#FFF' }, headerTitleStyle: { color: '#000'}, headerBackTitleVisible: false, headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="black" style={{marginLeft: 30,fontSize: 24}} />),headerTransparent: true}}
       />
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{headerShown: false}} />
     </Stack.Navigator>

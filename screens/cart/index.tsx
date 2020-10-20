@@ -89,12 +89,12 @@ export class Cart extends React.Component<any, any> {
                         bottom: -20, left: -70
                     }}></View>
 
-                <View style={{marginTop: 80}}>
+                <View style={{ marginTop: 80 }}>
                     {
                         (products.length === 0) ?
                             this.emptyCartRender()
                             :
-                            <View>
+                            <ScrollView style={{ height: height * 0.8 }}>
 
                                 <ScrollView showsVerticalScrollIndicator={true} style={{ height: height * 0.4 }}>
                                     <VerticalGridViewComponent removeToCart={removeToCart} navigation={this.props.navigation} data={products} ></VerticalGridViewComponent>
@@ -122,12 +122,10 @@ export class Cart extends React.Component<any, any> {
 
                                     <Button status="success" style={{ marginTop: 10 }} onPress={() => this.pay()}>
                                         Pagar ($ 100.399)
-                        </Button>
-
-
+                                    </Button>
 
                                 </View>
-                            </View>
+                            </ScrollView>
                     }
 
                 </View>

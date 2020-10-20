@@ -13,7 +13,7 @@ export class CartIcon extends React.Component<any> {
     }
 
     componentDidMount() {
-        console.log(this.props.state)
+        // console.log(this.props.state)
     }
 
     render() {

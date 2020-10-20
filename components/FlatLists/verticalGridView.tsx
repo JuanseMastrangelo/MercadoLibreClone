@@ -130,7 +130,7 @@ export class VerticalGridViewComponent extends React.Component<any, any> {
                     <Card style={{ backgroundColor: 'white', width: '90%', alignSelf: 'center' }}>
                         <Text>Esta seguro que desea eliminar Samsung Galaxy Note 10 del carro de compras?</Text>
                         <View style={{ marginTop: 20, justifyContent: 'flex-end', flexDirection: 'row' }}>
-                            <Button onPress={() => this.removeItemFromCart()} status="danger" style={{ marginRight: 20 }} size='small'>Si</Button>
+                            <Button onPress={() => this.removeItemFromCart()} status="success" style={{ marginRight: 20 }} size='small'>Si</Button>
                             <Button onPress={() => this.setState({ modalVisible: false })} status="control" size='small'>No</Button>
                         </View>
                     </Card>

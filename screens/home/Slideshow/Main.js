@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, Dimensions, FlatList, Animated } from 'react-native'
 import CarouselItem from './CarouselItem'
 
-
 const { width, heigth } = Dimensions.get('window')
 let flatList
 
@@ -39,7 +38,7 @@ const Carousel = ({ data }) => {
 
     if (data && data.length) {
         return (
-            <View>
+            <View style={{marginTop: 10}}>
                 <FlatList data={data}
                 // ref = {(flatList) => {this.flatList = flatList}}
                     keyExtractor={(item, index) => 'key' + index}
@@ -73,7 +72,7 @@ const Carousel = ({ data }) => {
                         return (
                             <Animated.View
                                 key={i}
-                                style={{ opacity, height: size, width: size, backgroundColor: '#777', marginHorizontal: 2, marginVertical: 8, borderRadius: 5 }}
+                                style={{ opacity, height: size, width: size, backgroundColor: '#fff', marginHorizontal: 2, marginVertical: 8, borderRadius: 5 }}
                             />
                         )
                     })}
@@ -88,7 +87,7 @@ const Carousel = ({ data }) => {
 }
 
 const styles = StyleSheet.create({
-    dotView: { flexDirection: 'row', justifyContent: 'flex-start', marginLeft: 10, alignItems: 'center' }
+    dotView: { flexDirection: 'row', justifyContent: 'flex-start', marginLeft: 20, alignItems: 'center' }
 })
 
 export default Carousel

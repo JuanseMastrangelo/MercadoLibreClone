@@ -2,7 +2,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import * as React from 'react';
 import { Dimensions, Image, Text, View } from 'react-native';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export class ColumnGridViewComponent extends React.Component<any> {
 
@@ -18,7 +18,7 @@ export class ColumnGridViewComponent extends React.Component<any> {
     renderItem = ({ item }: any) => {
         return (
             <TouchableOpacity
-                style={{ width: width / 2.3, height: 280, marginHorizontal: 10, borderWidth: 1, borderColor: 'rgba(200,200,200,.2)' }} onPress={() => this.goToProduct(item)}>
+                style={{ width: width / 2.3, height: 280, marginHorizontal: 10, borderWidth: 1, borderColor: 'rgba(200,200,200,.2)', backgroundColor: 'white' }} onPress={() => this.goToProduct(item)}>
                 <Image source={{ uri: item.image }} style={{ width: '100%', height: '70%', borderRadius: 10 }}></Image>
                 <View style={{ marginTop: 10, paddingHorizontal: 10 }}>
                     <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 10, }}>{item.title}</Text>
@@ -36,7 +36,7 @@ export class ColumnGridViewComponent extends React.Component<any> {
     render() {
         const { data, title, showTitleBar } = this.props.route.params
         return (
-            <View style={{ marginVertical: 10 }}>
+            <View style={{ marginVertical: 80, minHeight: height }}>
 
                 {
                     showTitleBar &&

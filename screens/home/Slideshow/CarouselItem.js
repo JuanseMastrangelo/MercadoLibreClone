@@ -38,33 +38,40 @@ export default class CarouselItem extends React.Component {
         }
          
         return (
-            <View style={styles.cardView}>
-                <Image style={styles.image} resizeMode="cover" source={{uri: item.url}} onLoadStart={() => imageLoader(true)} onLoadEnd={() => imageLoader(false)} />
-                <View style={styles.textView}>
-                    <Text style={styles.itemDescription}>{item.description}</Text>
-                    <Text style={styles.itemTitle}>{item.title}</Text>
+            <View style={styles.container}>
+                <View style={styles.cardView}>
+                    <Image style={styles.image} resizeMode="cover" source={{uri: item.url}} onLoadStart={() => imageLoader(true)} onLoadEnd={() => imageLoader(false)} />
+                    <View style={styles.textView}>
+                        <Text style={styles.itemDescription}>{item.description}</Text>
+                        <Text style={styles.itemTitle}>{item.title}</Text>
+                    </View>
+                    
+                    <View style={styles.btnGo}>
+                        <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <Text style={{color: 'white', marginRight: 10}}>Ver más</Text>
+                            <Ionicons name="ios-arrow-forward" size={20} color="white" />
+                        </TouchableOpacity>
+                    </View>
+                    {
+                        imageLoading &&
+                        <View style={{position:'absolute', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center'}}><Spinner></Spinner></View>
+                    }
                 </View>
-                
-                <View style={styles.btnGo}>
-                    <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Text style={{color: 'white', marginRight: 10}}>Ver más</Text>
-                        <Ionicons name="ios-arrow-forward" size={20} color="white" />
-                    </TouchableOpacity>
-                </View>
-                {
-                    imageLoading &&
-                    <View style={{position:'absolute', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center'}}><Spinner></Spinner></View>
-                }
             </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
-    cardView: {
+    container: {
         flex: 1,
         width,
-        backgroundColor: 'white',
+        alignItems: 'center'
+    },
+
+    cardView: {
+        flex: 1,
+        width: '90%',
     },
 
     textView: {
@@ -74,8 +81,9 @@ const styles = StyleSheet.create({
         left: 5,
     },
     image: {
-        width,
-        height: height / 2,
+        width: '100%',
+        height: height / 4,
+        borderRadius: 10
     },
     itemTitle: {
         color: 'white',

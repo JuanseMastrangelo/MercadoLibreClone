@@ -23,6 +23,7 @@ export default {
     darkColor: '#35424a',
     greyColor: '#989eb1',
     yellow: '#FFC831',
+    yellowLight: 'rgba(255,200,49,0.5)',
     green: '#45BF55'
   },
 };

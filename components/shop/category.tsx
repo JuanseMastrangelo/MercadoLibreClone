@@ -14,7 +14,7 @@ export class CategoryComponent extends React.Component<any> {
     renderItem = ({item}: any) => {
         return(
             <TouchableOpacity style={{width: 150, height: 280, marginRight: 20, borderWidth: 1, borderColor: 'rgba(200,200,200,.2)'}} onPress={() => this.goToProduct(item)}>
-                <Image source={{uri: item.image}} style={{width: '100%', height: '70%', borderRadius: 10}}></Image>
+                <Image source={{uri: item.image}} style={{width: '100%', height: '70%'}}></Image>
                 <View style={{marginTop: 10, paddingHorizontal: 10}}>
                     <Text style={{fontFamily: 'Poppins-Regular', fontSize: 10, }}>{item.title}</Text>
                     <Text style={{fontFamily: 'Poppins-SemiBold', fontSize: 15, fontWeight: 'bold'}}>$ {item.pricing}</Text>

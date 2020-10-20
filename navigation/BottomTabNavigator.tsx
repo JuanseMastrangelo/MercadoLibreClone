@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
-import { Text, View } from 'react-native';
+import { Platform, Text, View } from 'react-native';
 
 import { FontAwesome } from '@expo/vector-icons';
 
@@ -118,14 +118,14 @@ function TabOneNavigator({ navigation }: any) {
                     cardStyle: { backgroundColor: '#FFF' },
                     headerTitleStyle: { textAlign: 'center', color: '#000', fontWeight: 'bold', fontSize: 24, fontFamily: 'Poppins-SemiBold', alignSelf: 'center',height: '100%' },
                     headerStyle: { backgroundColor: '#FFF', shadowColor: 'transparent' },
-                    headerStatusBarHeight: 40,
+                    headerStatusBarHeight: Platform.OS === 'ios' ? 40 : 20,
                     headerLeft: () => (
-                        <TouchableOpacity style={{ marginLeft: 15, marginBottom: 10, height: 40 }}>
+                        <TouchableOpacity style={{ marginLeft: 15, marginBottom: Platform.OS === 'ios' ? 10 : 0, height: Platform.OS === 'ios' ? 40 : 34, }}>
                             <Ionicons name="ios-menu" size={35} color="#000" />
                         </TouchableOpacity>
                     ),
                     headerRight: () => (
-                        <CartIcon navigation={navigation} style={{backgroundColor: '#FFF', marginTop: 8}} />
+                        <CartIcon navigation={navigation} style={{backgroundColor: '#FFF', marginTop: Platform.OS === 'ios' ? 8 : 24}} />
                     ),
                 }}
             />
@@ -160,16 +160,19 @@ function TabTreeNavigator({navigation}: any) {
                     cardStyle: { backgroundColor: '#FFF' },
                     headerTitleStyle: { textAlign: 'center', color: '#000', fontWeight: 'bold', fontSize: 24, alignSelf: 'center',height: '100%' },
                     headerStyle: { backgroundColor: '#FFF', shadowColor: 'transparent' },
-                    headerStatusBarHeight: 40,
+                    headerStatusBarHeight: Platform.OS === 'ios' ? 40 : 20,
                     headerRight: () => (
-                        <CartIcon navigation={navigation} style={{backgroundColor: '#FFF', marginTop: 8}} />
+                        <CartIcon navigation={navigation} style={{backgroundColor: '#FFF', marginTop: Platform.OS === 'ios' ? 8 : 24}} />
                     ),
                     headerTitle: () => (
-                        <View style={{alignSelf: 'center', height: 40, justifyContent: 'center'}}>
+                        <View style={{alignSelf: 'center', height: 40, justifyContent: 'center', marginLeft: Platform.OS === 'ios' ? 0 : 50}}>
                             <Text style={{fontSize: 15, fontFamily: 'Poppins-Medium', fontWeight: 'bold'}}>WhiteList</Text>
                             <ItemsOnWhiteList />
                         </View>
-                    )
+                    ),
+                    headerBackTitleVisible: false,
+                    headerBackTitleStyle: {display: 'none'},
+                    headerBackImage: () => null
                 }}
             />
         </TabTreeStack.Navigator>
@@ -188,10 +191,10 @@ function TabFourNavigator() {
                     cardStyle: { backgroundColor: '#FFF'  },
                     headerTitleStyle: { textAlign: 'center', color: '#000', fontWeight: 'bold', fontSize: 24, alignSelf: 'center',height: '100%' },
                     headerStyle: { backgroundColor: '#FFF', shadowColor: 'transparent' },
-                    headerStatusBarHeight: 40,
+                    headerStatusBarHeight: Platform.OS === 'ios' ? 40 : 20,
                     headerTitle: () => (
-                        <View style={{alignSelf: 'center', height: 40, justifyContent: 'center'}}>
-                            <Text style={{fontSize: 15, fontFamily: 'Poppins-Medium', fontWeight: 'bold'}}>Carro</Text>
+                        <View style={{alignContent: 'center', height: '100%', justifyContent: 'center', alignItems: 'center'}}>
+                            <Text style={{fontSize: 15, fontFamily: 'Poppins-Medium', fontWeight: 'bold', textAlign: 'center'}}>Carro</Text>
                             <ItemsOnWhiteList />
                         </View>
                     ),
@@ -215,12 +218,15 @@ function TabFiveNavigator({ navigation }: any) {
                 options={{
                     headerTitle: 'Perfil',
                     cardStyle: { backgroundColor: '#FFF' },
-                    headerTitleStyle: { textAlign: 'center', color: '#000', fontWeight: 'bold', alignSelf: 'center',height: '100%', marginTop: 10 },
+                    headerTitleStyle: { textAlign: 'center', color: '#000',  fontWeight: 'bold', alignSelf: 'center',height: '100%', marginTop: Platform.OS === 'ios' ? 10 : 0, marginLeft: Platform.OS === 'ios' ? 0 : 60 },
                     headerStyle: { backgroundColor: '#FFF', shadowColor: 'transparent' },
-                    headerStatusBarHeight: 40,
+                    headerStatusBarHeight: Platform.OS === 'ios' ? 40 : 20,
                     headerRight: () => (
-                        <CartIcon navigation={navigation} style={{backgroundColor: '#FFF', marginTop: 8}} />
+                        <CartIcon navigation={navigation} style={{backgroundColor: '#FFF', marginTop: Platform.OS === 'ios' ? 8 : 24}} />
                     ),
+                    headerBackTitleVisible: false,
+                    headerBackTitleStyle: {display: 'none'},
+                    headerBackImage: () => null
                 }}
             />
         </TabFiveStack.Navigator>

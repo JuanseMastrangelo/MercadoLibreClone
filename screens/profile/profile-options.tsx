@@ -52,15 +52,18 @@ export default class ProfileOptions extends React.Component<any, any> {
                 </View>
 
                 <View style={{height: 100}}>
-                <Modal
-                    visible={modalVisible}
-                    backdropStyle={{backgroundColor: 'rgba(200,200,200,.8)'}}
-                    onBackdropPress={() => this.setState({ modalVisible: false })}>
-                    <Card style={{backgroundColor: 'white'}}>
-                        <Text>Desea cerrar sesión?</Text>
-                        <Button onPress={() => this.logout()} style={{width: '100%', marginTop: 20}} size='small'>Si</Button>
-                    </Card>
-                </Modal>
+                    <Modal
+                        visible={modalVisible}
+                        backdropStyle={{ backgroundColor: 'rgba(200,200,200,.8)', width }}
+                        onBackdropPress={() => this.setState({ modalVisible: false })}>
+                        <Card style={{ backgroundColor: 'white', width: '90%', alignSelf: 'center' }}>
+                            <Text>Esta seguro que desea cerrar sesión?</Text>
+                            <View style={{ marginTop: 20, justifyContent: 'flex-end', flexDirection: 'row' }}>
+                                <Button onPress={() => this.logout()} status="success" style={{ marginRight: 20 }} size='small'>Si</Button>
+                                <Button onPress={() => this.setState({ modalVisible: false })} status="control" size='small'>No</Button>
+                            </View>
+                        </Card>
+                    </Modal>
                 </View>
             </View>
         )
