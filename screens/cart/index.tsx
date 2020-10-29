@@ -18,6 +18,8 @@ import { VerticalGridViewComponent } from '../../components/FlatLists/verticalGr
 import { Button, Divider } from '@ui-kitten/components';
 
 
+import io from 'socket.io-client';
+let socket: any = null;
 export class Cart extends React.Component<any, any> {
 
     constructor(props: any) {
@@ -26,7 +28,8 @@ export class Cart extends React.Component<any, any> {
         this.state = {
             urlBuy: null,
             modalVisible: false,
-            idBuy: null
+            idBuy: null,
+            serverRes: null
         }
     }
 
@@ -67,13 +70,34 @@ export class Cart extends React.Component<any, any> {
         })
             .then(response => response.json())
             .then((response) => {
+                socket = io.connect('http://192.168.1.23:3000', {
+                    transports: ['websocket'],
+                    query:'idBuy='+response.body.id // Enviamos para que responda solo con este id
+                });
+                socket.on('paymentState', (res: any) => {
+                    console.log(res)
+                    this.setState({ modalVisible: false, urlBuy: null, idBuy: null, serverRes: res, showPopup: true});
+                    socket.close();
+                });
                 this.setState({ urlBuy: response.body.init_point, cargando: false, modalVisible: true, idBuy: response.body.items[0].id })
-            })
+            });
     }
 
 
+    closeModal = () => {
+        this.setState({ modalVisible: false});
+        socket.close();
+    }
+
+    popupController = () => {
+        const { showPopup } = this.state;
+        this.setState({showPopup: !showPopup, serverRes: null})
+    }
+
     render() {
-        const { urlBuy, modalVisible, cargando } = this.state;
+        const { urlBuy, modalVisible, cargando, showPopup, serverRes } = this.state;
+        const popupstatus = serverRes && serverRes.status;
+        const backgroundPopup = (popupstatus === 'success') ? 'rgba(0,224,150,.9)' : (popupstatus === 'failure') ? 'rgba(255,61,113,.9)' : 'rgba(255,170,0,.9)';
         const { products } = this.props.state;
         const { removeToCart } = this.props;
         return (
@@ -148,6 +172,30 @@ export class Cart extends React.Component<any, any> {
                     cargando &&
                     <View style={{ position: 'absolute', height: height - 100, width, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(200,200,200,.4)' }}>
                         <Spinner color="#000"></Spinner>
+                    </View>
+                }
+                {
+                    showPopup && serverRes &&
+                    <View style={{height, width, backgroundColor: backgroundPopup, position:'absolute', top:0, left:0, alignItems: 'center'}}>
+                        <View style={{height: height*0.5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20}}>
+                            <View style={{borderWidth: 2, width:100,height:100, marginBottom: 20, borderRadius: 10000, borderColor: 'white', justifyContent: 'center', alignItems: 'center'}}>
+                                <FontAwesome style={{color: 'white', fontSize: 40}} name={
+                                    (serverRes.status === 'success') ? 'check' : (serverRes.status === 'failure') ? 'close' : 'exclamation'
+                                }></FontAwesome>
+                            </View>
+                            <Text style={{color: 'white', fontWeight: 'bold', fontFamily: 'Poppins-Regular', fontSize: 17, textAlign: 'center'}}>
+                                {
+                                    (serverRes.status === 'success') ? 
+                                    'Compra realizada correctamente!' 
+                                    : 
+                                    (serverRes.status === 'failure') ?
+                                    'Tu compra no pudo realizarse'
+                                    :
+                                    'Tu compra esta pendiente de pago. Paga tu factura para obtener tu producto.'
+                                }
+                            </Text>
+                        </View>
+                        <Button status="basic" size="small" onPress={() => this.popupController()}>Cerrar</Button>
                     </View>
                 }
             </View>
