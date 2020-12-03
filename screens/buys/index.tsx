@@ -27,7 +27,7 @@ export default class Buys extends React.Component<any, any> {
     }
 
     viewCategorie = (item: any) => {
-        this.props.navigation.navigate('ColumnGridView', { title: item.name, data: ProductBestSellers, showTitleBar: false });
+        this.props.navigation.navigate('ColumnGridView', { title: item.name, data: ProductBestSellers, showTitleBar: false, categorie: item });
     }
     
     loadCategories = async() => {
