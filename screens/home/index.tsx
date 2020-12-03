@@ -20,7 +20,6 @@ export class Home extends React.Component<any> {
 
     constructor(props: any) {
         super(props)
-        console.log(this.props.state)
     }
 
     render() {

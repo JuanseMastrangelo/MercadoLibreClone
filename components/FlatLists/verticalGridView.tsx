@@ -57,10 +57,10 @@ export class VerticalGridViewComponent extends React.Component<any, any> {
         const { count } = this.state;
         return (
             <View
-                style={{ width: '95%', height: 'auto', paddingVertical: 20 }}>
+                style={{ width: '90%', paddingVertical: 0 }}>
 
-                <View style={{ shadowOffset: { width: 0, height: 4, }, shadowColor: "#000", shadowOpacity: 0.25, shadowRadius: 3.84, backgroundColor: 'white', borderRadius: 10,
-                flexDirection: 'row', paddingVertical: 10, paddingHorizontal: 5 }}>
+                <View style={{ backgroundColor: 'white', borderRadius: 10, borderWidth: 1, borderColor: 'rgba(200,200,200,.4)',
+                flexDirection: 'row', paddingVertical: 5, paddingHorizontal: 5 }}>
                     <View style={{ width: '15%', alignItems: 'center', justifyContent: 'center' }}>
                         <View style={{alignItems: 'center', justifyContent: 'space-around', borderWidth: 1, borderColor: 'rgba(200,200,200,.4)', borderRadius: 5}}>
                             <TouchableOpacity style={{ height: 30, width: 30, alignItems: 'center', justifyContent: 'center' }}

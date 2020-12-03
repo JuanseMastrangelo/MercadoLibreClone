@@ -8,7 +8,7 @@ import Colors from '../../constants/Colors';
 const { width, height } = Dimensions.get('window');
 import WebView from 'react-native-webview';
 
-import { Spinner } from 'native-base';
+import { Spinner, Toast } from 'native-base';
 
 
 import { connect } from 'react-redux';
@@ -72,87 +72,107 @@ export class Cart extends React.Component<any, any> {
             .then((response) => {
                 socket = io.connect('http://192.168.1.23:3000', {
                     transports: ['websocket'],
-                    query:'idBuy='+response.body.id // Enviamos para que responda solo con este id
+                    query: 'idBuy=' + response.body.id // Enviamos para que responda solo con este id
                 });
                 socket.on('paymentState', (res: any) => {
                     console.log(res)
-                    this.setState({ modalVisible: false, urlBuy: null, idBuy: null, serverRes: res, showPopup: true});
+                    this.setState({ modalVisible: false, urlBuy: null, idBuy: null, serverRes: res, showPopup: true });
                     socket.close();
                 });
                 this.setState({ urlBuy: response.body.init_point, cargando: false, modalVisible: true, idBuy: response.body.items[0].id })
+            })
+            .catch((error) => {
+                Toast.show({
+                    text: 'Error. Compruebe su conexión a internet.',
+                    type: 'danger',
+                    position: 'bottom'
+                })
+                this.setState({ urlBuy: null, cargando: false, modalVisible: true, idBuy: null })
             });
     }
 
 
     closeModal = () => {
-        this.setState({ modalVisible: false});
+        this.setState({ modalVisible: false });
         socket.close();
     }
 
     popupController = () => {
         const { showPopup } = this.state;
-        this.setState({showPopup: !showPopup, serverRes: null})
+        this.setState({ showPopup: !showPopup, serverRes: null })
     }
 
     render() {
         const { urlBuy, modalVisible, cargando, showPopup, serverRes } = this.state;
         const popupstatus = serverRes && serverRes.status;
-        const backgroundPopup = (popupstatus === 'success') ? 'rgba(0,224,150,.9)' : (popupstatus === 'failure') ? 'rgba(255,61,113,.9)' : 'rgba(255,170,0,.9)';
+        const backgroundPopup = (popupstatus === 'success') ? 'rgba(0,224,150,1)' : (popupstatus === 'failure') ? 'rgba(255,61,113,1)' : 'rgba(255,170,0,1)';
         const { products } = this.props.state;
         const { removeToCart } = this.props;
         return (
             <View style={{ height }}>
                 <View
                     style={{
-                        transform: [{ rotate: '40deg' }], backgroundColor: '#F1F7FC', width: 200, height: 100, position: 'absolute',
+                        transform: [{ rotate: '40deg' }], backgroundColor: Colors.default.yellowLight, width: 200, height: 100, position: 'absolute',
                         top: -40, right: -70
                     }}></View>
+                <View style={{
+                    transform: [{ rotate: '40deg' }], backgroundColor: Colors.default.yellowLight, width: 130, height: 230, position: 'absolute',
+                    top: 340, right: -30, borderRadius: 100
+                }}></View>
                 <View
                     style={{
                         transform: [{ rotate: '-40deg' }], backgroundColor: '#F1F7FC', width: 200, height: 100, position: 'absolute',
                         bottom: -20, left: -70
                     }}></View>
 
-                <View style={{ marginTop: 80 }}>
+                <View style={{ marginTop: 40 }}>
+                    <Text style={{ color: 'black', fontSize: 30, fontFamily: 'Poppins-SemiBold', width: '90%', alignSelf: 'center' }}>Carro</Text>
                     {
                         (products.length === 0) ?
                             this.emptyCartRender()
                             :
                             <ScrollView style={{ height: height * 0.8 }}>
 
-                                <ScrollView showsVerticalScrollIndicator={true} style={{ height: height * 0.4 }}>
+                                <ScrollView showsVerticalScrollIndicator={true} style={{ height: 'auto' }}>
                                     <VerticalGridViewComponent removeToCart={removeToCart} navigation={this.props.navigation} data={products} ></VerticalGridViewComponent>
                                 </ScrollView>
-                                <View style={{ marginVertical: 40, paddingHorizontal: 20 }}>
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5 }}>
-                                        <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 15, fontWeight: 'bold', color: '#4C6ED2' }}>Total de compra</Text>
-                                        <Text style={{ fontFamily: 'Poppins-Light', fontSize: 17, color: '#000' }}>$ 99.999</Text>
-                                    </View>
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5 }}>
-                                        <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 15, fontWeight: 'bold', color: '#4C6ED2' }}>Envio (Rio Negro)</Text>
-                                        <Text style={{ fontFamily: 'Poppins-Light', fontSize: 15, color: '#000' }}>$ 400</Text>
-                                    </View>
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5 }}>
-                                        <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 15, fontWeight: 'bold', color: '#4C6ED2' }}>Descuento</Text>
-                                        <Text style={{ fontFamily: 'Poppins-Light', fontSize: 15, color: 'red' }}>- $ 0</Text>
-                                    </View>
-
-                                    <Divider />
-
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5 }}>
-                                        <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 15, fontWeight: 'bold', color: '#4C6ED2' }}>SubTotal</Text>
-                                        <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 23 }}>$ 100.399</Text>
-                                    </View>
-
-                                    <Button status="success" style={{ marginTop: 10 }} onPress={() => this.pay()}>
-                                        Pagar ($ 100.399)
-                                    </Button>
-
-                                </View>
                             </ScrollView>
                     }
 
                 </View>
+                {
+                    (products.length > 0) &&
+                    <View style={{
+                        paddingHorizontal: 20, backgroundColor: 'white', borderTopEndRadius: 10, borderTopStartRadius: 10, paddingVertical: 10, width: '100%', alignSelf: 'center',
+                        borderWidth: 1, borderColor: 'rgba(200,200,200,.5)', position: 'absolute', bottom: 60
+                    }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3 }}>
+                            <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12, fontWeight: 'bold', color: '#000' }}>Total a compra</Text>
+                            <Text style={{ fontFamily: 'Poppins-Light', fontSize: 12, color: '#000' }}>$ 99.999</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3 }}>
+                            <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12, fontWeight: 'bold', color: '#000' }}>Envio (Rio Negro)</Text>
+                            <Text style={{ fontFamily: 'Poppins-Light', fontSize: 12, color: '#000' }}>$ 400</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3 }}>
+                            <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12, fontWeight: 'bold', color: '#000' }}>Descuento</Text>
+                            <Text style={{ fontFamily: 'Poppins-Light', fontSize: 12, color: 'red' }}>- $ 0</Text>
+                        </View>
+
+                        <Divider style={{ backgroundColor: 'rgba(100,100,100,.3)' }} />
+
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5 }}>
+                            <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 12, fontWeight: 'bold', color: '#4C6ED2' }}>SubTotal</Text>
+                            <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 23 }}>$ 100.399</Text>
+                        </View>
+
+                        <TouchableOpacity style={{ marginTop: 10, width: '80%', borderWidth:1, borderColor: 'rgba(200,200,200,.4)', backgroundColor: Colors.default.green, alignSelf: 'center',paddingVertical: 5, borderRadius: 5 }}
+                        onPress={() => this.pay()}>
+                            <Text style={{textAlign:'center', color: 'white', fontFamily: 'Poppins-SemiBold', fontSize: 17 }}>Pagar</Text>
+                        </TouchableOpacity>
+
+                    </View>
+                }
 
                 <Modal
                     transparent={true}
@@ -160,38 +180,39 @@ export class Cart extends React.Component<any, any> {
                     presentationStyle='pageSheet'
                     collapsable={true}
                 >
-                    <TouchableOpacity style={{ paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}
+                    {/* <TouchableOpacity style={{ paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}
                         onPress={() => this.setState({ modalVisible: false })}>
                         <Text style={{ color: 'white' }}>Cerrar</Text>
                         <FontAwesome style={{ color: 'white', fontSize: 20, marginLeft: 5 }} name="close"></FontAwesome>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                     <WebView source={{ uri: urlBuy }} style={{ marginTop: 20, width, height }} />
                 </Modal>
 
                 {
                     cargando &&
-                    <View style={{ position: 'absolute', height: height - 100, width, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(200,200,200,.4)' }}>
+                    <View style={{ position: 'absolute', height, width, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(200,200,200,.4)' }}>
                         <Spinner color="#000"></Spinner>
+                        <Text>Cargando, espere por favor...</Text>
                     </View>
                 }
                 {
                     showPopup && serverRes &&
-                    <View style={{height, width, backgroundColor: backgroundPopup, position:'absolute', top:0, left:0, alignItems: 'center'}}>
-                        <View style={{height: height*0.5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20}}>
-                            <View style={{borderWidth: 2, width:100,height:100, marginBottom: 20, borderRadius: 10000, borderColor: 'white', justifyContent: 'center', alignItems: 'center'}}>
-                                <FontAwesome style={{color: 'white', fontSize: 40}} name={
+                    <View style={{ height, width, backgroundColor: backgroundPopup, position: 'absolute', top: 0, left: 0, alignItems: 'center' }}>
+                        <View style={{ height: height * 0.5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20 }}>
+                            <View style={{ borderWidth: 2, width: 100, height: 100, marginBottom: 20, borderRadius: 10000, borderColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
+                                <FontAwesome style={{ color: 'white', fontSize: 40 }} name={
                                     (serverRes.status === 'success') ? 'check' : (serverRes.status === 'failure') ? 'close' : 'exclamation'
                                 }></FontAwesome>
                             </View>
-                            <Text style={{color: 'white', fontWeight: 'bold', fontFamily: 'Poppins-Regular', fontSize: 17, textAlign: 'center'}}>
+                            <Text style={{ color: 'white', fontWeight: 'bold', fontFamily: 'Poppins-Regular', fontSize: 17, textAlign: 'center' }}>
                                 {
-                                    (serverRes.status === 'success') ? 
-                                    'Compra realizada correctamente!' 
-                                    : 
-                                    (serverRes.status === 'failure') ?
-                                    'Tu compra no pudo realizarse'
-                                    :
-                                    'Tu compra esta pendiente de pago. Paga tu factura para obtener tu producto.'
+                                    (serverRes.status === 'success') ?
+                                        'Compra realizada correctamente!'
+                                        :
+                                        (serverRes.status === 'failure') ?
+                                            'Tu compra no pudo realizarse'
+                                            :
+                                            'Tu compra esta pendiente de pago. Paga tu factura para obtener tu producto.'
                                 }
                             </Text>
                         </View>

@@ -157,19 +157,12 @@ function TabTreeNavigator({navigation}: any) {
                 name="WhiteList"
                 component={WhiteList}
                 options={{
+                    headerTransparent: true,
                     cardStyle: { backgroundColor: '#FFF' },
                     headerTitleStyle: { textAlign: 'center', color: '#000', fontWeight: 'bold', fontSize: 24, alignSelf: 'center',height: '100%' },
-                    headerStyle: { backgroundColor: '#FFF', shadowColor: 'transparent' },
-                    headerStatusBarHeight: Platform.OS === 'ios' ? 40 : 20,
-                    headerRight: () => (
-                        <CartIcon navigation={navigation} style={{backgroundColor: '#FFF', marginTop: Platform.OS === 'ios' ? 8 : 24}} />
-                    ),
-                    headerTitle: () => (
-                        <View style={{alignSelf: 'center', height: 40, justifyContent: 'center', marginLeft: Platform.OS === 'ios' ? 0 : 50}}>
-                            <Text style={{fontSize: 15, fontFamily: 'Poppins-Medium', fontWeight: 'bold'}}>WhiteList</Text>
-                            <ItemsOnWhiteList />
-                        </View>
-                    ),
+                    headerStyle: { display: 'none' },
+                    headerRight: () => null,
+                    headerTitle: () => null,
                     headerBackTitleVisible: false,
                     headerBackTitleStyle: {display: 'none'},
                     headerBackImage: () => null
@@ -190,14 +183,8 @@ function TabFourNavigator() {
                     headerTransparent: true,
                     cardStyle: { backgroundColor: '#FFF'  },
                     headerTitleStyle: { textAlign: 'center', color: '#000', fontWeight: 'bold', fontSize: 24, alignSelf: 'center',height: '100%' },
-                    headerStyle: { backgroundColor: '#FFF', shadowColor: 'transparent' },
-                    headerStatusBarHeight: Platform.OS === 'ios' ? 40 : 20,
-                    headerTitle: () => (
-                        <View style={{alignContent: 'center', height: '100%', justifyContent: 'center', alignItems: 'center'}}>
-                            <Text style={{fontSize: 15, fontFamily: 'Poppins-Medium', fontWeight: 'bold', textAlign: 'center'}}>Carro</Text>
-                            <ItemsOnWhiteList />
-                        </View>
-                    ),
+                    headerStyle: { display: 'none' },
+                    headerTitle: () => null,
                     headerBackTitleVisible: false,
                     headerBackTitleStyle: {display: 'none'},
                     headerBackImage: () => null
