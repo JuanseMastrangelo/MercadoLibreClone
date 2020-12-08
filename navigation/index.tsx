@@ -16,6 +16,7 @@ import { ColumnGridViewComponent } from '../components/FlatLists/columnGridView'
 import { ProductDescriptionComponent } from '../components/products/product-description';
 import { ProductCommentsComponent } from '../components/products/product-comments';
 import SingleProduct from '../components/products/single-product';
+import { VerticalGridViewComponent } from '../components/FlatLists/verticalGridView';
 
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
@@ -70,16 +71,16 @@ function RootNavigator({ navigation }: any) {
           headerTintColor: 'transparent',
           headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="black" style={{marginLeft: 30,fontSize: 24}} />),
           headerBackTitleVisible: false,
-          headerRight: () => (
+          /* headerRight: () => (
             <CartIcon navigation={navigation} style={{backgroundColor: 'transparent', marginTop: 15}} />
-          ),
+          ), */
         }}
       />
       
       <Stack.Screen
         name="ColumnGridView"
         component={ColumnGridViewComponent}
-        options={optionBack}
+        options={{cardStyle: { backgroundColor: '#F9F9F9' }, headerStyle: { backgroundColor: '#FFF' }, headerTitleStyle: { color: '#000'}, headerBackTitleVisible: false, headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="black" style={{marginLeft: 30,fontSize: 24}} />),headerTransparent: true}}
       />
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{headerShown: false}} />
     </Stack.Navigator>

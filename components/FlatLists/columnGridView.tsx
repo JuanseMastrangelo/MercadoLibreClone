@@ -80,7 +80,7 @@ export class ColumnGridViewComponent extends React.Component<any, any> {
     render() {
         const { products, childsCategories } = this.state
         return (
-            <View>
+            <View style={{marginTop: 60}}>
                 {
                     childsCategories.length > 0 &&
                     <FlatList

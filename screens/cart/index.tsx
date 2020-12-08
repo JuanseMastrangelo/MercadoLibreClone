@@ -106,6 +106,9 @@ export class Cart extends React.Component<any, any> {
         const backgroundPopup = (popupstatus === 'success') ? 'rgba(0,224,150,1)' : (popupstatus === 'failure') ? 'rgba(255,61,113,1)' : 'rgba(255,170,0,1)';
         const { products } = this.props.state;
         const { removeToCart } = this.props;
+
+        let totalValorProducts = 0;
+        products.map((el: any) => (totalValorProducts = totalValorProducts + parseFloat(el.saleValue)) )
         return (
             <View style={{ height }}>
                 <View
@@ -129,11 +132,8 @@ export class Cart extends React.Component<any, any> {
                         (products.length === 0) ?
                             this.emptyCartRender()
                             :
-                            <ScrollView style={{ height: height * 0.8 }}>
-
-                                <ScrollView showsVerticalScrollIndicator={true} style={{ height: 'auto' }}>
-                                    <VerticalGridViewComponent removeToCart={removeToCart} navigation={this.props.navigation} data={products} ></VerticalGridViewComponent>
-                                </ScrollView>
+                            <ScrollView showsVerticalScrollIndicator={true} style={{ height: 'auto' }}>
+                                <VerticalGridViewComponent removeToCart={removeToCart} navigation={this.props.navigation} data={products} ></VerticalGridViewComponent>
                             </ScrollView>
                     }
 
@@ -146,25 +146,25 @@ export class Cart extends React.Component<any, any> {
                     }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3 }}>
                             <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12, fontWeight: 'bold', color: '#000' }}>Total a compra</Text>
-                            <Text style={{ fontFamily: 'Poppins-Light', fontSize: 12, color: '#000' }}>$ 99.999</Text>
+                            <Text style={{ fontFamily: 'Poppins-Light', fontSize: 12, color: '#000' }}>$ {totalValorProducts}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3 }}>
                             <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12, fontWeight: 'bold', color: '#000' }}>Envio (Rio Negro)</Text>
                             <Text style={{ fontFamily: 'Poppins-Light', fontSize: 12, color: '#000' }}>$ 400</Text>
                         </View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3 }}>
+                        {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3 }}>
                             <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12, fontWeight: 'bold', color: '#000' }}>Descuento</Text>
                             <Text style={{ fontFamily: 'Poppins-Light', fontSize: 12, color: 'red' }}>- $ 0</Text>
-                        </View>
+                        </View> */}
 
                         <Divider style={{ backgroundColor: 'rgba(100,100,100,.3)' }} />
 
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5 }}>
                             <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 12, fontWeight: 'bold', color: '#4C6ED2' }}>SubTotal</Text>
-                            <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 23 }}>$ 100.399</Text>
+                            <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 23 }}>$ {totalValorProducts}</Text>
                         </View>
 
-                        <TouchableOpacity style={{ marginTop: 10, width: '80%', borderWidth:1, borderColor: 'rgba(200,200,200,.4)', backgroundColor: Colors.default.green, alignSelf: 'center',paddingVertical: 5, borderRadius: 5 }}
+                        <TouchableOpacity style={{ width: '80%', borderWidth:1, borderColor: 'rgba(200,200,200,.4)', backgroundColor: Colors.default.green, alignSelf: 'center',paddingVertical: 5, borderRadius: 5 }}
                         onPress={() => this.pay()}>
                             <Text style={{textAlign:'center', color: 'white', fontFamily: 'Poppins-SemiBold', fontSize: 17 }}>Pagar</Text>
                         </TouchableOpacity>

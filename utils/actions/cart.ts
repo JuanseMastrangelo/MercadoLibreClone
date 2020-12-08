@@ -8,9 +8,10 @@ function getAllProducts() {
     }
 }
 
-function addProduct() {
+function addProduct(item: any) {
     return {
-        type: CART_ADD_PRODUCT
+        type: CART_ADD_PRODUCT,
+        payload: item
     }
 }
 

@@ -6,9 +6,12 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 
 export class CartIcon extends React.Component<any> {
-
+    constructor(props: any) {
+        super(props)
+    }
     
     goToCart() {
+        // console.log(this.props.navigation);
         this.props.navigation.dispatch(StackActions.replace('Root', {screen: 'Carro'}));
     }
 

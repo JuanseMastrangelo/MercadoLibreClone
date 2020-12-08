@@ -4,7 +4,6 @@ import { Dimensions, Text, View } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 
 import CarouselSingleProduct from './Slideshow/Main';
-import { ProductBestSellers } from '../../demoData';
 import Colors from '../../constants/Colors';
 
 import { CategoryComponent } from '../shop/category';
@@ -57,7 +56,8 @@ class SingleProduct extends React.Component<any, any> {
     }
 
     addToCart = () => {
-        this.props.addCart();
+        const { product } = this.state;
+        this.props.addCart(product);
         Toast.show({
             text: 'Agregado al carro correctamente!',
             type: 'success',
