@@ -1,14 +1,13 @@
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import * as React from 'react';
-import { Dimensions, Image, Text, View } from 'react-native';
-import { FlatList, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import { Dimensions, Text, View } from 'react-native';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 
 import CarouselSingleProduct from './Slideshow/Main';
 import { ProductBestSellers } from '../../demoData';
 import Colors from '../../constants/Colors';
 
 import { CategoryComponent } from '../shop/category';
-import { Button } from '@ui-kitten/components';
 const { width } = Dimensions.get('window');
 
 
@@ -17,7 +16,7 @@ import { bindActionCreators } from 'redux';
 import { actionCreators as actions } from '../../utils/actions/cart';
 
 
-import { Toast } from 'native-base';
+import { Spinner, Toast } from 'native-base';
 
 
 const singleProductExample = {
@@ -28,18 +27,33 @@ const singleProductExample = {
     ]
 }
 
-class SingleProduct extends React.Component<any> {
-
+class SingleProduct extends React.Component<any, any> {
+    constructor(props: any) {
+        super(props)
+        this.state = {
+            product: this.props.route.params.product,
+            relatedProducts: null
+        }
+        this.loadProductByCategorie();
+    }
 
     componentDidMount() {
-
+        // console.log(this.props.route.params.product);
     }
 
     goToDescription = () => {
-        this.props.navigation.navigate('Description');
+        const { product } = this.state;
+        this.props.navigation.navigate('Description', { product });
     }
     goToComments = () => {
         this.props.navigation.navigate('Comments');
+    }
+
+    loadProductByCategorie = async() => {
+        const { product } = this.state;
+        let productsFetch = await fetch('https://softwareargentina.store/api/products/categorie/' + product.categorieId);
+        const relatedProducts = await productsFetch.json();
+        this.setState({relatedProducts});
     }
 
     addToCart = () => {
@@ -53,10 +67,11 @@ class SingleProduct extends React.Component<any> {
 
 
     render() {
+        const { product, relatedProducts } = this.state;
         return (
-            <View>
+            <View style={{paddingBottom: 50}}>
                 <ScrollView showsHorizontalScrollIndicator={false}>
-                    <CarouselSingleProduct data={singleProductExample.images} />
+                    <CarouselSingleProduct data={JSON.parse(product.files)} />
                     <View style={{ marginTop: 10, paddingVertical: 10, paddingHorizontal: 15 }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingRight: 10 }}>
                             <Text style={{ color: Colors.default.greyColor, fontSize: 13, fontFamily: 'Poppins-Regular' }}>SAMSUNG | CELULAR</Text>
@@ -71,23 +86,21 @@ class SingleProduct extends React.Component<any> {
                         </View>
 
                         <View style={{ marginVertical: 5 }}>
-                            <Text style={{ fontSize: 24, fontFamily: 'Poppins-Medium', fontWeight: 'bold' }}>Samsung Galaxy Note 10</Text>
+                            <Text style={{ fontSize: 24, fontFamily: 'Poppins-Medium', fontWeight: 'bold' }}>{product.title}</Text>
                         </View>
 
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingRight: 10, marginVertical: 0 }}>
-                            <Text style={{ fontSize: 15, fontFamily: 'Poppins-Medium', fontWeight: 'bold' }}>$99.999,00</Text>
+                            <Text style={{ fontSize: 15, fontFamily: 'Poppins-Medium', fontWeight: 'bold' }}>$ {product.saleValue}</Text>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <Ionicons size={25} name="md-checkmark" color={Colors.default.green} style={{ marginRight: 8 }}></Ionicons>
-                                <Text style={{ color: Colors.default.green, fontFamily: 'Poppins-Regular', fontSize: 15 }}>7 en stock</Text>
+                                <Text style={{ color: Colors.default.green, fontFamily: 'Poppins-Regular', fontSize: 15 }}>{product.count} en stock</Text>
                             </View>
                         </View>
 
                         <View style={{ marginVertical: 10 }}>
                             <Text style={{ fontSize: 12, fontFamily: 'Poppins-Medium', fontWeight: 'bold' }}>Sku: 123123</Text>
                             <Text style={{ fontSize: 12, fontFamily: 'Poppins-Medium', color: Colors.default.greyColor, marginTop: 5 }}>
-                                4G. Pantalla 5.8" plana Dynamic Amoled. Procesador Octa Core. SO Android 9.0.
-                                Memoria int. 128GB/ RAM 6GB. Camara post. 12MP + 16MP/frontal 10MP. graba y reproduce videos.
-                                Wi Fi. Bluetooth 5.0. USB Tipo C. Navegador Chrome. Bateria 3100 mAh.
+                            {product.description}
                         </Text>
                         </View>
 
@@ -109,7 +122,12 @@ class SingleProduct extends React.Component<any> {
                             </View>
                         </View>
                     </View>
-                    <CategoryComponent navigation={this.props.navigation} title="Relacionados" data={ProductBestSellers}></CategoryComponent>
+                    {
+                        relatedProducts ?
+                        <CategoryComponent navigation={this.props.navigation} title="Relacionados" data={relatedProducts}></CategoryComponent>
+                        :
+                        <View><Spinner color="black" size={20}></Spinner></View>
+                    }
                 </ScrollView>
 
                 <View style={{ position: 'absolute', bottom: 10, left: 0, width, paddingHorizontal: 20 }}>

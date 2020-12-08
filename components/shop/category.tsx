@@ -7,17 +7,21 @@ import { reducers } from '../../utils/reducers';
 
 export class CategoryComponent extends React.Component<any> {
 
-    goToProduct = (item: any) => {
-        this.props.navigation.navigate('SingleProduct', item);
+    constructor(props: any) {
+        super(props)
     }
 
-    renderItem = ({item}: any) => {
+    goToProduct = (item: any) => {
+        this.props.navigation.push('SingleProduct', { product: item })
+    }
+
+    renderItem = (item: any, index: number) => {
         return(
             <TouchableOpacity style={{width: 150, height: 280, marginRight: 20, borderWidth: 1, borderColor: 'rgba(200,200,200,.2)'}} onPress={() => this.goToProduct(item)}>
-                <Image source={{uri: item.image}} style={{width: '100%', height: '70%'}}></Image>
+                <Image source={{uri: JSON.parse(this.props.data[index].files)[0].path}} style={{width: '100%', height: '70%'}}></Image>
                 <View style={{marginTop: 10, paddingHorizontal: 10}}>
                     <Text style={{fontFamily: 'Poppins-Regular', fontSize: 10, }}>{item.title}</Text>
-                    <Text style={{fontFamily: 'Poppins-SemiBold', fontSize: 15, fontWeight: 'bold'}}>$ {item.pricing}</Text>
+                    <Text style={{fontFamily: 'Poppins-SemiBold', fontSize: 15, fontWeight: 'bold'}}>$ {item.saleValue}</Text>
                     <View style={{flexDirection: 'row'}}>
                     {[...Array(item.rating)].map((x, i) =>
                         <FontAwesome name="star" color="#F7D970"></FontAwesome>
@@ -41,7 +45,7 @@ export class CategoryComponent extends React.Component<any> {
                     data={this.props.data}
                     horizontal={true}
                     style={{marginTop: 10, paddingLeft: 20}}
-                    renderItem={(item) => this.renderItem(item)}
+                    renderItem={({item, index}) => this.renderItem(item, index)}
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
                 />

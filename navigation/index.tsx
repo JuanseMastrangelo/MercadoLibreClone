@@ -16,7 +16,6 @@ import { ColumnGridViewComponent } from '../components/FlatLists/columnGridView'
 import { ProductDescriptionComponent } from '../components/products/product-description';
 import { ProductCommentsComponent } from '../components/products/product-comments';
 import SingleProduct from '../components/products/single-product';
-import { VerticalGridViewComponent } from '../components/FlatLists/verticalGridView';
 
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
@@ -64,8 +63,17 @@ function RootNavigator({ navigation }: any) {
       
       <Stack.Screen
         name="SingleProduct"
-        component={SingleProductNavigator}
-        options={{headerShown: false}}
+        component={SingleProduct}
+        options={{
+          headerTransparent: true,
+          cardStyle: { backgroundColor: '#FFF' },
+          headerTintColor: 'transparent',
+          headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="black" style={{marginLeft: 30,fontSize: 24}} />),
+          headerBackTitleVisible: false,
+          headerRight: () => (
+            <CartIcon navigation={navigation} style={{backgroundColor: 'transparent', marginTop: 15}} />
+          ),
+        }}
       />
       
       <Stack.Screen
@@ -76,27 +84,4 @@ function RootNavigator({ navigation }: any) {
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{headerShown: false}} />
     </Stack.Navigator>
   );
-}
-
-
-const SingleProductStack = createStackNavigator<any>();
-function SingleProductNavigator({ navigation }: any) {
-    return (
-        <SingleProductStack.Navigator>
-            <SingleProductStack.Screen
-                name="SingleProduct"
-                component={SingleProduct}
-                options={{
-                  headerTransparent: true,
-                  cardStyle: { backgroundColor: '#FFF' },
-                  headerTintColor: 'transparent',
-                  headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="black" style={{marginLeft: 30,fontSize: 24}} />),
-                  headerBackTitleVisible: false,
-                  headerRight: () => (
-                    <CartIcon navigation={navigation} style={{backgroundColor: 'transparent', marginTop: 15}} />
-                  ),
-                }}
-            />
-        </SingleProductStack.Navigator>
-    );
 }

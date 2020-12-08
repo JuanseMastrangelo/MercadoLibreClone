@@ -9,7 +9,7 @@ import { useFonts } from 'expo-font';
 import Colors from '../../constants/Colors';
 
 import { CategoriesComponent } from '../../components/shop/categories';
-import { CategoryComponent } from '../../components/shop/category';
+// import { CategoryComponent } from '../../components/shop/category';
 import { ScrollView } from 'react-native-gesture-handler';
 
 import { SlideImages, Coupon, ProductBestSellers } from '../../demoData';
@@ -21,6 +21,7 @@ export class Home extends React.Component<any> {
     constructor(props: any) {
         super(props)
     }
+    
 
     render() {
         return (
@@ -36,9 +37,9 @@ export class Home extends React.Component<any> {
                 }}></View>
                 <Carousel data={SlideImages} />
                 <CategoriesComponent navigation={this.props.navigation} ></CategoriesComponent>
-                <CategoryComponent navigation={this.props.navigation} title="Más Vendidos" data={ProductBestSellers}></CategoryComponent>
+                {/* <CategoryComponent navigation={this.props.navigation} title="Más Vendidos" data={ProductBestSellers}></CategoryComponent> */}
                 <Image source={{ uri: Coupon }} resizeMode="contain" style={{ width, height: 140, marginVertical: 40 }}></Image>
-                <CategoryComponent title="Nuevos" data={ProductBestSellers}></CategoryComponent>
+                {/* <CategoryComponent title="Nuevos" data={ProductBestSellers}></CategoryComponent> */}
 
                 {
                     false &&

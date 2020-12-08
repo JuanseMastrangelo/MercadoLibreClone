@@ -58,7 +58,7 @@ export class CategoriesComponent extends React.Component<any, any> {
                         showsHorizontalScrollIndicator={false}
                     />
                     :
-                    <View><Spinner></Spinner></View>
+                    <View><Spinner color="black" size={20}></Spinner></View>
                 }
             </View>
         )
