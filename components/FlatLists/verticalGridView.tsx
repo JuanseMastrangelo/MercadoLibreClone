@@ -6,14 +6,10 @@ import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 const { width } = Dimensions.get('window');
 
 
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { actionCreators as actions } from '../../utils/actions/cart';
 
-
-
-import { Icon, Picker, Toast } from 'native-base';
+import { Picker, Toast } from 'native-base';
 import Colors from '../../constants/Colors';
+import { StackActions } from '@react-navigation/native';
 
 export class VerticalGridViewComponent extends React.Component<any, any> {
 
@@ -22,12 +18,12 @@ export class VerticalGridViewComponent extends React.Component<any, any> {
 
         this.state = {
             count: 1,
-            products: this.props.data,
             modalVisible: false,
             itemSelected: null,
             selected2: 1,
         }
     }
+
 
     changeCount = (up: boolean) => {
         const { count } = this.state;
@@ -38,7 +34,8 @@ export class VerticalGridViewComponent extends React.Component<any, any> {
 
     removeItemFromCart = () => {
         const { itemSelected } = this.state;
-        this.props.removeToCart();
+        this.setState({ modalVisible: false })
+        this.props.removeToCart(itemSelected);
         Toast.show({
             text: 'Eliminado del carro correctamente!',
             type: 'success',
@@ -52,35 +49,24 @@ export class VerticalGridViewComponent extends React.Component<any, any> {
 
 
     goToProduct = (item: any) => {
-        this.props.navigation.navigate('SingleProduct', { product: item });
+        this.props.navigation.dispatch(StackActions.replace('Components', { screen: 'SingleProduct', params: { product: item } }));
     }
+
     onValueChange2(value: string) {
         this.setState({
           selected2: value
         });
-      }
+    }
 
     renderItem = (item: any, index: number) => {
+        const products = this.props.data;
         return (
             <View>
             <View style={{ width: '100%', paddingVertical: 0, marginTop: 10 }}>
                 <View style={{ backgroundColor: 'white', borderTopStartRadius: 2, borderWidth: 1, borderColor: 'rgba(200,200,200,.4)',
                 flexDirection: 'row', paddingVertical: 5 }}>
-                    {/* <View style={{ width: '15%', alignItems: 'center', justifyContent: 'center' }}>
-                        <View style={{alignItems: 'center', justifyContent: 'space-around', borderWidth: 1, borderColor: 'rgba(200,200,200,.4)', borderRadius: 5}}>
-                            <TouchableOpacity style={{ height: 30, width: 30, alignItems: 'center', justifyContent: 'center' }}
-                                onPress={() => this.changeCount(true)}>
-                                <Text>+</Text>
-                            </TouchableOpacity>
-                            <Text>{count}</Text>
-                            <TouchableOpacity style={{ height: 30, width: 30, alignItems: 'center', justifyContent: 'center' }}
-                                onPress={() => this.changeCount(false)}>
-                                <Text>-</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View> */}
                     <View style={{ width: '25%', height: 100, shadowOffset: { width: 0, height: 4, }, backgroundColor: 'white', borderRadius: 10 }}>
-                        <Image source={{ uri: JSON.parse(this.state.products[index].files)[0].path }}
+                        <Image source={{ uri: JSON.parse(products[index].files)[0].path }}
                             style={{ height: 100 }}></Image>
                     </View>
                     <View style={{ paddingHorizontal: 10, width: '70%', justifyContent: 'space-around' }}>
@@ -113,7 +99,7 @@ export class VerticalGridViewComponent extends React.Component<any, any> {
                     <TouchableOpacity onPress={() => this.goToProduct(item)} style={{ alignItems: 'center', justifyContent: 'center' }}>
                         <Text style={{color: Colors.default.primaryColor}}>Detalles</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.goToProduct(item)} style={{ alignItems: 'center', justifyContent: 'center', marginLeft: 20 }}>
+                    <TouchableOpacity onPress={() => this.openRemoveModal(item)} style={{ alignItems: 'center', justifyContent: 'center', marginLeft: 20 }}>
                         <Text style={{color: Colors.default.primaryColor}}>Eliminar</Text>
                     </TouchableOpacity>
                 </View>
@@ -122,7 +108,8 @@ export class VerticalGridViewComponent extends React.Component<any, any> {
     }
 
     render() {
-        const { modalVisible, products } = this.state;
+        const { modalVisible } = this.state;
+        const products = this.props.data;
         const { title, showTitleBar } = this.props
         return (
             <View>

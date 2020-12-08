@@ -15,9 +15,10 @@ function addProduct(item: any) {
     }
 }
 
-function removeProduct() {
+function removeProduct(index: number) {
     return {
-        type: CART_REMOVE_PRODUCT
+        type: CART_REMOVE_PRODUCT,
+        payload: index
     }
 }
 

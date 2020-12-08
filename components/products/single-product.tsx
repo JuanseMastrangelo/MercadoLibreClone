@@ -37,7 +37,6 @@ class SingleProduct extends React.Component<any, any> {
     }
 
     componentDidMount() {
-        // console.log(this.props.route.params.product);
     }
 
     goToDescription = () => {
@@ -61,13 +60,24 @@ class SingleProduct extends React.Component<any, any> {
         Toast.show({
             text: 'Agregado al carro correctamente!',
             type: 'success',
-            position: 'bottom'
+            position: 'top'
           })
     }
 
+    removeToCart = () => {
+        const { product } = this.state;
+        this.props.removeCart(product.id);
+        Toast.show({
+            text: 'Eliminado del carro',
+            type: 'danger',
+            position: 'top'
+          })
+    }
 
     render() {
         const { product, relatedProducts } = this.state;
+        const { products } = this.props.state;
+        const InCart = products.filter((e: any) => (e.id === product.id)).length > 0;
         return (
             <View style={{paddingBottom: 50}}>
                 <ScrollView showsHorizontalScrollIndicator={false}>
@@ -129,18 +139,33 @@ class SingleProduct extends React.Component<any, any> {
                         <View><Spinner color="black" size={20}></Spinner></View>
                     }
                 </ScrollView>
-
-                <View style={{ position: 'absolute', bottom: 10, left: 0, width, paddingHorizontal: 20 }}>
-                    <TouchableOpacity
-                        style={{
-                            backgroundColor: Colors.default.primaryColor, width: '100%', flexDirection: 'row', height: 50,
-                            justifyContent: 'center', alignItems: 'center', borderRadius: 5
-                        }}
-                        onPress={() => this.addToCart()}>
-                        <FontAwesome name="shopping-cart" color="white" size={17} style={{ marginRight: 15 }}></FontAwesome>
-                        <Text style={{ fontFamily: 'Poppins-Regular', color: 'white' }}>Agregar al carro</Text>
-                    </TouchableOpacity>
-                </View>
+                {
+                    !InCart ?
+                    <View style={{ position: 'absolute', bottom: 10, left: 0, width, paddingHorizontal: 20 }}>
+                        <TouchableOpacity
+                            style={{
+                                backgroundColor: Colors.default.primaryColor, width: '100%', flexDirection: 'row', height: 50,
+                                justifyContent: 'center', alignItems: 'center', borderRadius: 5
+                            }}
+                            onPress={() => this.addToCart()}>
+                            <FontAwesome name="shopping-cart" color="white" size={17} style={{ marginRight: 15 }}></FontAwesome>
+                            <Text style={{ fontFamily: 'Poppins-Regular', color: 'white' }}>Agregar al carro</Text>
+                        </TouchableOpacity>
+                    </View>
+                    :
+                    
+                    <View style={{ position: 'absolute', bottom: 10, right: 0, width: width*0.5, paddingHorizontal: 20 }}>
+                        <TouchableOpacity
+                            style={{
+                                backgroundColor: Colors.default.accentColor, width: '100%', flexDirection: 'row', height: 50,
+                                justifyContent: 'center', alignItems: 'center', borderRadius: 5
+                            }}
+                            onPress={() => this.removeToCart()}>
+                            <FontAwesome name="shopping-cart" color="white" size={17} style={{ marginRight: 15 }}></FontAwesome>
+                            <Text style={{ fontFamily: 'Poppins-Regular', color: 'white' }}>Quitar</Text>
+                        </TouchableOpacity>
+                    </View>
+                }
             </View>
         )
     }
@@ -149,7 +174,8 @@ class SingleProduct extends React.Component<any, any> {
 
 function mapDispatchToProps(dispatch: any) {
     return {
-        addCart: bindActionCreators(actions.addProduct, dispatch)
+        addCart: bindActionCreators(actions.addProduct, dispatch),
+        removeCart: bindActionCreators(actions.removeProduct, dispatch)
     }
 }
 

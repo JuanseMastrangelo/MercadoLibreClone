@@ -1,4 +1,5 @@
 import { FontAwesome } from '@expo/vector-icons';
+import { StackActions } from '@react-navigation/native';
 import { Spinner } from 'native-base';
 import * as React from 'react';
 import { Dimensions, Image, Text, View } from 'react-native';
@@ -40,7 +41,7 @@ export class ColumnGridViewComponent extends React.Component<any, any> {
 
 
     goToProduct = (item: any) => {
-        this.props.navigation.navigate('SingleProduct', { product: item });
+        this.props.navigation.push('Components', { screen: 'SingleProduct', params: { product: item } });
     }
 
     viewCategorie = (item:any) => {

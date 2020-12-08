@@ -100,15 +100,20 @@ export class Cart extends React.Component<any, any> {
         this.setState({ showPopup: !showPopup, serverRes: null })
     }
 
+
+    removeItemFromList = (e: any) => {
+        const { removeToCart } = this.props;
+        removeToCart(e.id);
+    }
+
     render() {
         const { urlBuy, modalVisible, cargando, showPopup, serverRes } = this.state;
         const popupstatus = serverRes && serverRes.status;
         const backgroundPopup = (popupstatus === 'success') ? 'rgba(0,224,150,1)' : (popupstatus === 'failure') ? 'rgba(255,61,113,1)' : 'rgba(255,170,0,1)';
         const { products } = this.props.state;
-        const { removeToCart } = this.props;
 
         let totalValorProducts = 0;
-        products.map((el: any) => (totalValorProducts = totalValorProducts + parseFloat(el.saleValue)) )
+        products.map((el: any, index: number) => (totalValorProducts = totalValorProducts + parseFloat(el.saleValue)) )
         return (
             <View style={{ height }}>
                 <View
@@ -127,13 +132,16 @@ export class Cart extends React.Component<any, any> {
                     }}></View>
 
                 <View style={{ marginTop: 40 }}>
-                    <Text style={{ color: 'black', fontSize: 30, fontFamily: 'Poppins-SemiBold', width: '90%', alignSelf: 'center' }}>Carro</Text>
+                    <View style={{ flexDirection: 'row', width: '90%', alignSelf: 'center', justifyContent: 'space-between' }}>
+                    <Text style={{ color: 'black', fontSize: 30, fontFamily: 'Poppins-SemiBold' }}>Carro</Text>
+                    <Text style={{ color: 'black', fontSize: 10, fontFamily: 'Poppins-SemiBold' }}>({products ? products.length : 0} productos) </Text>
+                    </View>
                     {
                         (products.length === 0) ?
                             this.emptyCartRender()
                             :
-                            <ScrollView showsVerticalScrollIndicator={true} style={{ height: 'auto' }}>
-                                <VerticalGridViewComponent removeToCart={removeToCart} navigation={this.props.navigation} data={products} ></VerticalGridViewComponent>
+                            <ScrollView showsVerticalScrollIndicator={true} style={{ height: height*0.55 }}>
+                                <VerticalGridViewComponent removeToCart={(e: any) => this.removeItemFromList(e)} navigation={this.props.navigation} data={products} ></VerticalGridViewComponent>
                             </ScrollView>
                     }
 

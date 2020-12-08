@@ -6,6 +6,7 @@ export type RootStackParamList = {
   SingleProduct: undefined;
   Description: undefined;
   Comments: undefined;
+  Components: undefined;
 
   // GridViews
   ColumnGridView: undefined;

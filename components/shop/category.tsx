@@ -1,4 +1,5 @@
 import { FontAwesome } from '@expo/vector-icons';
+import { StackActions } from '@react-navigation/native';
 import * as React from 'react';
 import { Image, Text, View } from 'react-native';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
@@ -10,7 +11,7 @@ export class CategoryComponent extends React.Component<any> {
     }
 
     goToProduct = (item: any) => {
-        this.props.navigation.push('SingleProduct', { product: item })
+        this.props.navigation.push('Components', { screen: 'SingleProduct', params: { product: item } });
     }
 
     renderItem = (item: any, index: number) => {

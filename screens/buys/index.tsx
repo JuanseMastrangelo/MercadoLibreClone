@@ -92,7 +92,7 @@ export default class Buys extends React.Component<any, any> {
                                 )
                             })
                             :
-                            <View><Spinner></Spinner></View>
+                            <View><Spinner color="black" size={20}></Spinner></View>
                         }
                     </View>
                 </ScrollView>
