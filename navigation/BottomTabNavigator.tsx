@@ -148,7 +148,7 @@ function TabTreeNavigator({navigation}: any) {
     return (
         <TabTreeStack.Navigator>
             <TabTreeStack.Screen
-                name="WhiteList"
+                name="Favoritos"
                 component={WhiteList}
                 options={{
                     headerTransparent: true,

@@ -1,3 +1,4 @@
+import { StackActions } from '@react-navigation/native';
 import { Spinner } from 'native-base';
 import * as React from 'react';
 import { Image, Text, View } from 'react-native';
@@ -34,7 +35,11 @@ export class CategoriesComponent extends React.Component<any, any> {
     }
 
     viewCategorie = (item:any) => {
-        this.props.navigation.navigate('ColumnGridView', {title: item.name, data: ProductBestSellers, showTitleBar: false, categorie: item });
+        this.props.navigation.navigate('ColumnGridView', {title: item.name, showTitleBar: false, categorie: item });
+    }
+
+    goToCategories() {
+        this.props.navigation.dispatch(StackActions.replace('Root', { screen: 'Buscar' }));
     }
     
     render() {
@@ -43,7 +48,7 @@ export class CategoriesComponent extends React.Component<any, any> {
             <View style={{marginVertical: 20}}>
                 <View style={{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 20}}>
                     <Text style={{fontSize: 20, fontFamily: 'Poppins-Medium'}}>Categorias</Text>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.goToCategories()}>
                         <Text>Ver todas</Text>
                     </TouchableOpacity>
                 </View>

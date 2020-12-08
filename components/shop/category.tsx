@@ -3,8 +3,6 @@ import * as React from 'react';
 import { Image, Text, View } from 'react-native';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 
-import { reducers } from '../../utils/reducers';
-
 export class CategoryComponent extends React.Component<any> {
 
     constructor(props: any) {
@@ -38,7 +36,7 @@ export class CategoryComponent extends React.Component<any> {
                 <View style={{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 20}}>
                     <Text style={{fontSize: 20, fontFamily: 'Poppins-Medium'}}>{this.props.title}</Text>
                     <TouchableOpacity>
-                        <Text>Ver todas</Text>
+                        {/* <Text>Ver todas</Text> */}
                     </TouchableOpacity>
                 </View>
                 <FlatList

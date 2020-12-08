@@ -24,7 +24,6 @@ export class Cart extends React.Component<any, any> {
 
     constructor(props: any) {
         super(props)
-        console.log(props)
         this.state = {
             urlBuy: null,
             modalVisible: false,
@@ -75,7 +74,6 @@ export class Cart extends React.Component<any, any> {
                     query: 'idBuy=' + response.body.id // Enviamos para que responda solo con este id
                 });
                 socket.on('paymentState', (res: any) => {
-                    console.log(res)
                     this.setState({ modalVisible: false, urlBuy: null, idBuy: null, serverRes: res, showPopup: true });
                     socket.close();
                 });

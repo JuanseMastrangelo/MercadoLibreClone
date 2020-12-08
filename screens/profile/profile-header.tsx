@@ -31,7 +31,6 @@ export default class ProfileHeader extends React.Component<any, any> {
     
     render() {
         const { userData } = this.state;
-        console.log(userData)
         return (
             <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 5}}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>

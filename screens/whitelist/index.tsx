@@ -14,7 +14,7 @@ export default class WhiteList extends React.Component<any, any> {
         super(props)
     }
 
-    goToShopping() {
+    goToCategories() {
         this.props.navigation.dispatch(StackActions.replace('Root', { screen: 'Buscar' }));
     }
 
@@ -46,7 +46,7 @@ export default class WhiteList extends React.Component<any, any> {
                                 Agrega productos a favoritos para que aparezcan en esta area
                         </Text>
 
-                            <TouchableOpacity style={{ marginTop: 60, borderWidth: 1, paddingHorizontal: 20, paddingVertical: 10 }} onPress={() => this.goToShopping()}>
+                            <TouchableOpacity style={{ marginTop: 60, borderWidth: 1, paddingHorizontal: 20, paddingVertical: 10 }} onPress={() => this.goToCategories()}>
                                 <Text style={{ fontSize: 14, fontFamily: 'Poppins-Regular', fontWeight: 'bold' }}>Ir de compras</Text>
                             </TouchableOpacity>
                         </View>

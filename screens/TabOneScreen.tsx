@@ -1,7 +1,5 @@
-import { Button } from '@ui-kitten/components';
-import { logOutAsync } from 'expo-google-app-auth';
 import * as React from 'react';
-import { AsyncStorage, StyleSheet, View } from 'react-native';
+import { AsyncStorage, View } from 'react-native';
 
 import { authKey } from '../constants/KeyConfig';
 
@@ -21,7 +19,7 @@ export default class TabOneScreen extends React.Component<any, any> {
 
 
     return (
-      <View style={styles.container}>
+      <View>
       </View>
     );
   }

@@ -98,7 +98,6 @@ const CarouselSingleProduct = ({ data }) => {
         )
     }
 
-    console.log('No hay imagenes')
     return null
 }
 

@@ -82,7 +82,6 @@ const Carousel = ({ data }) => {
         )
     }
 
-    console.log('No hay imagenes')
     return null
 }
 

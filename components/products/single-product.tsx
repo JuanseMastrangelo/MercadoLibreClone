@@ -124,7 +124,7 @@ class SingleProduct extends React.Component<any, any> {
                     </View>
                     {
                         relatedProducts ?
-                        <CategoryComponent navigation={this.props.navigation} title="Relacionados" data={relatedProducts}></CategoryComponent>
+                        <CategoryComponent navigation={this.props.navigation} title="Productos relacionados" data={relatedProducts}></CategoryComponent>
                         :
                         <View><Spinner color="black" size={20}></Spinner></View>
                     }

@@ -2,7 +2,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { Spinner } from 'native-base';
 import * as React from 'react';
 import { Dimensions, Image, Text, View } from 'react-native';
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
+import { FlatList, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 const { width, height } = Dimensions.get('window');
 
 export class ColumnGridViewComponent extends React.Component<any, any> {
@@ -14,11 +14,13 @@ export class ColumnGridViewComponent extends React.Component<any, any> {
         this.state = {
             categorie: this.props.route.params.categorie,
             products: null,
+            childsCategories: []
         }
     }
 
     componentDidMount() {
         this.loadProductByCategorie();
+        this.loadCategoriesChild();
     }
 
     loadProductByCategorie = async() => {
@@ -26,10 +28,23 @@ export class ColumnGridViewComponent extends React.Component<any, any> {
         let productsFetch = await fetch('https://softwareargentina.store/api/products/categorie/' + categorie.id);
         const products = await productsFetch.json();
         this.setState({products});
+        // console.log(this.props.route.params.categoriesChilds);
     }
+
+    loadCategoriesChild = async() => {
+        const { categorie } = this.state;
+        let categoriesFetch = await fetch('https://softwareargentina.store/api/categories/sub/' + categorie.id);
+        const childsCategories = await categoriesFetch.json();
+        this.setState({childsCategories});
+    }
+
 
     goToProduct = (item: any) => {
         this.props.navigation.navigate('SingleProduct', { product: item });
+    }
+
+    viewCategorie = (item:any) => {
+        this.props.navigation.push('ColumnGridView', {title: item.name, showTitleBar: false, categorie: item });
     }
 
     renderItem = (item: any, index: number) => {
@@ -51,10 +66,32 @@ export class ColumnGridViewComponent extends React.Component<any, any> {
         )
     }
 
-    render() {
-        const { products } = this.state
+    renderCategoriesChild = (item: any) => {
         return (
-            <View style={{ marginVertical: 80, minHeight: height }}>
+            <TouchableOpacity
+                style={{borderWidth: 1, borderColor: 'rgba(200,200,200,.2)', backgroundColor: 'rgba(200,200,200,.5)',
+                        marginHorizontal: 10, height: 30, justifyContent: 'center', paddingHorizontal: 10, borderRadius: 5}}
+                onPress={() => this.viewCategorie(item)}>
+                <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 14 }}>{item.name}</Text>
+            </TouchableOpacity>
+        )
+    }
+
+    render() {
+        const { products, childsCategories } = this.state
+        return (
+            <View>
+                {
+                    childsCategories.length > 0 &&
+                    <FlatList
+                        data={childsCategories}
+                        style={{marginTop: 14, paddingBottom: 10}}
+                        horizontal={true}
+                        renderItem={({item}) => this.renderCategoriesChild(item)}
+                        showsVerticalScrollIndicator={false}
+                        showsHorizontalScrollIndicator={false}
+                    />
+                }
                 
                 {
                     products ? 
