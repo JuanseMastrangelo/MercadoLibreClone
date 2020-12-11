@@ -5,6 +5,8 @@ import * as React from 'react';
 import { Dimensions, Image, Text, View } from 'react-native';
 import { FlatList, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 const { width, height } = Dimensions.get('window');
+import Colors from '../../constants/Colors';
+import { urlApi } from '../../constants/KeyConfig';
 
 export class ColumnGridViewComponent extends React.Component<any, any> {
 
@@ -26,15 +28,14 @@ export class ColumnGridViewComponent extends React.Component<any, any> {
 
     loadProductByCategorie = async() => {
         const { categorie } = this.state;
-        let productsFetch = await fetch('https://softwareargentina.store/api/products/categorie/' + categorie.id);
+        let productsFetch = await fetch(urlApi + '/products/categorie/' + categorie.id);
         const products = await productsFetch.json();
         this.setState({products});
-        // console.log(this.props.route.params.categoriesChilds);
     }
 
     loadCategoriesChild = async() => {
         const { categorie } = this.state;
-        let categoriesFetch = await fetch('https://softwareargentina.store/api/categories/sub/' + categorie.id);
+        let categoriesFetch = await fetch(urlApi + '/categories/sub/' + categorie.id);
         const childsCategories = await categoriesFetch.json();
         this.setState({childsCategories});
     }
@@ -62,6 +63,11 @@ export class ColumnGridViewComponent extends React.Component<any, any> {
                             <FontAwesome name="star" color="#F7D970"></FontAwesome>
                         )}
                     </View>
+                </View>
+                <View style={{position: 'absolute', top: 10, right: 15}}>
+                    <TouchableOpacity>
+                        <FontAwesome size={23} name='heart-o' color={Colors.default.greyColor}></FontAwesome>
+                    </TouchableOpacity>
                 </View>
             </TouchableOpacity>
         )

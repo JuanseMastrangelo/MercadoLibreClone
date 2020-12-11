@@ -16,6 +16,7 @@ import { actionCreators as actions } from '../../utils/actions/cart';
 
 
 import { Spinner, Toast } from 'native-base';
+import { urlApi } from '../../constants/KeyConfig';
 
 
 const singleProductExample = {
@@ -49,7 +50,7 @@ class SingleProduct extends React.Component<any, any> {
 
     loadProductByCategorie = async() => {
         const { product } = this.state;
-        let productsFetch = await fetch('https://softwareargentina.store/api/products/categorie/' + product.categorieId);
+        let productsFetch = await fetch(urlApi + '/products/categorie/' + product.categorieId);
         const relatedProducts = await productsFetch.json();
         this.setState({relatedProducts});
     }
@@ -58,7 +59,7 @@ class SingleProduct extends React.Component<any, any> {
         const { product } = this.state;
         this.props.addCart(product);
         Toast.show({
-            text: 'Agregado al carro correctamente!',
+            text: 'Agregado al carro',
             type: 'success',
             position: 'top'
           })

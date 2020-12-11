@@ -3,6 +3,7 @@ import { Spinner } from 'native-base';
 import * as React from 'react';
 import { Image, Text, View } from 'react-native';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
+import { urlApi } from '../../constants/KeyConfig';
 
 import { Categories, ProductBestSellers } from '../../demoData';
 
@@ -12,6 +13,7 @@ export class CategoriesComponent extends React.Component<any, any> {
         super(props)
         this.state = {
             categories: null,
+            newProducts: null
         }
     }
 
@@ -20,7 +22,7 @@ export class CategoriesComponent extends React.Component<any, any> {
     }
 
     loadCategories = async() => {
-        let categoriesFetch = await fetch('https://softwareargentina.store/api/categories');
+        let categoriesFetch = await fetch(urlApi + '/categories');
         const categories = await categoriesFetch.json();
         this.setState({categories});
     }

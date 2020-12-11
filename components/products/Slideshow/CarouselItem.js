@@ -39,7 +39,7 @@ export default class CarouselItem extends React.Component {
          
         return (
             <View style={styles.cardView}>
-                <Image style={styles.image} resizeMode="cover" source={{uri: item.path}} onLoadStart={() => imageLoader(true)} onLoadEnd={() => imageLoader(false)} />
+                <Image style={styles.image} resizeMode="contain" source={{uri: item.path}} onLoadStart={() => imageLoader(true)} onLoadEnd={() => imageLoader(false)} />
                 {/* <View style={styles.textView}>
                     <Text style={styles.itemDescription}>{item.description}</Text>
                     <Text style={styles.itemTitle}>{item.title}</Text>

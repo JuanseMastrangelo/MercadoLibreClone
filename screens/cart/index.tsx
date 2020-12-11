@@ -19,6 +19,8 @@ import { Button, Divider } from '@ui-kitten/components';
 
 
 import io from 'socket.io-client';
+import { authKey, urlPayment } from '../../constants/KeyConfig';
+import AsyncStorage from '@react-native-community/async-storage';
 let socket: any = null;
 export class Cart extends React.Component<any, any> {
 
@@ -28,8 +30,10 @@ export class Cart extends React.Component<any, any> {
             urlBuy: null,
             modalVisible: false,
             idBuy: null,
-            serverRes: null
+            serverRes: null,
+            userData: null
         }
+        this.getUserData();
     }
 
     goToShopping() {
@@ -43,6 +47,7 @@ export class Cart extends React.Component<any, any> {
                 <View style={{ alignItems: 'center', paddingHorizontal: 50 }}>
                     <View style={{ width: 100, height: 100, borderRadius: 1000, backgroundColor: 'rgba(200,200,200,.4)', justifyContent: 'center', alignItems: 'center' }}>
                         <Image
+                            resizeMode="contain"
                             source={{ uri: 'https://i.pinimg.com/originals/09/88/dc/0988dc27ab24d196b91d085c786c292d.png' }}
                             fadeDuration={0}
                             style={{ width: 40, height: 40 }}
@@ -61,31 +66,66 @@ export class Cart extends React.Component<any, any> {
         )
     }
 
+    getUserData = async () => {
+        const userData = await AsyncStorage.getItem(authKey)
+        this.setState({userData: JSON.parse(userData!)})
+    }
+
 
     pay = () => {
         this.setState({ cargando: true });
-        fetch('http://192.168.1.23:3000/createPayment', {
-            method: 'GET'
+        const userData = this.state;
+        const { products } = this.props.state;
+        const items: any = [];
+        products.map((product: any) => {
+            items.push(
+                {
+                    id: product.id,
+                    title: product.title,
+                    quantity: 1,
+                    currency_id: 'ARS',
+                    unit_price: +product.saleValue
+                }
+            )
+        });
+
+        const additional_info: any = [{
+            userData
+        }];
+
+        fetch(urlPayment + '/createPayment', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+              body: JSON.stringify([items, additional_info])
         })
             .then(response => response.json())
             .then((response) => {
-                socket = io.connect('http://192.168.1.23:3000', {
-                    transports: ['websocket'],
-                    query: 'idBuy=' + response.body.id // Enviamos para que responda solo con este id
-                });
-                socket.on('paymentState', (res: any) => {
-                    this.setState({ modalVisible: false, urlBuy: null, idBuy: null, serverRes: res, showPopup: true });
-                    socket.close();
-                });
-                this.setState({ urlBuy: response.body.init_point, cargando: false, modalVisible: true, idBuy: response.body.items[0].id })
+                if (response) {
+                    socket = io.connect(urlPayment, {
+                        transports: ['websocket'],
+                        query: 'idBuy=' + response.body.id // Enviamos para que responda solo con este id
+                    });
+                    socket.on('paymentState', (res: any) => {
+                        console.log(res);
+                        this.setState({ modalVisible: false, urlBuy: null, idBuy: null, serverRes: res, showPopup: true });
+                        if (res.status === 'success') {
+                            this.clearCart();
+                        }
+                        socket.close();
+                    });
+                    this.setState({ urlBuy: response.body.init_point, cargando: false, modalVisible: true, idBuy: response.body.items[0].id })
+                }
             })
             .catch((error) => {
                 Toast.show({
                     text: 'Error. Compruebe su conexión a internet.',
                     type: 'danger',
-                    position: 'bottom'
+                    position: 'top'
                 })
-                this.setState({ urlBuy: null, cargando: false, modalVisible: true, idBuy: null })
+                this.setState({ urlBuy: null, cargando: false, modalVisible: false, idBuy: null })
             });
     }
 
@@ -104,7 +144,14 @@ export class Cart extends React.Component<any, any> {
     removeItemFromList = (e: any) => {
         const { removeToCart } = this.props;
         removeToCart(e.id);
+        Toast.show({
+            text: 'Eliminado del carro',
+            type: 'danger',
+            position: 'top'
+          })
     }
+
+    clearCart = () => { this.props.cleanCart(); }
 
     render() {
         const { urlBuy, modalVisible, cargando, showPopup, serverRes } = this.state;
@@ -183,8 +230,7 @@ export class Cart extends React.Component<any, any> {
                 <Modal
                     transparent={true}
                     visible={modalVisible}
-                    presentationStyle='pageSheet'
-                    collapsable={true}
+                    presentationStyle='overFullScreen'
                 >
                     {/* <TouchableOpacity style={{ paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}
                         onPress={() => this.setState({ modalVisible: false })}>
@@ -234,7 +280,8 @@ export class Cart extends React.Component<any, any> {
 
 function mapDispatchToProps(dispatch: any) {
     return {
-        removeToCart: bindActionCreators(actions.removeProduct, dispatch)
+        removeToCart: bindActionCreators(actions.removeProduct, dispatch),
+        cleanCart: bindActionCreators(actions.cleanCart, dispatch)
     }
 }
 

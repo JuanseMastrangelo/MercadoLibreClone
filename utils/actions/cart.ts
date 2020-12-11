@@ -1,6 +1,7 @@
 export const CART_PRODUCTS = 'CART_PRODUCT';
 export const CART_ADD_PRODUCT = 'CART_ADD_PRODUCT';
 export const CART_REMOVE_PRODUCT = 'CART_REMOVE_PRODUCT';
+export const CART_CLEAN = 'CART_CLEAN';
 
 function getAllProducts() {
     return {
@@ -22,8 +23,15 @@ function removeProduct(index: number) {
     }
 }
 
+function cleanCart() {
+    return {
+        type: CART_CLEAN
+    }
+}
+
 export const actionCreators = {
     getAllProducts,
     addProduct,
-    removeProduct
+    removeProduct,
+    cleanCart
 }

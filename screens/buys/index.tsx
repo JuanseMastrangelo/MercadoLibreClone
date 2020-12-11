@@ -5,6 +5,7 @@ import * as React from 'react';
 import { Dimensions, Image, Text, View } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import Colors from '../../constants/Colors';
+import { urlApi } from '../../constants/KeyConfig';
 import { Categories } from '../../demoData';
 
 const { width } = Dimensions.get('window');
@@ -27,11 +28,11 @@ export default class Buys extends React.Component<any, any> {
     }
 
     viewCategorie = (item: any) => {
-        this.props.navigation.navigate('ColumnGridView', { title: item.name, data: ProductBestSellers, showTitleBar: false, categorie: item });
+        this.props.navigation.push('Components', { screen: 'ColumnGridView', params: {title: item.name, showTitleBar: false, categorie: item} });
     }
     
     loadCategories = async() => {
-        let categoriesFetch = await fetch('https://softwareargentina.store/api/categories');
+        let categoriesFetch = await fetch(urlApi + '/categories');
         const categories = await categoriesFetch.json();
         this.setState({categories});
     }
