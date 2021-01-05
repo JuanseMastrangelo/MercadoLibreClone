@@ -49,7 +49,7 @@ export class VerticalGridViewComponent extends React.Component<any, any> {
 
 
     goToProduct = (item: any) => {
-        this.props.navigation.dispatch(StackActions.replace('Components', { screen: 'SingleProduct', params: { product: item } }));
+        this.props.navigation.push('Components', { screen: 'SingleProduct', params: { product: item } });
     }
 
     onValueChange2(value: string) {

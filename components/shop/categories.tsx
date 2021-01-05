@@ -2,6 +2,7 @@ import { StackActions } from '@react-navigation/native';
 import { Spinner } from 'native-base';
 import * as React from 'react';
 import { Image, Text, View } from 'react-native';
+import { Button } from '@ui-kitten/components';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import { urlApi } from '../../constants/KeyConfig';
 
@@ -13,7 +14,8 @@ export class CategoriesComponent extends React.Component<any, any> {
         super(props)
         this.state = {
             categories: null,
-            newProducts: null
+            newProducts: null,
+            errorFetch: true
         }
     }
 
@@ -22,9 +24,14 @@ export class CategoriesComponent extends React.Component<any, any> {
     }
 
     loadCategories = async() => {
-        let categoriesFetch = await fetch(urlApi + '/categories');
-        const categories = await categoriesFetch.json();
-        this.setState({categories});
+        try {
+            this.setState({errorFetch: false})
+            let categoriesFetch = await fetch(urlApi + '/categories');
+            const categories = await categoriesFetch.json();
+            this.setState({categories});
+        } catch (error) {
+            this.setState({errorFetch: true})
+        }
     }
 
     renderItem = (item: any, index: number) => {
@@ -45,7 +52,7 @@ export class CategoriesComponent extends React.Component<any, any> {
     }
     
     render() {
-        const {categories} = this.state;
+        const {categories, errorFetch} = this.state;
         return (
             <View style={{marginVertical: 20}}>
                 <View style={{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 20}}>
@@ -65,7 +72,14 @@ export class CategoriesComponent extends React.Component<any, any> {
                         showsHorizontalScrollIndicator={false}
                     />
                     :
+                    !errorFetch &&
                     <View><Spinner color="black" size={20}></Spinner></View>
+                }
+                {
+                    errorFetch && 
+                    <View style={{width: '100%', justifyContent: 'center', flexDirection: 'row', alignItems: 'center'}}>
+                        <Button appearance='outline' status="basic" size="small" onPress={() => this.loadCategories()}>Reintentar</Button>
+                    </View>
                 }
             </View>
         )

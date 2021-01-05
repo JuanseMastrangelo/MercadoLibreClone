@@ -23,7 +23,8 @@ export class Home extends React.Component<any, any> {
     constructor(props: any) {
         super(props)
         this.state = {
-            newProducts: null
+            newProducts: null,
+            errorFetch: false
         }
     }
 
@@ -39,7 +40,7 @@ export class Home extends React.Component<any, any> {
     
 
     render() {
-        const { newProducts } = this.state
+        const { newProducts, errorFetch } = this.state
         return (
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={{ position: 'absolute', top: -80, width, left: 0 }}><Text style={{ color: 'black', textAlign: 'center', fontFamily: 'Poppins-Regular' }}>Gracias por utilizar nuestra tienda! ❤</Text></View>
@@ -54,6 +55,12 @@ export class Home extends React.Component<any, any> {
                 <Carousel data={SlideImages} />
                 <CategoriesComponent navigation={this.props.navigation} ></CategoriesComponent>
                 <CategoryComponent navigation={this.props.navigation} title="Más recientes" data={newProducts}></CategoryComponent>
+                {
+                    errorFetch && 
+                    <View>
+                        <Text>Error de conexión</Text>
+                    </View>
+                }
                 <Image source={{ uri: Coupon }} resizeMode="contain" style={{ width, height: 140, marginVertical: 40 }}></Image>
                 {/* <CategoryComponent title="Nuevos" data={ProductBestSellers}></CategoryComponent> */}
             </ScrollView>

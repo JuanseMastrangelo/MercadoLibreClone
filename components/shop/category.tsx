@@ -1,5 +1,4 @@
 import { FontAwesome } from '@expo/vector-icons';
-import { StackActions } from '@react-navigation/native';
 import { Spinner } from 'native-base';
 import * as React from 'react';
 import { Image, Text, View } from 'react-native';
@@ -35,8 +34,6 @@ export class CategoryComponent extends React.Component<any> {
     render() {
         return (
             <View style={{marginVertical: 20}}>
-                {
-                    this.props.data ?
                     <View>
                         <View style={{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 20}}>
                             <Text style={{fontSize: 20, fontFamily: 'Poppins-Medium'}}>{this.props.title}</Text>
@@ -44,6 +41,8 @@ export class CategoryComponent extends React.Component<any> {
                                 {/* <Text>Ver todas</Text> */}
                             </TouchableOpacity>
                         </View>
+                {
+                    this.props.data &&
                         <FlatList
                             data={this.props.data}
                             horizontal={true}
@@ -52,8 +51,10 @@ export class CategoryComponent extends React.Component<any> {
                             showsVerticalScrollIndicator={false}
                             showsHorizontalScrollIndicator={false}
                         />
+                }
                     </View>
-                    :
+                {
+                    !this.props.data &&
                     <View><Spinner color="black" size={20}></Spinner></View>
                 }
             </View>

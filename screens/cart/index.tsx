@@ -9,6 +9,7 @@ const { width, height } = Dimensions.get('window');
 import WebView from 'react-native-webview';
 
 import { Spinner, Toast } from 'native-base';
+import { PurchaseComponent } from './purchase';
 
 
 import { connect } from 'react-redux';
@@ -19,7 +20,7 @@ import { Button, Divider } from '@ui-kitten/components';
 
 
 import io from 'socket.io-client';
-import { authKey, urlPayment } from '../../constants/KeyConfig';
+import { authKey, urlPayment, urlApi } from '../../constants/KeyConfig';
 import AsyncStorage from '@react-native-community/async-storage';
 let socket: any = null;
 export class Cart extends React.Component<any, any> {
@@ -27,13 +28,7 @@ export class Cart extends React.Component<any, any> {
     constructor(props: any) {
         super(props)
         this.state = {
-            urlBuy: null,
-            modalVisible: false,
-            idBuy: null,
-            serverRes: null,
-            userData: null
         }
-        this.getUserData();
     }
 
     goToShopping() {
@@ -66,79 +61,6 @@ export class Cart extends React.Component<any, any> {
         )
     }
 
-    getUserData = async () => {
-        const userData = await AsyncStorage.getItem(authKey)
-        this.setState({userData: JSON.parse(userData!)})
-    }
-
-
-    pay = () => {
-        this.setState({ cargando: true });
-        const userData = this.state;
-        const { products } = this.props.state;
-        const items: any = [];
-        products.map((product: any) => {
-            items.push(
-                {
-                    id: product.id,
-                    title: product.title,
-                    quantity: 1,
-                    currency_id: 'ARS',
-                    unit_price: +product.saleValue
-                }
-            )
-        });
-
-        const additional_info: any = [{
-            userData
-        }];
-
-        fetch(urlPayment + '/createPayment', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-              body: JSON.stringify([items, additional_info])
-        })
-            .then(response => response.json())
-            .then((response) => {
-                if (response) {
-                    socket = io.connect(urlPayment, {
-                        transports: ['websocket'],
-                        query: 'idBuy=' + response.body.id // Enviamos para que responda solo con este id
-                    });
-                    socket.on('paymentState', (res: any) => {
-                        console.log(res);
-                        this.setState({ modalVisible: false, urlBuy: null, idBuy: null, serverRes: res, showPopup: true });
-                        if (res.status === 'success') {
-                            this.clearCart();
-                        }
-                        socket.close();
-                    });
-                    this.setState({ urlBuy: response.body.init_point, cargando: false, modalVisible: true, idBuy: response.body.items[0].id })
-                }
-            })
-            .catch((error) => {
-                Toast.show({
-                    text: 'Error. Compruebe su conexión a internet.',
-                    type: 'danger',
-                    position: 'top'
-                })
-                this.setState({ urlBuy: null, cargando: false, modalVisible: false, idBuy: null })
-            });
-    }
-
-
-    closeModal = () => {
-        this.setState({ modalVisible: false });
-        socket.close();
-    }
-
-    popupController = () => {
-        const { showPopup } = this.state;
-        this.setState({ showPopup: !showPopup, serverRes: null })
-    }
 
 
     removeItemFromList = (e: any) => {
@@ -154,13 +76,7 @@ export class Cart extends React.Component<any, any> {
     clearCart = () => { this.props.cleanCart(); }
 
     render() {
-        const { urlBuy, modalVisible, cargando, showPopup, serverRes } = this.state;
-        const popupstatus = serverRes && serverRes.status;
-        const backgroundPopup = (popupstatus === 'success') ? 'rgba(0,224,150,1)' : (popupstatus === 'failure') ? 'rgba(255,61,113,1)' : 'rgba(255,170,0,1)';
         const { products } = this.props.state;
-
-        let totalValorProducts = 0;
-        products.map((el: any, index: number) => (totalValorProducts = totalValorProducts + parseFloat(el.saleValue)) )
         return (
             <View style={{ height }}>
                 <View
@@ -179,10 +95,10 @@ export class Cart extends React.Component<any, any> {
                     }}></View>
 
                 <View style={{ marginTop: 40 }}>
-                    <View style={{ flexDirection: 'row', width: '90%', alignSelf: 'center', justifyContent: 'space-between' }}>
-                    <Text style={{ color: 'black', fontSize: 30, fontFamily: 'Poppins-SemiBold' }}>Carro</Text>
-                    <Text style={{ color: 'black', fontSize: 10, fontFamily: 'Poppins-SemiBold' }}>({products ? products.length : 0} productos) </Text>
-                    </View>
+                    {/* <View style={{ flexDirection: 'row', width: '90%', alignSelf: 'center', justifyContent: 'space-between' }}>
+                        <Text style={{ color: 'black', fontSize: 30, fontFamily: 'Poppins-SemiBold' }}>Carro</Text>
+                        <Text style={{ color: 'black', fontSize: 10, fontFamily: 'Poppins-SemiBold' }}>({products ? products.length : 0} productos) </Text>
+                    </View> */}
                     {
                         (products.length === 0) ?
                             this.emptyCartRender()
@@ -193,84 +109,7 @@ export class Cart extends React.Component<any, any> {
                     }
 
                 </View>
-                {
-                    (products.length > 0) &&
-                    <View style={{
-                        paddingHorizontal: 20, backgroundColor: 'white', borderTopEndRadius: 10, borderTopStartRadius: 10, paddingVertical: 10, width: '100%', alignSelf: 'center',
-                        borderWidth: 1, borderColor: 'rgba(200,200,200,.5)', position: 'absolute', bottom: 60
-                    }}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3 }}>
-                            <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12, fontWeight: 'bold', color: '#000' }}>Total a compra</Text>
-                            <Text style={{ fontFamily: 'Poppins-Light', fontSize: 12, color: '#000' }}>$ {totalValorProducts}</Text>
-                        </View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3 }}>
-                            <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12, fontWeight: 'bold', color: '#000' }}>Envio (Rio Negro)</Text>
-                            <Text style={{ fontFamily: 'Poppins-Light', fontSize: 12, color: '#000' }}>$ 400</Text>
-                        </View>
-                        {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3 }}>
-                            <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12, fontWeight: 'bold', color: '#000' }}>Descuento</Text>
-                            <Text style={{ fontFamily: 'Poppins-Light', fontSize: 12, color: 'red' }}>- $ 0</Text>
-                        </View> */}
-
-                        <Divider style={{ backgroundColor: 'rgba(100,100,100,.3)' }} />
-
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5 }}>
-                            <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 12, fontWeight: 'bold', color: '#4C6ED2' }}>SubTotal</Text>
-                            <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 23 }}>$ {totalValorProducts}</Text>
-                        </View>
-
-                        <TouchableOpacity style={{ width: '80%', borderWidth:1, borderColor: 'rgba(200,200,200,.4)', backgroundColor: Colors.default.green, alignSelf: 'center',paddingVertical: 5, borderRadius: 5 }}
-                        onPress={() => this.pay()}>
-                            <Text style={{textAlign:'center', color: 'white', fontFamily: 'Poppins-SemiBold', fontSize: 17 }}>Pagar</Text>
-                        </TouchableOpacity>
-
-                    </View>
-                }
-
-                <Modal
-                    transparent={true}
-                    visible={modalVisible}
-                    presentationStyle='overFullScreen'
-                >
-                    {/* <TouchableOpacity style={{ paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}
-                        onPress={() => this.setState({ modalVisible: false })}>
-                        <Text style={{ color: 'white' }}>Cerrar</Text>
-                        <FontAwesome style={{ color: 'white', fontSize: 20, marginLeft: 5 }} name="close"></FontAwesome>
-                    </TouchableOpacity> */}
-                    <WebView source={{ uri: urlBuy }} style={{ marginTop: 20, width, height }} />
-                </Modal>
-
-                {
-                    cargando &&
-                    <View style={{ position: 'absolute', height, width, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(200,200,200,.4)' }}>
-                        <Spinner color="#000"></Spinner>
-                        <Text>Cargando, espere por favor...</Text>
-                    </View>
-                }
-                {
-                    showPopup && serverRes &&
-                    <View style={{ height, width, backgroundColor: backgroundPopup, position: 'absolute', top: 0, left: 0, alignItems: 'center' }}>
-                        <View style={{ height: height * 0.5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20 }}>
-                            <View style={{ borderWidth: 2, width: 100, height: 100, marginBottom: 20, borderRadius: 10000, borderColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
-                                <FontAwesome style={{ color: 'white', fontSize: 40 }} name={
-                                    (serverRes.status === 'success') ? 'check' : (serverRes.status === 'failure') ? 'close' : 'exclamation'
-                                }></FontAwesome>
-                            </View>
-                            <Text style={{ color: 'white', fontWeight: 'bold', fontFamily: 'Poppins-Regular', fontSize: 17, textAlign: 'center' }}>
-                                {
-                                    (serverRes.status === 'success') ?
-                                        'Compra realizada correctamente!'
-                                        :
-                                        (serverRes.status === 'failure') ?
-                                            'Tu compra no pudo realizarse'
-                                            :
-                                            'Tu compra esta pendiente de pago. Paga tu factura para obtener tu producto.'
-                                }
-                            </Text>
-                        </View>
-                        <Button status="basic" size="small" onPress={() => this.popupController()}>Cerrar</Button>
-                    </View>
-                }
+                <PurchaseComponent products={products} />
             </View>
         )
     }

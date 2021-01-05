@@ -6,6 +6,8 @@ import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture
 import Colors from '../../constants/Colors';
 import { authKey, configFirebaseGoogleAuth, firebaseConfig } from '../../constants/KeyConfig';
 
+import { urlApi } from '../../constants/KeyConfig';
+
 const { height, width } = Dimensions.get('window');
 
 const GoogleIcon = (props: any) => (
@@ -15,12 +17,15 @@ const GoogleIcon = (props: any) => (
 
 import * as Google from 'expo-google-app-auth';
 import * as firebase from 'firebase';
+import { Toast } from 'native-base';
+import { HttpService } from '../../constants/HttpService';
 
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 
 export default class LoginScreen extends React.Component<any, any> { 
+    httpService: any = null;
     
     constructor(props: any) {
         super(props)
@@ -33,6 +38,7 @@ export default class LoginScreen extends React.Component<any, any> {
             passInput: '',
             loading: false
         }
+        this.httpService = new HttpService();
     }
 
     componentDidMount = async () => {
@@ -83,10 +89,26 @@ export default class LoginScreen extends React.Component<any, any> {
         let userInfoResponse = await fetch('https://www.googleapis.com/userinfo/v2/me', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const userData = await userInfoResponse.json();
-        await AsyncStorage.setItem(authKey, JSON.stringify(userData))
-        this.setState({loading: false});
-        this.redirectTo('Root')
+        let userData = await userInfoResponse.json();
+
+
+        this.httpService.post('/auth', {
+            'uid': userData.id,
+            'displayName': userData.name,
+            'email': userData.email,
+            'photoURL': userData.picture,
+            'refreshToken': token
+        },
+        new Headers({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        })).then(async (_:any) => {
+            // console.log(res);
+            userData = Object.assign({},{token}, userData);
+            await AsyncStorage.setItem(authKey, JSON.stringify(userData))
+            this.setState({loading: false});
+            this.redirectTo('Root')
+        })
     }
 
     render() {

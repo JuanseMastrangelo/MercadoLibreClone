@@ -53,18 +53,10 @@ export function BottomTabNavigator(props: any) {
                 }}
             />
             <BottomTab.Screen
-                name="Buscar"
-                component={TabTwoNavigator}
-                options={{
-                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 10, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Comprar</Text>,
-                    tabBarIcon: ({ color }) => <FontAwesome name="search" color={color} size={20} style={{marginTop: 5}} />,
-                }}
-            />
-            <BottomTab.Screen
                 name="Compras"
                 component={TabTreeNavigator}
                 options={{
-                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 10, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>WhiteList</Text>,
+                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 10, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Favoritos</Text>,
                     tabBarIcon: ({ color }) => <FontAwesome name="heart-o" color={color} size={20} style={{marginTop: 5}} />,
                 }}
             />
@@ -72,8 +64,16 @@ export function BottomTabNavigator(props: any) {
                 name="Carro"
                 component={TabFourNavigator}
                 options={{
-                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 10, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Carro</Text>,
+                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 10, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Carrito</Text>,
                     tabBarIcon: ({ color }) => <FontAwesome name="shopping-bag" color={color} size={20} style={{marginTop: 5}} />,
+                }}
+            />
+            <BottomTab.Screen
+                name="Buscar"
+                component={TabTwoNavigator}
+                options={{
+                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 10, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Comprar</Text>,
+                    tabBarIcon: ({ color }) => <FontAwesome name="search" color={color} size={20} style={{marginTop: 5}} />,
                 }}
             />
             <BottomTab.Screen

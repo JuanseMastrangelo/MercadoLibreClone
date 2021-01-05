@@ -17,17 +17,11 @@ import { actionCreators as actions } from '../../utils/actions/cart';
 
 import { Spinner, Toast } from 'native-base';
 import { urlApi } from '../../constants/KeyConfig';
+import { HttpService } from '../../constants/HttpService';
 
-
-const singleProductExample = {
-    images: [
-        'https://medias.musimundo.com/medias/sys_master/root/h25/h2a/10166488301598/00267113-138620-3-138620-3-size515.jpg',
-        'https://medias.musimundo.com/medias/sys_master/root/he3/h77/10166487810078/00267113-138620-2-138620-2-size515.jpg',
-        'https://medias.musimundo.com/medias/sys_master/root/h6c/h06/10166488596510/00267113-138620-4-138620-4.jpg'
-    ]
-}
 
 class SingleProduct extends React.Component<any, any> {
+    httpService: any = null;
     constructor(props: any) {
         super(props)
         this.state = {
@@ -35,9 +29,11 @@ class SingleProduct extends React.Component<any, any> {
             relatedProducts: null
         }
         this.loadProductByCategorie();
+        this.httpService = new HttpService();
     }
 
     componentDidMount() {
+        this.getCartItems();
     }
 
     goToDescription = () => {
@@ -48,6 +44,12 @@ class SingleProduct extends React.Component<any, any> {
         this.props.navigation.navigate('Comments');
     }
 
+    getCartItems() {
+        this.httpService.get('/cart').then((res:any) => {
+            console.log(res);
+        })
+    }
+
     loadProductByCategorie = async() => {
         const { product } = this.state;
         let productsFetch = await fetch(urlApi + '/products/categorie/' + product.categorieId);
@@ -55,14 +57,18 @@ class SingleProduct extends React.Component<any, any> {
         this.setState({relatedProducts});
     }
 
-    addToCart = () => {
+    addToCart = async () => {
         const { product } = this.state;
-        this.props.addCart(product);
-        Toast.show({
-            text: 'Agregado al carro',
-            type: 'success',
-            position: 'top'
-          })
+
+        this.httpService.post('/cart', {postId: product.id}).then((_:any) => {
+            // console.log(res);
+            this.props.addCart(product);
+            Toast.show({
+                text: 'Agregado al carro',
+                type: 'success',
+                position: 'top'
+              })
+        })
     }
 
     removeToCart = () => {
