@@ -1,5 +1,5 @@
 export const SHIPPING = 'SHIPPING';
-export const SHIPPING_EDIT = 'SHIPPING_EDIT';
+export const SHIPPING_SET = 'SHIPPING_SET';
 export const SHIPPING_SELECT = 'SHIPPING_SELECT';
 
 function getAll() {
@@ -8,9 +8,9 @@ function getAll() {
     }
 }
 
-function edit(item: any) {
+function setShipping(item: any) {
     return {
-        type: SHIPPING_EDIT,
+        type: SHIPPING_SET,
         payload: item
     }
 }
@@ -25,6 +25,6 @@ function select(index: number) {
 
 export const actionShipping = {
     getAll,
-    edit,
+    setShipping,
     select
 }

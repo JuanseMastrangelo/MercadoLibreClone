@@ -1,4 +1,4 @@
-import { SHIPPING, SHIPPING_EDIT, SHIPPING_SELECT } from '../actions/shipping';
+import { SHIPPING, SHIPPING_SET, SHIPPING_SELECT } from '../actions/shipping';
 
 
 const START_ITEMS: any[] = [
@@ -22,10 +22,8 @@ export default function shippingReducer(state = initialState, action: any) {
     switch(action.type) {
         case SHIPPING:
             return {...state, locations: []}
-        case SHIPPING_EDIT:
-            console.log(action.payload);
-            // return {...state,  locations:[...state.locations, action.payload]}
-            return state;
+        case SHIPPING_SET:
+            return {...state, locations:action.payload}
         case SHIPPING_SELECT:
             const selected = state.locations.map((el: any, index: number) => {if (index === action.payload) { el.selected = true;} else{el.selected = false;} return el;});
             return {...state, selected }

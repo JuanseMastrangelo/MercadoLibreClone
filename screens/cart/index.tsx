@@ -19,9 +19,6 @@ import { actionCreators as actions } from '../../utils/actions/cart';
 import { VerticalGridViewComponent } from '../../components/FlatLists/verticalGridView';
 
 
-import io from 'socket.io-client';
-import { authKey, urlPayment, urlApi } from '../../constants/KeyConfig';
-import AsyncStorage from '@react-native-community/async-storage';
 import { HttpService } from '../../constants/HttpService';
 let socket: any = null;
 export class Cart extends React.Component<any, any> {
@@ -99,7 +96,7 @@ export class Cart extends React.Component<any, any> {
                     {
                         items ? 
                         (items.length > 0) ?
-                            <ScrollView showsVerticalScrollIndicator={true} style={{ height: height*0.55 }}>
+                            <ScrollView showsVerticalScrollIndicator={true} style={{ height: height*0.60 }}>
                                 {<VerticalGridViewComponent removeToCart={(e: any) => this.removeItemFromList(e)} navigation={this.props.navigation} data={items} ></VerticalGridViewComponent>}
                             </ScrollView>
                         : this.emptyCartRender()

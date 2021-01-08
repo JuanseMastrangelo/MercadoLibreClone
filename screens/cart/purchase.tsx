@@ -24,7 +24,11 @@ let socket: any = null;
 
 const Provincias = ['Buenos Aires', 'Neuquen', 'Rio Negro'];
 const Localidades = ['Palermo', 'Neuquen', 'Cipolletti'];
+
+
+import { HttpService } from '../../constants/HttpService';
 class PurchaseComponent extends React.Component<any, any> {
+    httpService: any = null;
 
     constructor(props: any) {
         super(props)
@@ -33,7 +37,7 @@ class PurchaseComponent extends React.Component<any, any> {
             modalVisible: false,
             idBuy: null,
             userData: null,
-            custom: 1,
+            custom: null,
             shippingCost: null,
             shippingCP: '8324',
             shippingNameComplete: 'Juanse Mastrangelo',
@@ -44,23 +48,49 @@ class PurchaseComponent extends React.Component<any, any> {
             shippingNumero: '1323',
             shippingReferencias: 'Departamento',
             shippingEntreCalles: 'Tucuman',
-            shippingContacto: '2994054471'
+            shippingContacto: '2994054471',
+            loading: false,
+            showPopup: false
         }
         this.getUserData();
-        this.calcEnvio();
+        this.httpService = new HttpService();
     }
 
 
 
     getUserData = async () => {
         const userData = await AsyncStorage.getItem(authKey)
-        this.setState({userData: JSON.parse(userData!)})
+        this.setState({userData: JSON.parse(userData!)});
+        this.getDataOfShipping();
+    }
 
-        
-        const locations = this.props.state.shipping.locations;
-        const locationSelected = locations.filter((el: any) => el.selected)[0].correo;
-        const isCorreo = locationSelected ? 0 : 1;
-        this.setState({custom: isCorreo});
+    getDataOfShipping = async () => {
+        const { userData } = this.state;
+        const header = new Headers({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+ userData.token,
+        });
+        this.httpService.get('/UserLocations', header).then((res: any) => res.json()).then((data: any) => {
+            this.setState({loading: false});
+            const locations = JSON.parse(data[0].locations);
+            this.props.setShipping(locations);
+            const locationSelected = locations.filter((el: any) => el.selected)[0].correo;
+            
+            const isCorreo = locationSelected ? 0 : 1;
+            const { shippingCP, shippingNameComplete, shippingLocalidad, shippingReferencias, shippingEntreCalles,
+                shippingCalle, shippingPiso, shippingNumero, shippingContacto, shippingProvincia } = locations[1].custom;
+            this.setState(
+                {
+                    custom: isCorreo,
+                    shippingCP, shippingNameComplete, shippingCalle, shippingPiso, shippingNumero,
+                    shippingContacto, shippingReferencias, shippingEntreCalles,
+                    shippingProvincia: new IndexPath(shippingProvincia.row),
+                    shippingLocalidad: new IndexPath(shippingLocalidad.row)
+                }
+            );
+            this.calcEnvio();
+        });
     }
 
 
@@ -114,21 +144,23 @@ class PurchaseComponent extends React.Component<any, any> {
 
     popupController = () => {
         const { showPopup } = this.state;
+        if (!showPopup) { this.getDataOfShipping(); }
         this.setState({ showPopup: !showPopup })
     }
 
     clearCart = () => { this.props.cleanCart(); }
 
-
     calcEnvio = () => {
-        fetch('https://api.mercadolibre.com/sites/MLA/shipping_options?zip_code_from=7607&zip_code_to=7607&dimensions=10x10x20,700', {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
+        this.setState({shippingCost: null});
+        
+        const { locations } = this.props.state.shipping;
+        const locationSelected = locations.filter((el: any) => (el.correo === false))[0];
+        const cp = locationSelected.custom.shippingCP;
+        console.log(cp);
+        
+        fetch('https://api.mercadolibre.com/sites/MLA/shipping_options?zip_code_from=' + cp + '&zip_code_to=7607&dimensions=10x10x20,700', {
+            method: 'GET', headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+        }).then(response => response.json())
         .then((response) => {
             this.setState({shippingCost: response});
         })
@@ -141,18 +173,9 @@ class PurchaseComponent extends React.Component<any, any> {
         });
     }
 
-    saveLocation = () => {
-        const {custom} = this.state;
-        if (custom !== 0 && this.validatePersonalizado()) {
-            return false;
-        }
-        this.popupController();
-        this.props.selectShippingType(custom);
-    }
-
     validatePersonalizado = () => {
-        const { shippingCP, shippingNameComplete, shippingProvincia, shippingLocalidad,
-            shippingCalle, shippingPiso, shippingNumero, shippingReferencias, shippingEntreCalles, shippingContacto } = this.state;
+        const { shippingCP, shippingNameComplete,
+            shippingCalle, shippingPiso, shippingNumero, shippingContacto } = this.state;
         let error = true;
         if(shippingCP.trim() === ''){
             this.showToastError('El codigo postal es requerido');
@@ -180,22 +203,61 @@ class PurchaseComponent extends React.Component<any, any> {
         })
     }
 
+
+    saveLocation = () => {
+        const {custom} = this.state;
+        if (custom !== 0 && this.validatePersonalizado()) {
+            return false;
+        }
+
+        const { shippingCP, shippingNameComplete, shippingProvincia, shippingLocalidad,
+            shippingCalle, shippingPiso, shippingNumero, shippingContacto, shippingReferencias,
+            shippingEntreCalles } = this.state;
+
+        this.setState({loading: true});
+        const body = [
+            {
+                correo: true,
+                selected: custom === 0
+            },
+            {
+                correo: false,
+                selected: custom !== 0,
+                custom: {
+                    shippingCP, shippingNameComplete, shippingProvincia, shippingLocalidad, shippingCalle, shippingPiso, shippingNumero,
+                    shippingContacto, shippingReferencias, shippingEntreCalles,
+                    Localidad: Localidades[shippingProvincia.row],
+                    Provincia: Provincias[shippingProvincia.row]
+                }
+            }
+        ]
+
+        this.httpService.post('/UserLocations', {locations: body}).then((res: any) => res.text()).then((data: any) => {
+            this.popupController();
+            this.props.setShipping(body);
+            this.setState({loading: false});
+            this.calcEnvio();
+        });
+
+        
+    }
+
     envioPopupContent = () => {
         const { custom, shippingCP, shippingNameComplete, shippingCalle, shippingProvincia, shippingLocalidad, shippingPiso,
-            shippingNumero, shippingReferencias, shippingEntreCalles, shippingContacto } = this.state;
+            shippingNumero, shippingReferencias, shippingEntreCalles, shippingContacto, loading } = this.state;
         return (
                 <View style={{ height, width, top: 0, left: 0, alignItems: 'center', backgroundColor: 'white' }}>
                     <View style={{ justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20, paddingTop: 40, paddingBottom: 15, backgroundColor: Colors.default.yellow, width }}>
                             <Text style={{ color: 'white', fontWeight: 'bold', fontFamily: 'Poppins-Regular', fontSize: 17 }}>
-                                Cambiar destino de envío
+                                Destino de envío
                             </Text>
-                            <View style={{position: 'absolute', left: 20, top: 40}}>
-                                <TouchableOpacity onPress={() => this.popupController()}>
+                            <View style={{position: 'absolute', left: 0, top: 25}}>
+                                <TouchableOpacity style={{paddingVertical: 15, paddingHorizontal: 20}} onPress={() => this.popupController()}>
                                     <FontAwesome name="arrow-left" color="white" style={{fontSize: 20}}></FontAwesome>
                                 </TouchableOpacity>
                             </View>
-                            <View style={{position: 'absolute', right: 20, top: 40}}>
-                                <TouchableOpacity onPress={() => this.saveLocation()}>
+                            <View style={{position: 'absolute', right: 0, top: 25}}>
+                                <TouchableOpacity style={{paddingVertical: 15, paddingHorizontal: 20}} onPress={() => this.saveLocation()}>
                                     <FontAwesome name="check" color="white" style={{fontSize: 20}}></FontAwesome>
                                 </TouchableOpacity>
                             </View>
@@ -320,6 +382,13 @@ class PurchaseComponent extends React.Component<any, any> {
                                 />
                         </View>
                     </ScrollView>
+                    {
+                        loading &&
+                        <View style={{position: 'absolute', top: 0, left: 0, backgroundColor: 'rgba(200,200,200,.5)',
+                        justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%'}}>
+                            <Spinner color="black" size={20}></Spinner>
+                        </View>
+                    }
                 </View>
         )
     }
@@ -328,7 +397,7 @@ class PurchaseComponent extends React.Component<any, any> {
         const { urlBuy, modalVisible, cargando, showPopup, shippingCost, custom } = this.state;
         const { products } = this.props;
         const { locations } = this.props.state.shipping;
-        const locationSelected = locations.filter((el: any) => el.selected)[0];
+        const locationSelected = locations.filter((el: any) => (el.selected === true))[0];
 
         let totalValorProducts = 0;
         products.map((el: any, index: number) => (totalValorProducts = totalValorProducts + parseFloat(el.saleValue)) )
@@ -347,30 +416,48 @@ class PurchaseComponent extends React.Component<any, any> {
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3 }}>
                             <Button size='tiny' status="basic" onPress={() => this.popupController() }>
                                 {
-                                    locationSelected.correo ?
+                                    custom === 0 ?
                                     'Correo Argentino'
                                     :
-                                    'Del Trabajador 2122'
+                                    locationSelected.custom.shippingCalle + ' ' + locationSelected.custom.shippingNumero
                                 }
                             </Button>
-                            <Text style={{ fontFamily: 'Poppins-Light', fontSize: 12, color: '#000' }}>$ {shippingCost && shippingCost.options[custom].cost}</Text>
+                            <Text style={{ fontFamily: 'Poppins-Light', fontSize: 12, color: '#000' }}>
+                            {
+                                shippingCost ?
+                                    shippingCost.error === "invalid_zip_code" ?
+                                    'Codigo postal inválido' :
+                                    custom && '$ '+shippingCost.options[custom].cost
+                                :
+                                'Cargando'
+                            }
+                            </Text>
                         </View>
                         {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3 }}>
                             <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12, fontWeight: 'bold', color: '#000' }}>Descuento</Text>
                             <Text style={{ fontFamily: 'Poppins-Light', fontSize: 12, color: 'red' }}>- $ 0</Text>
                         </View> */}
 
-                        <Divider style={{ backgroundColor: 'rgba(100,100,100,.3)' }} />
+                        {
+                            shippingCost && !shippingCost.error &&
+                            <View>
+                                <Divider style={{ backgroundColor: 'rgba(100,100,100,.3)' }} />
+        
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5 }}>
+                                    <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 12, fontWeight: 'bold', color: '#4C6ED2' }}>SubTotal</Text>
+                                    <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 17, color: Colors.default.green }}>
+                                        {custom && '$ ' +(shippingCost.options[custom].cost + totalValorProducts).toFixed(2)}</Text>
+                                </View>
+                            </View>
+                            }
 
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5 }}>
-                            <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 12, fontWeight: 'bold', color: '#4C6ED2' }}>SubTotal</Text>
-                            <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 17, color: Colors.default.green }}>$ {shippingCost && (shippingCost.options[custom].cost + totalValorProducts).toFixed(2)}</Text>
-                        </View>
-
-                        <TouchableOpacity style={{ width: '80%', borderWidth:1, borderColor: 'rgba(200,200,200,.4)', backgroundColor: Colors.default.green, alignSelf: 'center',paddingVertical: 5, borderRadius: 5 }}
-                        onPress={() => this.pay()}>
-                            <Text style={{textAlign:'center', color: 'white', fontFamily: 'Poppins-SemiBold', fontSize: 17 }}>Pagar</Text>
-                        </TouchableOpacity>
+                        {
+                            custom && shippingCost && !shippingCost.error &&
+                            <TouchableOpacity style={{ width: '80%', borderWidth:1, borderColor: 'rgba(200,200,200,.4)', backgroundColor: Colors.default.green, alignSelf: 'center',paddingVertical: 5, borderRadius: 5 }}
+                            onPress={() => this.pay()}>
+                                <Text style={{textAlign:'center', color: 'white', fontFamily: 'Poppins-SemiBold', fontSize: 17 }}>Pagar</Text>
+                            </TouchableOpacity>
+                        }
 
                     </View>
                 }
@@ -413,6 +500,7 @@ class PurchaseComponent extends React.Component<any, any> {
 
 function mapDispatchToProps(dispatch: any) {
     return {
+        setShipping: bindActionCreators(actionShipping.setShipping, dispatch),
         selectShippingType: bindActionCreators(actionShipping.select, dispatch)
     }
 }

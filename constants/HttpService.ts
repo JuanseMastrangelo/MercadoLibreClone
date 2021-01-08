@@ -46,7 +46,7 @@ export class HttpService {
 
 
     private showError(error: any) {
-        // console.log(error);
+        console.log(error);
         Toast.show({
             text: 'Ocurrió un error. Intentelo nuevamente',
             type: 'danger',

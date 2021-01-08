@@ -69,7 +69,7 @@ export class VerticalGridViewComponent extends React.Component<any, any> {
                             <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 15 }}>{item.title}</Text>
                             <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 15, fontWeight: 'bold', color: Colors.default.secondaryColor }}>$ {item.saleValue}</Text>
                         </View>
-                        <View style={{ flexDirection: 'row' }}>
+                        {/* <View style={{ flexDirection: 'row' }}>
                             <Text>Cant</Text>
                             <Picker
                                 mode="dropdown"
@@ -85,7 +85,7 @@ export class VerticalGridViewComponent extends React.Component<any, any> {
                                 <Picker.Item label="5" value={5} />
                                 <Picker.Item label="6" value={6} />
                             </Picker>
-                        </View>
+                        </View> */}
                     </View>
                 </View>
             </View>
