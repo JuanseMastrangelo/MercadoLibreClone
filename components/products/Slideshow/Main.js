@@ -3,16 +3,18 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, Dimensions, FlatList, Animated, Share } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Colors from '../../../constants/Colors'
-import CarouselItem from './CarouselItem'
+import CarouselItem from './CarouselItem';
+import { authKey, urlApi } from '../../../constants/KeyConfig'
+import AsyncStorage from '@react-native-community/async-storage'
+import { Toast } from 'native-base'
 
 const { width, heigth } = Dimensions.get('window')
 
 
-const CarouselSingleProduct = ({ data }) => {
+const CarouselSingleProduct = ({ data, id, favorite }) => {
     const scrollX = new Animated.Value(0)
     let position = Animated.divide(scrollX, width)
     const [dataList, setDataList] = useState(data)
-    const [whitelist, setWhitelist] = useState(false)
 
     useEffect(()=> {
         setDataList(data)
@@ -35,10 +37,6 @@ const CarouselSingleProduct = ({ data }) => {
           // dismissed
         }
       }
-
-    function setToWhiteList() {
-        setWhitelist(!whitelist);
-    }
 
 
     if (data && data.length) {
@@ -87,9 +85,6 @@ const CarouselSingleProduct = ({ data }) => {
                     <View style={{flexDirection: 'row', marginRight: 20}}>
                         <TouchableOpacity style={{marginRight: 5, paddingHorizontal: 10}} onPress={() => share()}>
                             <Ionicons size={20} name="md-download" color={Colors.default.greyColor}></Ionicons>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setToWhiteList()} style={{paddingHorizontal: 10}}>
-                            <FontAwesome size={20} name={whitelist ? 'heart' : 'heart-o'} color="red"></FontAwesome>
                         </TouchableOpacity>
                     </View>
                 </View>

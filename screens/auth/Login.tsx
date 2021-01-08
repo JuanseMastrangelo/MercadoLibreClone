@@ -103,7 +103,6 @@ export default class LoginScreen extends React.Component<any, any> {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         })).then(async (_:any) => {
-            // console.log(res);
             userData = Object.assign({},{token}, userData);
             await AsyncStorage.setItem(authKey, JSON.stringify(userData))
             this.setState({loading: false});

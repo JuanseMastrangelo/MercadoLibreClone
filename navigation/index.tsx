@@ -12,11 +12,10 @@ import CartIcon from './cartIcon';
 
 import LoginScreen from '../screens/auth/Login'
 import RegisterScreen from '../screens/auth/Register'
-import { ColumnGridViewComponent } from '../components/FlatLists/columnGridView';
+import ColumnGridViewComponent from '../components/FlatLists/columnGridView';
 import { ProductDescriptionComponent } from '../components/products/product-description';
 import { ProductCommentsComponent } from '../components/products/product-comments';
 import SingleProduct from '../components/products/single-product';
-import { VerticalGridViewComponent } from '../components/FlatLists/verticalGridView';
 
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {

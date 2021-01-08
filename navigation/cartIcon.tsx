@@ -11,13 +11,9 @@ export class CartIcon extends React.Component<any> {
     }
     
     goToCart() {
-        // console.log(this.props.navigation);
         this.props.navigation.dispatch(StackActions.replace('Root', {screen: 'Carro'}));
     }
 
-    componentDidMount() {
-        // console.log(this.props.state)
-    }
 
     render() {
         return (
@@ -30,7 +26,7 @@ export class CartIcon extends React.Component<any> {
                 />
                 
                 <View style={{ backgroundColor: 'red', width: 20, height: 20, borderRadius: 10000, justifyContent: 'center', alignItems: 'center', position: 'absolute', bottom: 20, right: 10 }}>
-                    <Text style={{ color: '#FFF' }}>{this.props.state.products.length}</Text>
+                    <Text style={{ color: '#FFF' }}>{this.props.state.cart.items.length}</Text>
                 </View>
             </TouchableOpacity>
         )

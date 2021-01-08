@@ -64,15 +64,15 @@ export function BottomTabNavigator(props: any) {
                 name="Carro"
                 component={TabFourNavigator}
                 options={{
-                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 10, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Carrito</Text>,
-                    tabBarIcon: ({ color }) => <FontAwesome name="shopping-bag" color={color} size={20} style={{marginTop: 5}} />,
+                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 10, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Carro</Text>,
+                    tabBarIcon: ({ color }) => <FontAwesome name="shopping-cart" color={color} size={20} style={{marginTop: 5}} />,
                 }}
             />
             <BottomTab.Screen
                 name="Buscar"
                 component={TabTwoNavigator}
                 options={{
-                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 10, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Comprar</Text>,
+                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 10, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Categorias</Text>,
                     tabBarIcon: ({ color }) => <FontAwesome name="search" color={color} size={20} style={{marginTop: 5}} />,
                 }}
             />

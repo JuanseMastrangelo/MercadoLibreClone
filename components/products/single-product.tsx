@@ -12,12 +12,14 @@ const { width } = Dimensions.get('window');
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { actionCreators as actions } from '../../utils/actions/cart';
+import { actionCreators as actionsCart } from '../../utils/actions/cart';
+import { actionCreators as actionsFavorites } from '../../utils/actions/favorite';
 
 
 import { Spinner, Toast } from 'native-base';
-import { urlApi } from '../../constants/KeyConfig';
+import { authKey, urlApi } from '../../constants/KeyConfig';
 import { HttpService } from '../../constants/HttpService';
+import AsyncStorage from '@react-native-community/async-storage';
 
 
 class SingleProduct extends React.Component<any, any> {
@@ -32,10 +34,6 @@ class SingleProduct extends React.Component<any, any> {
         this.httpService = new HttpService();
     }
 
-    componentDidMount() {
-        this.getCartItems();
-    }
-
     goToDescription = () => {
         const { product } = this.state;
         this.props.navigation.navigate('Description', { product });
@@ -44,24 +42,42 @@ class SingleProduct extends React.Component<any, any> {
         this.props.navigation.navigate('Comments');
     }
 
-    getCartItems() {
-        this.httpService.get('/cart').then((res:any) => {
-            console.log(res);
-        })
+    toggleFavorite = () => {
+        const { product } = this.state;
+        let { items } = this.props.state.favorites;
+        const is_favorite = items.filter((el: any) => el.id === product.id).length > 0;
+        this.httpService.post('/favorites', {postId: product.id}).then((_:any) => {
+            Toast.show({
+                text: is_favorite ? 'Eliminado de favorito' : 'Agregado a favorito',
+                type: 'success',
+                position: 'top'
+            })
+
+            if (is_favorite) { // Si es favorito, lo eliminamos de la lista
+                this.props.favoriteRemove(product.id);
+            } else {
+                this.props.favoriteAdd(product);
+            }
+        });
     }
 
     loadProductByCategorie = async() => {
         const { product } = this.state;
-        let productsFetch = await fetch(urlApi + '/products/categorie/' + product.categorieId);
-        const relatedProducts = await productsFetch.json();
-        this.setState({relatedProducts});
+        const userData = await AsyncStorage.getItem(authKey)
+        const userId = JSON.parse(userData!).token;
+        const header = new Headers({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+ userId,
+        });
+        this.httpService.get('/products/categorie/' + product.categorieId, header).then((res: any) => res.json()).then((relatedProducts: any) => {
+            this.setState({relatedProducts});
+        });
     }
 
     addToCart = async () => {
         const { product } = this.state;
-
         this.httpService.post('/cart', {postId: product.id}).then((_:any) => {
-            // console.log(res);
             this.props.addCart(product);
             Toast.show({
                 text: 'Agregado al carro',
@@ -73,22 +89,29 @@ class SingleProduct extends React.Component<any, any> {
 
     removeToCart = () => {
         const { product } = this.state;
-        this.props.removeCart(product.id);
-        Toast.show({
-            text: 'Eliminado del carro',
-            type: 'danger',
-            position: 'top'
-          })
+        this.httpService.delete('/cart/'+product.id).then((_:any) => {
+            this.props.cartRemove(product.id);
+            Toast.show({
+                text: 'Eliminado del carro',
+                type: 'danger',
+                position: 'top'
+            })
+        });
     }
+
 
     render() {
         const { product, relatedProducts } = this.state;
-        const { products } = this.props.state;
-        const InCart = products.filter((e: any) => (e.id === product.id)).length > 0;
+        const { items } = this.props.state.cart;
+        const in_cart_item = items.filter((el: any) => el.id === product.id).length > 0;
+
+
+        const favItems = this.props.state.favorites.items;
+        const is_favorite = favItems.filter((favItem: any) => favItem.id === product.id).length > 0;
         return (
             <View style={{paddingBottom: 50}}>
                 <ScrollView showsHorizontalScrollIndicator={false}>
-                    <CarouselSingleProduct data={JSON.parse(product.files)} />
+                    <CarouselSingleProduct data={JSON.parse(product.files)} id={product.id} />
                     <View style={{ marginTop: 10, paddingVertical: 10, paddingHorizontal: 15 }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingRight: 10 }}>
                             <Text style={{ color: Colors.default.greyColor, fontSize: 13, fontFamily: 'Poppins-Regular' }}>SAMSUNG | CELULAR</Text>
@@ -99,6 +122,10 @@ class SingleProduct extends React.Component<any, any> {
                                 <FontAwesome size={10} name="star" color={Colors.default.yellow} style={{ marginRight: 3 }}></FontAwesome>
                                 <FontAwesome size={10} name="star" color={Colors.default.yellow} style={{ marginRight: 3 }}></FontAwesome>
                                 <Text style={{ color: Colors.default.darkColor, fontFamily: 'Poppins-Regular', fontSize: 10 }}>(1)</Text>
+                                
+                                <TouchableOpacity style={{marginLeft: 20}} onPress={() => this.toggleFavorite()}>
+                                    <FontAwesome size={23} name={is_favorite ? 'heart' : 'heart-o'} color={is_favorite ? Colors.default.accentColor : Colors.default.greyColor}></FontAwesome>
+                                </TouchableOpacity>
                             </View>
                         </View>
 
@@ -147,7 +174,7 @@ class SingleProduct extends React.Component<any, any> {
                     }
                 </ScrollView>
                 {
-                    !InCart ?
+                    !in_cart_item ?
                     <View style={{ position: 'absolute', bottom: 10, left: 0, width, paddingHorizontal: 20 }}>
                         <TouchableOpacity
                             style={{
@@ -181,8 +208,10 @@ class SingleProduct extends React.Component<any, any> {
 
 function mapDispatchToProps(dispatch: any) {
     return {
-        addCart: bindActionCreators(actions.addProduct, dispatch),
-        removeCart: bindActionCreators(actions.removeProduct, dispatch)
+        cartRemove: bindActionCreators(actionsCart.removeProduct, dispatch),
+        addCart: bindActionCreators(actionsCart.addProduct, dispatch),
+        favoriteAdd: bindActionCreators(actionsFavorites.favoriteAdd, dispatch),
+        favoriteRemove: bindActionCreators(actionsFavorites.favoriteRemove, dispatch)
     }
 }
 

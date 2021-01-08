@@ -2,9 +2,11 @@ import * as React from 'react';
 import { Dimensions, Image, Text, View } from 'react-native';
 
 import Carousel from './Slideshow/Main';
+
+
 import { connect } from 'react-redux';
-import { Button } from '@ui-kitten/components';
-import { useFonts } from 'expo-font';
+import { actionCreators as actionsCart } from '../../utils/actions/cart';
+import { actionCreators as actionsFavorites } from '../../utils/actions/favorite';
 
 import Colors from '../../constants/Colors';
 
@@ -12,13 +14,17 @@ import { CategoriesComponent } from '../../components/shop/categories';
 // import { CategoryComponent } from '../../components/shop/category';
 import { ScrollView } from 'react-native-gesture-handler';
 
-import { SlideImages, Coupon, ProductBestSellers } from '../../demoData';
+import { SlideImages, Coupon } from '../../demoData';
 import { CategoryComponent } from '../../components/shop/category';
-import { urlApi } from '../../constants/KeyConfig';
+import { authKey, urlApi } from '../../constants/KeyConfig';
+import { bindActionCreators } from 'redux';
+import { HttpService } from '../../constants/HttpService';
+import AsyncStorage from '@react-native-community/async-storage';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 export class Home extends React.Component<any, any> {
+    httpService: any = null;
 
     constructor(props: any) {
         super(props)
@@ -26,10 +32,47 @@ export class Home extends React.Component<any, any> {
             newProducts: null,
             errorFetch: false
         }
+        this.httpService = new HttpService();
     }
 
     componentDidMount() {
         this.loadNewsProducts();
+        this.syncAppWithDatabase();
+    }
+
+
+    async syncAppWithDatabase() {
+        const userData = await AsyncStorage.getItem(authKey)
+        const userId = JSON.parse(userData!).token;
+        const header = new Headers({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+ userId,
+        });
+
+
+        this.props.cleanCart();
+        this.props.cleanFavorite();
+
+        this.httpService.get('/cart', header).then((res:any) => res.json()).then((cartItems: any) => {
+            const cartItemsNow = this.props.state.cart.items;
+            cartItems.map((item: any) => {
+                const inCart = cartItemsNow.filter((el: any)=> el.id === item.id).length > 0;
+                if (!inCart) {
+                    this.props.addCart(item);
+                }
+            })
+        })
+
+        this.httpService.get('/favorites', header).then((res:any) => res.json()).then((favoritesItems: any) => {
+            const favoritesItemsNow = this.props.state.favorites.items;
+            favoritesItems.map((item: any) => {
+                const isFavorite = favoritesItemsNow.filter((el: any)=> el.id === item.id).length > 0;
+                if (!isFavorite) {
+                    this.props.addFavorite(item);
+                }
+            })
+        })
     }
 
     loadNewsProducts = async() => {
@@ -69,9 +112,18 @@ export class Home extends React.Component<any, any> {
 }
 
 
+function mapDispatchToProps(dispatch: any) {
+    return {
+        addCart: bindActionCreators(actionsCart.addProduct, dispatch),
+        cleanCart: bindActionCreators(actionsCart.cleanCart, dispatch),
+        addFavorite: bindActionCreators(actionsFavorites.favoriteAdd, dispatch),
+        cleanFavorite: bindActionCreators(actionsFavorites.cleanFavorite, dispatch),
+    }
+}
+
 function mapStateToProps(state: any) {
     return { state }
 }
 
-export default connect(mapStateToProps)(Home)
+export default connect(mapStateToProps, mapDispatchToProps)(Home)
 

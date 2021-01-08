@@ -10,14 +10,21 @@ import WebView from 'react-native-webview';
 import { Spinner, Toast } from 'native-base';
 
 
+import { Button, Divider, IndexPath, Input, Radio, RadioGroup, Select, SelectItem } from '@ui-kitten/components';
+
+
 import { connect } from 'react-redux';
-import { Button, CheckBox, Divider, IndexPath, Input, Radio, RadioGroup, Select, SelectItem } from '@ui-kitten/components';
+import { bindActionCreators } from 'redux';
+import { actionShipping } from '../../utils/actions/shipping';
 
 
 import { authKey, urlApi } from '../../constants/KeyConfig';
 import AsyncStorage from '@react-native-community/async-storage';
 let socket: any = null;
-export class PurchaseComponent extends React.Component<any, any> {
+
+const Provincias = ['Buenos Aires', 'Neuquen', 'Rio Negro'];
+const Localidades = ['Palermo', 'Neuquen', 'Cipolletti'];
+class PurchaseComponent extends React.Component<any, any> {
 
     constructor(props: any) {
         super(props)
@@ -48,6 +55,12 @@ export class PurchaseComponent extends React.Component<any, any> {
     getUserData = async () => {
         const userData = await AsyncStorage.getItem(authKey)
         this.setState({userData: JSON.parse(userData!)})
+
+        
+        const locations = this.props.state.shipping.locations;
+        const locationSelected = locations.filter((el: any) => el.selected)[0].correo;
+        const isCorreo = locationSelected ? 0 : 1;
+        this.setState({custom: isCorreo});
     }
 
 
@@ -68,26 +81,23 @@ export class PurchaseComponent extends React.Component<any, any> {
                 }
             )
         });
-
         fetch(urlApi + '/createPreference', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-              body: JSON.stringify([items, userData, shippingCost.options[custom]])
+              body: JSON.stringify([items, userData, shippingCost.options[custom].cost])
         })
             .then(response => response.json())
             .then((response) => {
                 if (response) {
                     // const urlBuy = response.response.sandbox_init_point;
-                console.log(response);
                     const urlBuy = response.response.init_point;
                     this.setState({ urlBuy, cargando: false, modalVisible: true })
                 }
             })
             .catch((error) => {
-                console.log(error);
                 Toast.show({
                     text: 'Error. Compruebe su conexión a internet.',
                     type: 'danger',
@@ -131,6 +141,44 @@ export class PurchaseComponent extends React.Component<any, any> {
         });
     }
 
+    saveLocation = () => {
+        const {custom} = this.state;
+        if (custom !== 0 && this.validatePersonalizado()) {
+            return false;
+        }
+        this.popupController();
+        this.props.selectShippingType(custom);
+    }
+
+    validatePersonalizado = () => {
+        const { shippingCP, shippingNameComplete, shippingProvincia, shippingLocalidad,
+            shippingCalle, shippingPiso, shippingNumero, shippingReferencias, shippingEntreCalles, shippingContacto } = this.state;
+        let error = true;
+        if(shippingCP.trim() === ''){
+            this.showToastError('El codigo postal es requerido');
+        } else if(shippingNameComplete.trim() === ''){
+            this.showToastError('El nombre completo es requerido');
+        } else if(shippingCalle.trim() === ''){
+            this.showToastError('La calle es requerida');
+        } else if(shippingPiso.trim() === ''){
+            this.showToastError('El numero es requerido');
+        } else if(shippingNumero.trim() === ''){
+            this.showToastError('El piso/departamento es requerido');
+        } else if(shippingContacto.trim() === ''){
+            this.showToastError('El telefono de contacto es requerido');
+        } else {
+            error = false;
+        }
+        return error;
+    }
+
+    showToastError(msg: string) {
+        Toast.show({
+            text: msg,
+            type: 'danger',
+            position: 'bottom'
+        })
+    }
 
     envioPopupContent = () => {
         const { custom, shippingCP, shippingNameComplete, shippingCalle, shippingProvincia, shippingLocalidad, shippingPiso,
@@ -147,7 +195,7 @@ export class PurchaseComponent extends React.Component<any, any> {
                                 </TouchableOpacity>
                             </View>
                             <View style={{position: 'absolute', right: 20, top: 40}}>
-                                <TouchableOpacity onPress={() => this.popupController()}>
+                                <TouchableOpacity onPress={() => this.saveLocation()}>
                                     <FontAwesome name="check" color="white" style={{fontSize: 20}}></FontAwesome>
                                 </TouchableOpacity>
                             </View>
@@ -185,11 +233,14 @@ export class PurchaseComponent extends React.Component<any, any> {
                             <Select
                                 disabled={custom === 0}
                                 label='Provincia:'
+                                value={Provincias[shippingProvincia.row]}
                                 selectedIndex={shippingProvincia}
                                 onSelect={index => this.setState({shippingProvincia: index})}>
-                                <SelectItem title='Buenos Aires'/>
-                                <SelectItem title='Neuquen'/>
-                                <SelectItem title='Rio Negro'/>
+                                    {
+                                        Provincias.map(item => (
+                                            <SelectItem title={item} />
+                                        ))
+                                    }
                             </Select>
                         </View>
 
@@ -197,11 +248,14 @@ export class PurchaseComponent extends React.Component<any, any> {
                             <Select
                                 disabled={custom === 0}
                                 label='Localidad / Barrio:'
+                                value={Localidades[shippingLocalidad.row]}
                                 selectedIndex={shippingLocalidad}
                                 onSelect={index => this.setState({shippingLocalidad: index})}>
-                                <SelectItem title='Palermo'/>
-                                <SelectItem title='Neuquen Capital'/>
-                                <SelectItem title='Cipolletti'/>
+                                {
+                                    Localidades.map(item => (
+                                        <SelectItem title={item} />
+                                    ))
+                                }
                             </Select>
                         </View>
 
@@ -273,6 +327,8 @@ export class PurchaseComponent extends React.Component<any, any> {
     render() {
         const { urlBuy, modalVisible, cargando, showPopup, shippingCost, custom } = this.state;
         const { products } = this.props;
+        const { locations } = this.props.state.shipping;
+        const locationSelected = locations.filter((el: any) => el.selected)[0];
 
         let totalValorProducts = 0;
         products.map((el: any, index: number) => (totalValorProducts = totalValorProducts + parseFloat(el.saleValue)) )
@@ -289,7 +345,14 @@ export class PurchaseComponent extends React.Component<any, any> {
                             <Text style={{ fontFamily: 'Poppins-Light', fontSize: 12, color: '#000' }}>$ {totalValorProducts}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3 }}>
-                            <Button size='tiny' status="basic" onPress={() => this.popupController() }>Del Trabajador 2122 (cambiar)</Button>
+                            <Button size='tiny' status="basic" onPress={() => this.popupController() }>
+                                {
+                                    locationSelected.correo ?
+                                    'Correo Argentino'
+                                    :
+                                    'Del Trabajador 2122'
+                                }
+                            </Button>
                             <Text style={{ fontFamily: 'Poppins-Light', fontSize: 12, color: '#000' }}>$ {shippingCost && shippingCost.options[custom].cost}</Text>
                         </View>
                         {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3 }}>
@@ -346,4 +409,15 @@ export class PurchaseComponent extends React.Component<any, any> {
 }
 
 
-export default PurchaseComponent
+
+
+function mapDispatchToProps(dispatch: any) {
+    return {
+        selectShippingType: bindActionCreators(actionShipping.select, dispatch)
+    }
+}
+
+function mapStateToProps(state: any) {
+    return { state }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(PurchaseComponent)

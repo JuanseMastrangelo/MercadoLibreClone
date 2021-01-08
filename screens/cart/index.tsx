@@ -9,32 +9,31 @@ const { width, height } = Dimensions.get('window');
 import WebView from 'react-native-webview';
 
 import { Spinner, Toast } from 'native-base';
-import { PurchaseComponent } from './purchase';
+import PurchaseComponent from './purchase';
 
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { actionCreators as actions } from '../../utils/actions/cart';
+
 import { VerticalGridViewComponent } from '../../components/FlatLists/verticalGridView';
-import { Button, Divider } from '@ui-kitten/components';
 
 
 import io from 'socket.io-client';
 import { authKey, urlPayment, urlApi } from '../../constants/KeyConfig';
 import AsyncStorage from '@react-native-community/async-storage';
+import { HttpService } from '../../constants/HttpService';
 let socket: any = null;
 export class Cart extends React.Component<any, any> {
-
+    httpService: any = null;
     constructor(props: any) {
         super(props)
-        this.state = {
-        }
+        this.httpService = new HttpService();
     }
 
     goToShopping() {
         this.props.navigation.dispatch(StackActions.replace('Root', { screen: 'Buscar' }));
     }
-
 
     emptyCartRender = () => {
         return (
@@ -65,18 +64,20 @@ export class Cart extends React.Component<any, any> {
 
     removeItemFromList = (e: any) => {
         const { removeToCart } = this.props;
-        removeToCart(e.id);
-        Toast.show({
-            text: 'Eliminado del carro',
-            type: 'danger',
-            position: 'top'
-          })
+        this.httpService.delete('/cart/'+e.id).then((_:any) => {
+            removeToCart(e.id);
+            Toast.show({
+                text: 'Eliminado del carro',
+                type: 'success',
+                position: 'top'
+              })
+        });
     }
 
     clearCart = () => { this.props.cleanCart(); }
 
     render() {
-        const { products } = this.props.state;
+        const { items } = this.props.state.cart;
         return (
             <View style={{ height }}>
                 <View
@@ -95,21 +96,22 @@ export class Cart extends React.Component<any, any> {
                     }}></View>
 
                 <View style={{ marginTop: 40 }}>
-                    {/* <View style={{ flexDirection: 'row', width: '90%', alignSelf: 'center', justifyContent: 'space-between' }}>
-                        <Text style={{ color: 'black', fontSize: 30, fontFamily: 'Poppins-SemiBold' }}>Carro</Text>
-                        <Text style={{ color: 'black', fontSize: 10, fontFamily: 'Poppins-SemiBold' }}>({products ? products.length : 0} productos) </Text>
-                    </View> */}
                     {
-                        (products.length === 0) ?
-                            this.emptyCartRender()
-                            :
+                        items ? 
+                        (items.length > 0) ?
                             <ScrollView showsVerticalScrollIndicator={true} style={{ height: height*0.55 }}>
-                                <VerticalGridViewComponent removeToCart={(e: any) => this.removeItemFromList(e)} navigation={this.props.navigation} data={products} ></VerticalGridViewComponent>
+                                {<VerticalGridViewComponent removeToCart={(e: any) => this.removeItemFromList(e)} navigation={this.props.navigation} data={items} ></VerticalGridViewComponent>}
                             </ScrollView>
+                        : this.emptyCartRender()
+                        :
+                        <View><Spinner color="black" size={20}></Spinner></View>
                     }
 
                 </View>
-                <PurchaseComponent products={products} />
+                {
+                    items && 
+                    <PurchaseComponent products={items} />
+                }
             </View>
         )
     }

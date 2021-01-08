@@ -9,10 +9,6 @@ export class HttpService {
         this.getUserData();
     }
 
-    init (callback: any) {
-        callback.bind(this)();
-    }
-
     private async getUserData() {
         const userData = await AsyncStorage.getItem(authKey)
         const userId = JSON.parse(userData!).token;
@@ -23,25 +19,34 @@ export class HttpService {
         })
     }
 
-    public get(url: string) {
+
+    public get(url: string, headers?: any) {
         return fetch(urlApi + url, {
             method: 'get',
-            headers: this.header
-        }).catch(error => { this.showError(); });
+            headers: headers ? headers : this.header,
+        }).catch(error => { this.showError(error); });
     }
     
 
     public post(url: string, body: Object, headers?: any) {
-        console.log(this.header);
         return fetch(urlApi + url, {
             method: 'post',
             headers: headers ? headers : this.header,
             body: JSON.stringify(body)
-        }).catch(error => { this.showError(); });
+        }).catch(error => { this.showError(error); });
+    }
+    
+
+    public delete(url: string) {
+        return fetch(urlApi + url, {
+            method: 'delete',
+            headers: this.header
+        }).catch(error => { this.showError(error); });
     }
 
 
-    private showError() {
+    private showError(error: any) {
+        // console.log(error);
         Toast.show({
             text: 'Ocurrió un error. Intentelo nuevamente',
             type: 'danger',

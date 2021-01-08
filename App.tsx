@@ -14,11 +14,10 @@ import { Root } from 'native-base';
 
 // Redux
 import { Provider } from 'react-redux';
-import { reducers } from './utils/reducers';
-import cartReducer from './utils/reducers/cart';
+import rootReducer  from './utils/reducers';
 import { createStore } from 'redux';
 import { useFonts } from 'expo-font';
-const store = createStore(cartReducer);
+const store = createStore(rootReducer);
 
 export default function App() {
   const isLoadingComplete = useCachedResources();

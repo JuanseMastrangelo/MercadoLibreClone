@@ -36,11 +36,6 @@ export class VerticalGridViewComponent extends React.Component<any, any> {
         const { itemSelected } = this.state;
         this.setState({ modalVisible: false })
         this.props.removeToCart(itemSelected);
-        Toast.show({
-            text: 'Eliminado del carro correctamente!',
-            type: 'success',
-            position: 'bottom',
-        })
     }
 
     openRemoveModal = (item: any) => {

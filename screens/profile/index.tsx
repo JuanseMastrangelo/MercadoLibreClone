@@ -26,7 +26,7 @@ export default class Profile extends React.Component<any, any> {
         return (
             <ScrollView showsVerticalScrollIndicator={false} style={{paddingHorizontal: 20, backgroundColor: '#F9F9F9', paddingTop: 20}}>
                 <ProfileHeader></ProfileHeader>
-                <ProfileLevel></ProfileLevel>
+                {/* <ProfileLevel></ProfileLevel> */}
                 <ProfilePurchase></ProfilePurchase>
                 <ProfileOptions navigation={this.props.navigation}></ProfileOptions>
             </ScrollView>
