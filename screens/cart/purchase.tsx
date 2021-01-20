@@ -16,6 +16,7 @@ import { Button, Divider, IndexPath, Input, Radio, RadioGroup, Select, SelectIte
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { actionShipping } from '../../utils/actions/shipping';
+import { actionCreators as actionsCart } from '../../utils/actions/cart';
 
 
 import { authKey, urlApi } from '../../constants/KeyConfig';
@@ -95,6 +96,7 @@ class PurchaseComponent extends React.Component<any, any> {
 
 
     pay = () => {
+        const { locations } = this.props.state.shipping;
         this.setState({ cargando: true });
         const { userData, shippingCost, custom } = this.state;
         const { products } = this.props;
@@ -111,13 +113,28 @@ class PurchaseComponent extends React.Component<any, any> {
                 }
             )
         });
+
+        const cp = locations.filter((el: any) => (el.correo === false))[0].custom.shippingCP;
+        const locationSelected = locations.filter((el: any) => (el.selected === true))[0];
+        let additional_info;
+        if (locationSelected.correo) {
+            additional_info = Object.assign(userData, {
+                correo: true,
+                shippingCP: cp
+            });
+        } else {
+            additional_info = Object.assign(userData, locationSelected);
+        }
+        additional_info = userData;
+
+        console.log(JSON.stringify([items, userData, shippingCost.options[custom].cost]));
         fetch(urlApi + '/createPreference', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-              body: JSON.stringify([items, userData, shippingCost.options[custom].cost])
+              body: JSON.stringify([items, shippingCost.options[custom].cost])
         })
             .then(response => response.json())
             .then((response) => {
@@ -133,6 +150,7 @@ class PurchaseComponent extends React.Component<any, any> {
                     type: 'danger',
                     position: 'top'
                 })
+                console.log(error);
                 this.setState({ urlBuy: null, cargando: false, modalVisible: false, idBuy: null })
             });
     }
@@ -140,6 +158,14 @@ class PurchaseComponent extends React.Component<any, any> {
     closeModal = () => {
         this.setState({ modalVisible: false });
         socket.close();
+    }
+
+    getProductsInCart = () => {
+        this.setState({ cargando: true });
+        this.httpService.get('/cart').then((res:any) => res.json()).then((cartItems: any) => {
+            this.setState({ cargando: false });
+            this.props.setCartItemsForce(cartItems);
+        })
     }
 
     popupController = () => {
@@ -156,7 +182,6 @@ class PurchaseComponent extends React.Component<any, any> {
         const { locations } = this.props.state.shipping;
         const locationSelected = locations.filter((el: any) => (el.correo === false))[0];
         const cp = locationSelected.custom.shippingCP;
-        console.log(cp);
         
         fetch('https://api.mercadolibre.com/sites/MLA/shipping_options?zip_code_from=' + cp + '&zip_code_to=7607&dimensions=10x10x20,700', {
             method: 'GET', headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
@@ -205,16 +230,35 @@ class PurchaseComponent extends React.Component<any, any> {
 
 
     saveLocation = () => {
-        const {custom} = this.state;
-        if (custom !== 0 && this.validatePersonalizado()) {
-            return false;
-        }
-
         const { shippingCP, shippingNameComplete, shippingProvincia, shippingLocalidad,
             shippingCalle, shippingPiso, shippingNumero, shippingContacto, shippingReferencias,
-            shippingEntreCalles } = this.state;
+            shippingEntreCalles, custom } = this.state;
+
+
+        if (custom !== 0 && this.validatePersonalizado()) {
+            return false;
+        } else { // Solo validamos el codigo postal para el correo argentino
+            if(shippingCP.trim() === ''){
+                this.showToastError('El codigo postal es requerido');
+                return false;
+            } 
+        }
 
         this.setState({loading: true});
+
+        const { locations } = this.props.state.shipping;
+        const locationSelected = locations.filter((el: any) => (el.correo === false))[0];
+
+        if (custom === 0) {
+            locationSelected.custom.shippingCP = shippingCP
+        }
+
+        const personalizado = custom === 0 ? locationSelected.custom : {
+            shippingCP, shippingNameComplete, shippingProvincia, shippingLocalidad, shippingCalle, shippingPiso, shippingNumero,
+            shippingContacto, shippingReferencias, shippingEntreCalles,
+            Localidad: Localidades[shippingProvincia.row],
+            Provincia: Provincias[shippingProvincia.row]
+        }
         const body = [
             {
                 correo: true,
@@ -223,14 +267,10 @@ class PurchaseComponent extends React.Component<any, any> {
             {
                 correo: false,
                 selected: custom !== 0,
-                custom: {
-                    shippingCP, shippingNameComplete, shippingProvincia, shippingLocalidad, shippingCalle, shippingPiso, shippingNumero,
-                    shippingContacto, shippingReferencias, shippingEntreCalles,
-                    Localidad: Localidades[shippingProvincia.row],
-                    Provincia: Provincias[shippingProvincia.row]
-                }
+                custom: personalizado
             }
         ]
+
 
         this.httpService.post('/UserLocations', {locations: body}).then((res: any) => res.text()).then((data: any) => {
             this.popupController();
@@ -238,9 +278,17 @@ class PurchaseComponent extends React.Component<any, any> {
             this.setState({loading: false});
             this.calcEnvio();
         });
-
-        
     }
+
+    
+
+    closeBuyModal = () => {
+        this.setState({ modalVisible: false });
+        this.getProductsInCart();
+    }
+
+
+
 
     envioPopupContent = () => {
         const { custom, shippingCP, shippingNameComplete, shippingCalle, shippingProvincia, shippingLocalidad, shippingPiso,
@@ -273,7 +321,6 @@ class PurchaseComponent extends React.Component<any, any> {
                         <View style={{width: width*0.9, marginTop: 20, flexDirection: 'row'}}>
                             <View style={{width: '50%', marginVertical: 10, paddingHorizontal: 10}}>              
                                 <Input
-                                    disabled={custom === 0}
                                     value={shippingCP}
                                     label='Código Postal:'
                                     placeholder=''
@@ -419,6 +466,7 @@ class PurchaseComponent extends React.Component<any, any> {
                                     custom === 0 ?
                                     'Correo Argentino'
                                     :
+                                    (locationSelected.custom) &&
                                     locationSelected.custom.shippingCalle + ' ' + locationSelected.custom.shippingNumero
                                 }
                             </Button>
@@ -427,7 +475,7 @@ class PurchaseComponent extends React.Component<any, any> {
                                 shippingCost ?
                                     shippingCost.error === "invalid_zip_code" ?
                                     'Codigo postal inválido' :
-                                    custom && '$ '+shippingCost.options[custom].cost
+                                    (custom === 0 || custom === 1) && '$ ' +(shippingCost.options[custom].cost) 
                                 :
                                 'Cargando'
                             }
@@ -439,24 +487,25 @@ class PurchaseComponent extends React.Component<any, any> {
                         </View> */}
 
                         {
-                            shippingCost && !shippingCost.error &&
+                            shippingCost && !shippingCost.error && (custom === 0 || custom === 1)  &&
                             <View>
                                 <Divider style={{ backgroundColor: 'rgba(100,100,100,.3)' }} />
         
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5 }}>
                                     <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 12, fontWeight: 'bold', color: '#4C6ED2' }}>SubTotal</Text>
                                     <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 17, color: Colors.default.green }}>
-                                        {custom && '$ ' +(shippingCost.options[custom].cost + totalValorProducts).toFixed(2)}</Text>
+                                        {'$ ' +(shippingCost.options[custom].cost + totalValorProducts).toFixed(2)}</Text>
                                 </View>
+                                {
+                                    cargando ? 
+                                        <Spinner size="small" color="#000"></Spinner>
+                                    :
+                                    <TouchableOpacity style={{ width: '80%', borderWidth:1, borderColor: 'rgba(200,200,200,.4)', backgroundColor: Colors.default.green, alignSelf: 'center',paddingVertical: 5, borderRadius: 5 }}
+                                    onPress={() => this.pay()}>
+                                        <Text style={{textAlign:'center', color: 'white', fontFamily: 'Poppins-SemiBold', fontSize: 17 }}>Pagar</Text>
+                                    </TouchableOpacity>
+                                }
                             </View>
-                            }
-
-                        {
-                            custom && shippingCost && !shippingCost.error &&
-                            <TouchableOpacity style={{ width: '80%', borderWidth:1, borderColor: 'rgba(200,200,200,.4)', backgroundColor: Colors.default.green, alignSelf: 'center',paddingVertical: 5, borderRadius: 5 }}
-                            onPress={() => this.pay()}>
-                                <Text style={{textAlign:'center', color: 'white', fontFamily: 'Poppins-SemiBold', fontSize: 17 }}>Pagar</Text>
-                            </TouchableOpacity>
                         }
 
                     </View>
@@ -471,7 +520,7 @@ class PurchaseComponent extends React.Component<any, any> {
                     <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', width, paddingHorizontal: 10}}>
                         <TouchableOpacity style={{ paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'flex-end',
                         backgroundColor: 'red', borderRadius: 10, width: 100, marginTop: 20, paddingVertical: 7, alignItems: 'center'}}
-                            onPress={() => this.setState({ modalVisible: false })}>
+                            onPress={() => this.closeBuyModal()}>
                             <Text style={{ color: 'white' }}>Cerrar</Text>
                             <FontAwesome style={{ color: 'white', fontSize: 10, marginLeft: 9 }} name="close"></FontAwesome>
                         </TouchableOpacity>
@@ -501,7 +550,8 @@ class PurchaseComponent extends React.Component<any, any> {
 function mapDispatchToProps(dispatch: any) {
     return {
         setShipping: bindActionCreators(actionShipping.setShipping, dispatch),
-        selectShippingType: bindActionCreators(actionShipping.select, dispatch)
+        selectShippingType: bindActionCreators(actionShipping.select, dispatch),
+        setCartItemsForce: bindActionCreators(actionsCart.forceProduct, dispatch)
     }
 }
 

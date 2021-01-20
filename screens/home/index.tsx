@@ -20,6 +20,7 @@ import { authKey, urlApi } from '../../constants/KeyConfig';
 import { bindActionCreators } from 'redux';
 import { HttpService } from '../../constants/HttpService';
 import AsyncStorage from '@react-native-community/async-storage';
+import { Button } from '@ui-kitten/components';
 
 const { width } = Dimensions.get('window');
 
@@ -50,35 +51,24 @@ export class Home extends React.Component<any, any> {
             'Authorization': 'Bearer '+ userId,
         });
 
-
-        this.props.cleanCart();
-        this.props.cleanFavorite();
-
         this.httpService.get('/cart', header).then((res:any) => res.json()).then((cartItems: any) => {
-            const cartItemsNow = this.props.state.cart.items;
-            cartItems.map((item: any) => {
-                const inCart = cartItemsNow.filter((el: any)=> el.id === item.id).length > 0;
-                if (!inCart) {
-                    this.props.addCart(item);
-                }
-            })
+            this.props.setCartItemsForce(cartItems);
         })
 
         this.httpService.get('/favorites', header).then((res:any) => res.json()).then((favoritesItems: any) => {
-            const favoritesItemsNow = this.props.state.favorites.items;
-            favoritesItems.map((item: any) => {
-                const isFavorite = favoritesItemsNow.filter((el: any)=> el.id === item.id).length > 0;
-                if (!isFavorite) {
-                    this.props.addFavorite(item);
-                }
-            })
+            this.props.setFavoriteForce(favoritesItems);
         })
     }
 
     loadNewsProducts = async() => {
-        let newProductsFetch = await fetch(urlApi + '/products/news');
-        const newProducts = await newProductsFetch.json();
-        this.setState({newProducts: newProducts.data});
+        try {
+            this.setState({errorFetch: false})
+            let newProductsFetch = await fetch(urlApi + '/products/news');
+            const newProducts = await newProductsFetch.json();
+            this.setState({newProducts: newProducts.data});
+        } catch (e) {
+            this.setState({errorFetch: true})
+        }
     }
     
 
@@ -97,12 +87,13 @@ export class Home extends React.Component<any, any> {
                 }}></View>
                 <Carousel data={SlideImages} />
                 <CategoriesComponent navigation={this.props.navigation} ></CategoriesComponent>
-                <CategoryComponent navigation={this.props.navigation} title="Más recientes" data={newProducts}></CategoryComponent>
                 {
-                    errorFetch && 
-                    <View>
-                        <Text>Error de conexión</Text>
+                    errorFetch ?
+                    <View style={{width: '100%', justifyContent: 'center', flexDirection: 'row', alignItems: 'center'}}>
+                        <Button appearance='outline' status="basic" size="small" onPress={() => this.loadNewsProducts()}>Reintentar</Button>
                     </View>
+                    :
+                    <CategoryComponent navigation={this.props.navigation} title="Más recientes" data={newProducts}></CategoryComponent>
                 }
                 <Image source={{ uri: Coupon }} resizeMode="contain" style={{ width, height: 140, marginVertical: 40 }}></Image>
                 {/* <CategoryComponent title="Nuevos" data={ProductBestSellers}></CategoryComponent> */}
@@ -114,10 +105,8 @@ export class Home extends React.Component<any, any> {
 
 function mapDispatchToProps(dispatch: any) {
     return {
-        addCart: bindActionCreators(actionsCart.addProduct, dispatch),
-        cleanCart: bindActionCreators(actionsCart.cleanCart, dispatch),
-        addFavorite: bindActionCreators(actionsFavorites.favoriteAdd, dispatch),
-        cleanFavorite: bindActionCreators(actionsFavorites.cleanFavorite, dispatch),
+        setFavoriteForce: bindActionCreators(actionsFavorites.favoriteForce, dispatch),
+        setCartItemsForce: bindActionCreators(actionsCart.forceProduct, dispatch)
     }
 }
 

@@ -1,4 +1,4 @@
-import { CART_ADD_PRODUCT, CART_PRODUCTS, CART_REMOVE_PRODUCT, CART_CLEAN } from '../actions/cart';
+import { CART_ADD_PRODUCT, CART_PRODUCTS, CART_REMOVE_PRODUCT, CART_CLEAN, CART_FORCE } from '../actions/cart';
 
 
 const START_ITEMS: any[] = [];
@@ -20,6 +20,8 @@ export default function cartReducer(state = initialState, action: any) {
             return {...state, items: products }
         case CART_CLEAN:
             return {...state, items: [] }
+        case CART_FORCE:
+            return {...state, items: action.payload }
         default:
             return state;
     }

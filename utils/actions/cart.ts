@@ -2,6 +2,7 @@ export const CART_PRODUCTS = 'CART_PRODUCT';
 export const CART_ADD_PRODUCT = 'CART_ADD_PRODUCT';
 export const CART_REMOVE_PRODUCT = 'CART_REMOVE_PRODUCT';
 export const CART_CLEAN = 'CART_CLEAN';
+export const CART_FORCE = 'CART_FORCE';
 
 function getAllProducts() {
     return {
@@ -23,6 +24,13 @@ function removeProduct(index: number) {
     }
 }
 
+function forceProduct(items: any) {
+    return {
+        type: CART_FORCE,
+        payload: items
+    }
+}
+
 function cleanCart() {
     return {
         type: CART_CLEAN
@@ -33,5 +41,6 @@ export const actionCreators = {
     getAllProducts,
     addProduct,
     removeProduct,
-    cleanCart
+    cleanCart,
+    forceProduct
 }
