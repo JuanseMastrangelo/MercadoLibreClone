@@ -114,27 +114,16 @@ class PurchaseComponent extends React.Component<any, any> {
             )
         });
 
-        const cp = locations.filter((el: any) => (el.correo === false))[0].custom.shippingCP;
         const locationSelected = locations.filter((el: any) => (el.selected === true))[0];
-        let additional_info;
-        if (locationSelected.correo) {
-            additional_info = Object.assign(userData, {
-                correo: true,
-                shippingCP: cp
-            });
-        } else {
-            additional_info = Object.assign(userData, locationSelected);
-        }
-        additional_info = userData;
+        const additional_info = Object.assign(userData, locationSelected);
 
-        console.log(JSON.stringify([items, userData, shippingCost.options[custom].cost]));
         fetch(urlApi + '/createPreference', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-              body: JSON.stringify([items, shippingCost.options[custom].cost])
+              body: JSON.stringify([items, additional_info, shippingCost.options[custom].cost])
         })
             .then(response => response.json())
             .then((response) => {
