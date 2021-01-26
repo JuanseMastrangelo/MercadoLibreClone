@@ -114,8 +114,6 @@ class PurchaseComponent extends React.Component<any, any> {
             )
         });
 
-        const locationSelected = locations.filter((el: any) => (el.selected === true))[0];
-        const additional_info = Object.assign(userData, locationSelected);
 
         fetch(urlApi + '/createPreference', {
             method: 'POST',
@@ -123,7 +121,7 @@ class PurchaseComponent extends React.Component<any, any> {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-              body: JSON.stringify([items, additional_info, shippingCost.options[custom].cost])
+              body: JSON.stringify([items, userData, shippingCost.options[custom].cost])
         })
             .then(response => response.json())
             .then((response) => {
