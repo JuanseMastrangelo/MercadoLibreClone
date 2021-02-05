@@ -114,7 +114,6 @@ class PurchaseComponent extends React.Component<any, any> {
             )
         });
 
-
         fetch(urlApi + '/createPreference', {
             method: 'POST',
             headers: {
