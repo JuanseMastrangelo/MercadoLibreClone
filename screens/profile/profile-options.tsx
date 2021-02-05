@@ -36,7 +36,7 @@ export default class ProfileOptions extends React.Component<any, any> {
     render() {
         const { modalVisible } = this.state;
         return (
-            <View style={{ marginBottom: 100, marginTop: 20 }}>
+            <View style={{ marginBottom: 20, marginTop: 20 }}>
                 <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 16, color: '#CCC', marginBottom: 10 }}>Opciones</Text>
                 <View style={{ paddingVertical: 10 }}>
 

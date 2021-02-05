@@ -42,9 +42,9 @@ export default class ProfileHeader extends React.Component<any, any> {
                         <Text style={{fontFamily: 'Poppins-Regular', fontSize: 12}}>{userData && userData.email}</Text>
                     </View>
                 </View>
-                <TouchableOpacity>
+                {/* <TouchableOpacity>
                     <FontAwesome name="cog" style={{fontSize: 15, color: '#ccc'}}></FontAwesome>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
         )
     }

@@ -9,6 +9,9 @@ import Colors from '../../constants/Colors';
 import { authKey, urlApi } from '../../constants/KeyConfig';
 import ProfileHeader from './profile-header';
 
+import { Dialog, PanningProvider } from 'react-native-ui-lib';
+import { Button, Divider } from '@ui-kitten/components';
+
 const { width } = Dimensions.get('window');
 
 
@@ -17,7 +20,9 @@ export default class ProfilePurchase extends React.Component<any, any> {
     constructor(props: any) {
         super(props)
         this.state = {
-            purchases: null
+            purchases: null,
+            showDialog: false,
+            showDetailOf: null
         }
     }
 
@@ -99,7 +104,7 @@ export default class ProfilePurchase extends React.Component<any, any> {
     renderPurchases = (item: any) => {
         return (
             <View>
-                <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                <TouchableOpacity onPress={() => this.setState({showDialog: true, showDetailOf: item})} style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                         {/* <Image
                         style={{width: 30, height: 30, borderRadius: 10000, marginRight: 10}}
@@ -115,7 +120,7 @@ export default class ProfilePurchase extends React.Component<any, any> {
                         </View>
                     </View>
                     <View style={{alignItems: 'flex-end'}}>
-                        <Text style={{fontFamily: 'Poppins-Regular', fontSize: 12}}>$ {item.total_amount}</Text>
+                        <Text style={{fontFamily: 'Poppins-Regular', fontSize: 12}}>$ {(item.total_amount + item.shipping_cost).toFixed(2)}</Text>
                         {this.stringStyleByOrderStatus(item.order_status)}
                     </View>
                 </TouchableOpacity>
@@ -123,13 +128,69 @@ export default class ProfilePurchase extends React.Component<any, any> {
             </View>
         )
     }
+
+
+    renderDialog = () => {
+        const { showDialog, showDetailOf } = this.state;
+        return (
+          <Dialog
+            key={'dialog-key-bottom-500'}
+            useSafeArea
+            bottom={true}
+            panDirection={PanningProvider.Directions.DOWN}
+            containerStyle={{ backgroundColor: '#fff', marginBottom: 20, borderRadius: 12 }}
+            visible={showDialog}
+            onDismiss={() => this.setState({showDialog: false})}
+            supportedOrientations={['portrait', 'landscape']}
+          >
+              {
+                  showDetailOf &&
+                    <View style={{paddingHorizontal: 10, paddingVertical: 10}}>
+                        <View style={{borderBottomWidth: .3, borderColor: '#ccc', width: '100%', marginBottom: 10}}>
+                            <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 16, color: '#444' }}>Detalles de compra</Text>
+                        </View>
+                        <View style={{borderBottomWidth: .3, borderColor: '#ccc', width: '100%', marginBottom: 10}}>
+                            {
+                                showDetailOf.items.map((item: any) => (
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5, alignItems: 'center'}}>
+                                        <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12 }}>{item.title}</Text>
+                                        <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12 }}>$ {item.unit_price}</Text>
+                                    </View>
+                                ))
+                            }
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5, alignItems: 'center'}}>
+                                <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12 }}>Envio</Text>
+                                <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12 }}>$ {showDetailOf.shipping_cost}</Text>
+                            </View>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5, alignItems: 'center'}}>
+                                <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 12 }}>Total</Text>
+                                <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 12 }}>$ {(showDetailOf.total_amount + showDetailOf.shipping_cost).toFixed(2)}</Text>
+                            </View>
+                        </View>
+                        {
+                            showDetailOf.order_status === 'paid' &&
+                            <Button size="small" status="success" onPress={() => this.setState({showDialog: false})}>Ver factura</Button>
+                        }
+                        <View style={{marginTop: 20, paddingBottom: 10 }}>
+                            <View style={{flexDirection: 'row'}}>
+                                <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 12 }}>Estado: </Text>
+                                {this.stringStyleByOrderStatus(showDetailOf.order_status)}
+                            </View>
+                            <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12 }}>Fecha de creación: {new Date(showDetailOf.date_created).toLocaleDateString()}</Text>
+                            <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12 }}>Cant. pagos: {showDetailOf.payments.length}</Text>
+                        </View>
+                    </View>
+              }
+          </Dialog>
+        );
+      };
     
     
     render() {
         const { purchases } = this.state;
         return (
-            <View style={{marginVertical: 10}}>
-                <Text style={{fontFamily: 'Poppins-SemiBold', fontSize: 16, color: '#CCC', marginBottom: 10}}>Compras</Text>
+            <View style={{marginVertical: 20}}>
+                <Text style={{fontFamily: 'Poppins-SemiBold', fontSize: 16, color: '#CCC', marginBottom: 10}}>Detalles de compras</Text>
                 {
                     purchases ?
                     <View style={{backgroundColor: 'white', borderRadius: 10, paddingHorizontal: 10, paddingVertical: 10,
@@ -146,6 +207,7 @@ export default class ProfilePurchase extends React.Component<any, any> {
                     :
                     <View><Spinner color="black" size={20}></Spinner></View>
                 }
+                {this.renderDialog()}
             </View>
         )
     }
