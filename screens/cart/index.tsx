@@ -77,22 +77,7 @@ export class Cart extends React.Component<any, any> {
         const { items } = this.props.state.cart;
         return (
             <View style={{ height }}>
-                <View
-                    style={{
-                        transform: [{ rotate: '40deg' }], backgroundColor: Colors.default.yellowLight, width: 200, height: 100, position: 'absolute',
-                        top: -40, right: -70
-                    }}></View>
-                <View style={{
-                    transform: [{ rotate: '40deg' }], backgroundColor: Colors.default.yellowLight, width: 130, height: 230, position: 'absolute',
-                    top: 340, right: -30, borderRadius: 100
-                }}></View>
-                <View
-                    style={{
-                        transform: [{ rotate: '-40deg' }], backgroundColor: '#F1F7FC', width: 200, height: 100, position: 'absolute',
-                        bottom: -20, left: -70
-                    }}></View>
-
-                <View style={{ marginTop: 40 }}>
+                <View style={{ marginTop: 0 }}>
                     {
                         items ? 
                         (items.length > 0) ?

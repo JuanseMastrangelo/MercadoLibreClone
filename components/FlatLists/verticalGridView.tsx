@@ -1,13 +1,18 @@
 import { FontAwesome } from '@expo/vector-icons';
-import { Button, Card, Modal } from '@ui-kitten/components';
+import { Button, Divider, Modal } from '@ui-kitten/components';
 import * as React from 'react';
 import { Dimensions, Image, Text, View } from 'react-native';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 const { width } = Dimensions.get('window');
 
 
+var BUTTONS = ["Si", "No"];
+var DESTRUCTIVE_INDEX = 0;
+var CANCEL_INDEX = 1;
 
-import { Picker, Toast } from 'native-base';
+import {Card} from 'react-native-ui-lib';
+
+import { ActionSheet, Picker, Toast } from 'native-base';
 import Colors from '../../constants/Colors';
 import { StackActions } from '@react-navigation/native';
 
@@ -18,9 +23,9 @@ export class VerticalGridViewComponent extends React.Component<any, any> {
 
         this.state = {
             count: 1,
-            modalVisible: false,
             itemSelected: null,
             selected2: 1,
+            itemsCount: 0
         }
     }
 
@@ -29,17 +34,6 @@ export class VerticalGridViewComponent extends React.Component<any, any> {
         const { count } = this.state;
         const newValue = up ? count + 1 : (count > 1) ? count - 1 : 1;
         this.setState({ count: newValue });
-    }
-
-
-    removeItemFromCart = () => {
-        const { itemSelected } = this.state;
-        this.setState({ modalVisible: false })
-        this.props.removeToCart(itemSelected);
-    }
-
-    openRemoveModal = (item: any) => {
-        this.setState({ itemSelected: item, modalVisible: true })
     }
 
 
@@ -53,52 +47,81 @@ export class VerticalGridViewComponent extends React.Component<any, any> {
         });
     }
 
+    truncateString = (str: string, num: number) => {
+        if (str.length > num) {
+          return str.slice(0, num) + "...";
+        } else {
+          return str;
+        }
+    }
+
+    removeFromCart = (item: any) => {
+        ActionSheet.show(
+            {
+              options: BUTTONS,
+              cancelButtonIndex: CANCEL_INDEX,
+              destructiveButtonIndex: DESTRUCTIVE_INDEX,
+              title: "Desea quitar del carro al "+item.title+"?"
+            },
+            buttonIndex => {
+                if (buttonIndex == 0) {
+                    this.props.removeToCart(item);
+                }
+            }
+          )
+    }
+
     renderItem = (item: any, index: number) => {
         const products = this.props.data;
+        const { itemsCount } = this.state;
         return (
-            <View>
-            <View style={{ width: '100%', paddingVertical: 0, marginTop: 10 }}>
-                <View style={{ backgroundColor: 'white', borderTopStartRadius: 2, borderWidth: 1, borderColor: 'rgba(200,200,200,.4)',
-                flexDirection: 'row', paddingVertical: 5 }}>
-                    <View style={{ width: '25%', height: 100, shadowOffset: { width: 0, height: 4, }, backgroundColor: 'white', borderRadius: 10 }}>
-                        <Image source={{ uri: JSON.parse(products[index].files)[0].path }}
-                            style={{ height: 100 }}></Image>
+            <Card
+                width={width}
+                style={{paddingVertical: 20, paddingHorizontal: 10, marginBottom: 10}}
+                disabled={true}
+                borderRadius={0}
+                useNative
+                backgroundColor={'#fff'}
+            >
+                <View style={{flexDirection: 'row', width: '100%', borderBottomWidth: .4, borderBottomColor: '#ccc'}}>
+                    <View style={{width: 100, height: 100, paddingHorizontal: 10}}>
+                        <Image style={{ width: '100%', height: '100%', resizeMode: 'contain' }} source={{ uri: JSON.parse(products[index].files)[0].path }} />
                     </View>
-                    <View style={{ paddingHorizontal: 10, width: '70%', justifyContent: 'space-around' }}>
+                    <View style={{paddingVertical: 10, width: '70%'}}>
                         <View>
-                            <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 15 }}>{item.title}</Text>
-                            <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 15, fontWeight: 'bold', color: Colors.default.secondaryColor }}>$ {item.saleValue}</Text>
+                            <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 13, color: '#333', textTransform: 'capitalize' }}>{this.truncateString(item.title, 30)}</Text>
+                            <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12, color: '#ccc', textTransform: 'capitalize' }}>Color: {item.colour}</Text>
+                            
+                            <View style={{justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row'}}>
+                                <Picker
+                                    mode="dropdown"
+                                    style={{ borderWidth: 1, borderColor: 'rgba(200,200,200,.4)', height: 30, width: 50, justifyContent: 'center', borderRadius: 5}}
+                                    placeholder="Cantidades"
+                                    selectedValue={this.state.selected2}
+                                    onValueChange={this.onValueChange2.bind(this)}
+                                >
+                                    <Picker.Item label="1" value={1} />
+                                    <Picker.Item label="2" value={2} />
+                                    <Picker.Item label="3" value={3} />
+                                    <Picker.Item label="4" value={4} />
+                                    <Picker.Item label="5" value={5} />
+                                    <Picker.Item label="6" value={6} />
+                                </Picker>
+                                <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 17, color: '#333' }}>$ {item.saleValue}</Text>
+                            </View>
                         </View>
-                        {/* <View style={{ flexDirection: 'row' }}>
-                            <Text>Cant</Text>
-                            <Picker
-                                mode="dropdown"
-                                style={{ marginLeft: 10, borderWidth: 1, borderColor: 'rgba(200,200,200,.4)', height: 30, width: 50, justifyContent: 'center', borderRadius: 5}}
-                                placeholder="Cant"
-                                selectedValue={this.state.selected2}
-                                onValueChange={this.onValueChange2.bind(this)}
-                            >
-                                <Picker.Item label="1" value={1} />
-                                <Picker.Item label="2" value={2} />
-                                <Picker.Item label="3" value={3} />
-                                <Picker.Item label="4" value={4} />
-                                <Picker.Item label="5" value={5} />
-                                <Picker.Item label="6" value={6} />
-                            </Picker>
-                        </View> */}
                     </View>
                 </View>
-            </View>
-                <View style={{flexDirection: 'row', paddingVertical: 10, width: '100%', borderWidth: 1, borderColor: 'rgba(200,200,200,.4)',
+                <View style={{flexDirection: 'row', paddingTop: 10, width: '100%',
                 paddingHorizontal: 10, borderTopWidth: 0, backgroundColor: 'white'}}>
                     <TouchableOpacity onPress={() => this.goToProduct(item)} style={{ alignItems: 'center', justifyContent: 'center' }}>
                         <Text style={{color: Colors.default.primaryColor}}>Detalles</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.openRemoveModal(item)} style={{ alignItems: 'center', justifyContent: 'center', marginLeft: 20 }}>
+                    <TouchableOpacity onPress={() => this.removeFromCart(item)} style={{ alignItems: 'center', justifyContent: 'center', marginLeft: 20 }}>
                         <Text style={{color: Colors.default.primaryColor}}>Eliminar</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
+            </Card>
         )
     }
 

@@ -435,7 +435,7 @@ class PurchaseComponent extends React.Component<any, any> {
         let totalValorProducts = 0;
         products.map((el: any, index: number) => (totalValorProducts = totalValorProducts + parseFloat(el.saleValue)) )
         return (
-            <View style={{position: 'absolute', bottom: 0, left: 0, width}}>
+            <View style={{position: 'absolute', bottom: 53, left: 0, width}}>
                 {
                     (products.length > 0) &&
                     <View style={{
@@ -479,14 +479,14 @@ class PurchaseComponent extends React.Component<any, any> {
         
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5 }}>
                                     <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 12, fontWeight: 'bold', color: '#4C6ED2' }}>SubTotal</Text>
-                                    <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 17, color: Colors.default.green }}>
+                                    <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 17, color: Colors.default.primaryColor }}>
                                         {'$ ' +(shippingCost.options[custom].cost + totalValorProducts).toFixed(2)}</Text>
                                 </View>
                                 {
                                     cargando ? 
                                         <Spinner size="small" color="#000"></Spinner>
                                     :
-                                    <TouchableOpacity style={{ width: '80%', borderWidth:1, borderColor: 'rgba(200,200,200,.4)', backgroundColor: Colors.default.green, alignSelf: 'center',paddingVertical: 5, borderRadius: 5 }}
+                                    <TouchableOpacity style={{ width: '80%', borderWidth:1, borderColor: 'rgba(200,200,200,.4)', backgroundColor: Colors.default.primaryColor, alignSelf: 'center',paddingVertical: 5, borderRadius: 5 }}
                                     onPress={() => this.pay()}>
                                         <Text style={{textAlign:'center', color: 'white', fontFamily: 'Poppins-SemiBold', fontSize: 17 }}>Pagar</Text>
                                     </TouchableOpacity>

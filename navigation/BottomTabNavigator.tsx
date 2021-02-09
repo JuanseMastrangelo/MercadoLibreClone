@@ -183,11 +183,11 @@ function TabFourNavigator() {
                 name="Carro"
                 component={Cart}
                 options={{
-                    headerTransparent: true,
-                    cardStyle: { backgroundColor: '#FFF'  },
-                    headerTitleStyle: { textAlign: 'center', color: '#000', fontWeight: 'bold', fontSize: 24, alignSelf: 'center',height: '100%' },
-                    headerStyle: { display: 'none' },
-                    headerTitle: () => null,
+                    cardStyle: { backgroundColor: 'rgba(250,250,250,1)' },
+                    headerStyle: { backgroundColor: Colors.default.yellow, shadowColor: 'transparent' },
+                    headerTitle: () => (
+                        <Text style={{ fontSize: 16 }}>Carrito</Text>
+                    ),
                     headerBackTitleVisible: false,
                     headerBackTitleStyle: {display: 'none'},
                     headerBackImage: () => null
