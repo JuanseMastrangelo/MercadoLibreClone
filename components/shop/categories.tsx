@@ -36,9 +36,12 @@ export class CategoriesComponent extends React.Component<any, any> {
 
     renderItem = (item: any, index: number) => {
         return(
-            <TouchableOpacity onPress={() => this.viewCategorie(item)} style={{width: 110, height: 130, marginRight: 20}}>
-                <Image source={{uri: JSON.parse(this.state.categories[index].files)[0].path}} style={{width: '100%', height: '80%', borderRadius: 10}}></Image>
-                <Text style={{fontFamily: 'Poppins-Medium', textAlign: 'center', fontSize: 13, marginTop: 10}}>{item.name}</Text>
+            <TouchableOpacity onPress={() => this.viewCategorie(item)} style={{width: 80, height: 100, marginRight: 10}}>
+                <View style={{width: 70, height: 70, borderRadius: 1000, backgroundColor: '#fff', shadowOffset: { width: 2, height: 4, }, shadowColor: "#000", shadowOpacity: 0.09, shadowRadius: 2, padding: 5, 
+            alignSelf: 'center'}}>
+                    <Image style={{width: '100%', height: '100%', borderRadius: 1000}} resizeMode="contain" source={{uri: JSON.parse(this.state.categories[index].files)[0].path}}></Image>
+                </View>
+                <Text style={{fontFamily: 'Poppins-Regular', textAlign: 'center', fontSize: 10, marginTop: 10, color: '#777', textTransform: 'capitalize'}}>{item.name}</Text>
             </TouchableOpacity>
         )
     }
@@ -54,13 +57,13 @@ export class CategoriesComponent extends React.Component<any, any> {
     render() {
         const {categories, errorFetch} = this.state;
         return (
-            <View style={{marginVertical: 20}}>
-                <View style={{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 20}}>
+            <View style={{marginVertical: 10}}>
+                {/* <View style={{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 20}}>
                     <Text style={{fontSize: 20, fontFamily: 'Poppins-Medium'}}>Categorias</Text>
                     <TouchableOpacity onPress={() => this.goToCategories()}>
                         <Text>Ver todas</Text>
                     </TouchableOpacity>
-                </View>
+                </View> */}
                 {
                     categories ? 
                     <FlatList

@@ -17,12 +17,12 @@ export default {
     tabIconSelected: tintColorDark,
   },
   default: {
-    primaryColor: '#0C91E8',
+    primaryColor: '#3483FA',
     secondaryColor: '#90CAF9',
     accentColor: '#f85f6a',
     darkColor: '#35424a',
     greyColor: '#989eb1',
-    yellow: '#FFC831',
+    yellow: '#FFE600',
     yellowLight: 'rgba(255,200,49,0.5)',
     green: '#45BF55'
   },

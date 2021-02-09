@@ -28,7 +28,8 @@ class SingleProduct extends React.Component<any, any> {
         super(props)
         this.state = {
             product: this.props.route.params.product,
-            relatedProducts: null
+            relatedProducts: null,
+            loading: false
         }
         this.loadProductByCategorie();
         this.httpService = new HttpService();
@@ -77,18 +78,21 @@ class SingleProduct extends React.Component<any, any> {
 
     addToCart = async () => {
         const { product } = this.state;
+        this.setState({loading: true});
         this.httpService.post('/cart', {postId: product.id}).then((_:any) => {
             this.props.addCart(product);
             Toast.show({
                 text: 'Agregado al carro',
                 type: 'success',
                 position: 'top'
-              })
+            })
+            this.setState({loading: false});
         })
     }
 
     removeToCart = () => {
         const { product } = this.state;
+        this.setState({loading: true});
         this.httpService.delete('/cart/'+product.id).then((_:any) => {
             this.props.cartRemove(product.id);
             Toast.show({
@@ -96,12 +100,13 @@ class SingleProduct extends React.Component<any, any> {
                 type: 'danger',
                 position: 'top'
             })
+            this.setState({loading: false});
         });
     }
 
 
     render() {
-        const { product, relatedProducts } = this.state;
+        const { product, relatedProducts, loading } = this.state;
         const { items } = this.props.state.cart;
         const in_cart_item = items.filter((el: any) => el.id === product.id).length > 0;
 
@@ -181,9 +186,16 @@ class SingleProduct extends React.Component<any, any> {
                                 backgroundColor: Colors.default.primaryColor, width: '100%', flexDirection: 'row', height: 50,
                                 justifyContent: 'center', alignItems: 'center', borderRadius: 5
                             }}
+                            disabled={loading}
                             onPress={() => this.addToCart()}>
                             <FontAwesome name="shopping-cart" color="white" size={17} style={{ marginRight: 15 }}></FontAwesome>
-                            <Text style={{ fontFamily: 'Poppins-Regular', color: 'white' }}>Agregar al carro</Text>
+                            
+                            {
+                                !loading ?
+                                <Text style={{ fontFamily: 'Poppins-Regular', color: 'white' }}>Agregar al carro</Text>
+                                :
+                                <Spinner color="white" size={20}></Spinner>
+                            }
                         </TouchableOpacity>
                     </View>
                     :
@@ -194,9 +206,15 @@ class SingleProduct extends React.Component<any, any> {
                                 backgroundColor: Colors.default.accentColor, width: '100%', flexDirection: 'row', height: 50,
                                 justifyContent: 'center', alignItems: 'center', borderRadius: 5
                             }}
+                            disabled={loading}
                             onPress={() => this.removeToCart()}>
                             <FontAwesome name="shopping-cart" color="white" size={17} style={{ marginRight: 15 }}></FontAwesome>
-                            <Text style={{ fontFamily: 'Poppins-Regular', color: 'white' }}>Quitar</Text>
+                            {
+                                !loading ?
+                                <Text style={{ fontFamily: 'Poppins-Regular', color: 'white' }}>Quitar</Text>
+                                :
+                                <Spinner color="white" size={20}></Spinner>
+                            }
                         </TouchableOpacity>
                     </View>
                 }

@@ -1,8 +1,7 @@
-import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
-import { Dimensions, Platform, Text, View } from 'react-native';
+import { Dimensions, Platform, Text, View, Image } from 'react-native';
 
 import { FontAwesome } from '@expo/vector-icons';
 
@@ -17,13 +16,11 @@ import Profile from '../screens/profile';
 
 
 import CartIcon from './cartIcon';
-import ItemsOnWhiteList from './itemsOnWhiteList';
-
-import TabTwoScreen from '../screens/TabTwoScreen';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import BottomCartIcon from './bottomCartIcon';
 
 import { connect } from 'react-redux';
 import SearchBar from './searchBar';
+import { MessageIcon } from './messageIcon';
 
 const {width} = Dimensions.get('window');
 
@@ -51,7 +48,7 @@ export function BottomTabNavigator(props: any) {
                 name="Inicio"
                 component={TabOneNavigator}
                 options={{
-                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 10, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Inicio</Text>,
+                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 9, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Inicio</Text>,
                     tabBarIcon: ({ color }) => <FontAwesome name="home" color={color} size={20} style={{marginTop: 5}} />,
                 }}
             />
@@ -59,7 +56,7 @@ export function BottomTabNavigator(props: any) {
                 name="Compras"
                 component={TabTreeNavigator}
                 options={{
-                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 10, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Favoritos</Text>,
+                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 9, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Favoritos</Text>,
                     tabBarIcon: ({ color }) => <FontAwesome name="heart-o" color={color} size={20} style={{marginTop: 5}} />,
                 }}
             />
@@ -67,15 +64,18 @@ export function BottomTabNavigator(props: any) {
                 name="Carro"
                 component={TabFourNavigator}
                 options={{
-                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 10, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Mis Compras</Text>,
-                    tabBarIcon: ({ color }) => <FontAwesome name="shopping-cart" color={color} size={20} style={{marginTop: 5}} />,
+                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 9, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Mis Compras</Text>,
+                    // tabBarIcon: ({ color }) => <FontAwesome name="shopping-cart" color={color} size={20} style={{marginTop: 5}} />,
+                    tabBarIcon: ({ color }) => (
+                        <BottomCartIcon color={color}></BottomCartIcon>
+                    ),
                 }}
             />
             <BottomTab.Screen
                 name="Notificaciones"
                 component={TabTwoNavigator}
                 options={{
-                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 10, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Notificaciones</Text>,
+                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 9, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Notificaciones</Text>,
                     tabBarIcon: ({ color }) => <FontAwesome name="bell-o" color={color} size={20} style={{marginTop: 5}} />,
                 }}
             />
@@ -83,7 +83,7 @@ export function BottomTabNavigator(props: any) {
                 name="Profile"
                 component={TabFiveNavigator}
                 options={{
-                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 10, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Mas</Text>,
+                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 9, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Mas</Text>,
                     tabBarIcon: ({ color }) => <FontAwesome name="navicon" color={color} size={20} style={{marginTop: 5}} />,
                 }}
             />
@@ -119,8 +119,11 @@ function TabOneNavigator({ navigation }: any) {
                     header: () => (
                         <View style={{width, paddingTop: 24, backgroundColor: Colors.default.yellow, height: 70, flexDirection: 'row',
                         justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10}}>
-                            <SearchBar navigation={navigation} style={{marginRight: 40}} />
-                            <CartIcon navigation={navigation} style={{marginTop: 15}} />
+                            <SearchBar navigation={navigation} style={{marginRight: 20}} />
+                            <View style={{flexDirection: 'row'}}>
+                                <CartIcon navigation={navigation} style={{marginTop: 15}} />
+                                <MessageIcon navigation={navigation} style={{marginTop: 15}} />
+                            </View>
                         </View>
                     )
                 }}
@@ -153,12 +156,16 @@ function TabTreeNavigator({navigation}: any) {
                 name="Favoritos"
                 component={WhiteList}
                 options={{
-                    headerTransparent: true,
-                    cardStyle: { backgroundColor: '#FFF' },
-                    headerTitleStyle: { textAlign: 'center', color: '#000', fontWeight: 'bold', fontSize: 24, alignSelf: 'center',height: '100%' },
-                    headerStyle: { display: 'none' },
-                    headerRight: () => null,
-                    headerTitle: () => null,
+                    cardStyle: { backgroundColor: 'rgba(250,250,250,1)' },
+                    headerStyle: { backgroundColor: Colors.default.yellow, shadowColor: 'transparent' },
+                    headerRight: () => (
+                        <View style={{alignItems: 'center', marginRight: 20, height: '100%'}}>
+                            <CartIcon navigation={navigation} style={{marginTop: 15}} styleBadge={{bottom: 30}} />
+                        </View>
+                    ),
+                    headerTitle: () => (
+                        <Text style={{ fontSize: 16 }}>Favoritos</Text>
+                    ),
                     headerBackTitleVisible: false,
                     headerBackTitleStyle: {display: 'none'},
                     headerBackImage: () => null
@@ -199,13 +206,16 @@ function TabFiveNavigator({ navigation }: any) {
                 name="Profile"
                 component={Profile}
                 options={{
-                    headerTitle: 'Perfil',
                     cardStyle: { backgroundColor: '#FFF' },
                     headerTitleStyle: { textAlign: 'center', color: '#000',  fontWeight: 'bold', alignSelf: 'center',height: '100%', marginTop: Platform.OS === 'ios' ? 10 : 0, marginLeft: Platform.OS === 'ios' ? 0 : 60 },
-                    headerStyle: { backgroundColor: '#FFF', shadowColor: 'transparent' },
-                    headerStatusBarHeight: Platform.OS === 'ios' ? 40 : 20,
+                    headerStyle: { backgroundColor: Colors.default.yellow, shadowColor: 'transparent' },
                     headerRight: () => (
-                        <CartIcon navigation={navigation} style={{backgroundColor: '#FFF', marginTop: Platform.OS === 'ios' ? 8 : 24}} />
+                        <View style={{alignItems: 'center', marginRight: 20, height: '100%'}}>
+                        <CartIcon navigation={navigation} style={{marginTop: 15}} styleBadge={{bottom: 30}} />
+                        </View>
+                    ),
+                    headerTitle: () => (
+                        <Text style={{ fontSize: 16 }}>Configuración</Text>
                     ),
                     headerBackTitleVisible: false,
                     headerBackTitleStyle: {display: 'none'},

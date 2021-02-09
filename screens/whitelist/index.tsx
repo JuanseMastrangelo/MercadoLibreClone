@@ -68,7 +68,9 @@ class WhiteList extends React.Component<any, any> {
             <TouchableOpacity
                 style={{ width: width / 2.3, marginTop: 10, height: 280, marginHorizontal: 10, borderWidth: 1, borderColor: 'rgba(200,200,200,.2)', backgroundColor: 'white' }}
                 onPress={() => this.goToProduct(item)}>
-                <Image source={{ uri: JSON.parse(favItems[index].files)[0].path }} style={{ width: '100%', height: '70%', borderRadius: 10 }}></Image>
+                <View style={{ width: '100%', height: '70%', borderRadius: 10, borderBottomWidth: 0.4, borderBottomColor: 'rgba(200,200,200,.4)'}}>
+                    <Image source={{ uri: JSON.parse(favItems[index].files)[0].path }} resizeMode="contain" style={{ width: '100%', height: '100%', borderRadius: 10 }}></Image>
+                </View>
                 <View style={{ marginTop: 10, paddingHorizontal: 10 }}>
                     <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 10, }}>{item.title}</Text>
                     <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 15, fontWeight: 'bold' }}>$ {item.saleValue}</Text>
@@ -111,7 +113,7 @@ class WhiteList extends React.Component<any, any> {
     render() {
         const { items } = this.props.state.favorites;
         return (
-            <View style={{ marginTop: 20 }}>
+            <View style={{ marginTop: 0 }}>
                 <View style={{
                     transform: [{ rotate: '40deg' }], backgroundColor: Colors.default.yellowLight, width: 200, height: 250, position: 'absolute',
                     top: -40, left: -120, borderBottomEndRadius: 100, borderTopEndRadius: 100
@@ -139,7 +141,7 @@ class WhiteList extends React.Component<any, any> {
                                 />
                             }
                             data={items}
-                            style={{marginTop: 14, paddingBottom: 10}}
+                            style={{paddingTop: 14, paddingBottom: 10, minHeight: height}}
                             horizontal={false}
                             renderItem={({item, index}) => this.renderItem(item, index)}
                             showsVerticalScrollIndicator={false}

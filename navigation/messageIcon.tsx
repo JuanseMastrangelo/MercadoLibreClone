@@ -1,3 +1,4 @@
+import { FontAwesome } from '@expo/vector-icons';
 import { StackActions } from '@react-navigation/native';
 import * as React from 'react';
 import { Image, Text, View, StyleSheet } from 'react-native';
@@ -5,7 +6,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { connect } from 'react-redux';
 
-export class CartIcon extends React.Component<any> {
+export class MessageIcon extends React.Component<any> {
     constructor(props: any) {
         super(props)
     }
@@ -17,15 +18,15 @@ export class CartIcon extends React.Component<any> {
 
     render() {
         return (
-            <TouchableOpacity style={{ alignSelf: 'center', height: '100%', marginBottom: 10, alignItems: 'flex-end'}}
+            <TouchableOpacity style={{ alignSelf: 'center', height: '100%', marginBottom: 10, marginLeft: 10, alignItems: 'flex-end'}}
             onPress={() => this.goToCart()}>
                 <Image
-                    source={{uri: 'https://icons.iconarchive.com/icons/iconsmind/outline/512/Shopping-Cart-icon.png'}}
+                    source={{uri: 'https://cdn.iconscout.com/icon/free/png-256/message-672-675248.png'}}
                     fadeDuration={0}
                     style={[styles.iconBag, this.props.style]}
                 />
                 <View style={[styles.badge, this.props.styleBadge]}>
-                    <Text style={{ color: '#FFF' }}>{this.props.state.cart.items.length}</Text>
+                    <Text style={{ color: '#FFF' }}>0</Text>
                 </View>
             </TouchableOpacity>
         )
@@ -55,5 +56,5 @@ function mapStateToProps(state: any) {
     return {state}
   }
   
-export default connect(mapStateToProps)(CartIcon)
+export default connect(mapStateToProps)(MessageIcon)
   

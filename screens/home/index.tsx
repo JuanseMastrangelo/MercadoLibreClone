@@ -32,8 +32,7 @@ export class Home extends React.Component<any, any> {
         super(props)
         this.state = {
             newProducts: null,
-            errorFetch: false,
-            searchValue: ''
+            errorFetch: false
         }
         this.httpService = new HttpService();
     }
@@ -75,14 +74,14 @@ export class Home extends React.Component<any, any> {
     
 
     render() {
-        const { newProducts, errorFetch, searchValue } = this.state
+        const { newProducts, errorFetch } = this.state
         return (
             <View style={{}}>
                 <View style={{ position: 'absolute', top: -80, width, left: 0 }}><Text style={{ color: 'black', textAlign: 'center', fontFamily: 'Poppins-Regular' }}>Gracias por utilizar nuestra tienda! ❤</Text></View>
-                <View style={{
+                {/* <View style={{
                     transform: [{ rotate: '40deg' }], backgroundColor: Colors.default.yellowLight, width: 300, height: 250, position: 'absolute',
                     top: -40, left: -120, borderBottomEndRadius: 100, borderTopEndRadius: 100
-                }}></View>
+                }}></View> */}
                 <View style={{
                     transform: [{ rotate: '40deg' }], backgroundColor: Colors.default.yellowLight, width: 130, height: 230, position: 'absolute',
                     top: 340, right: -30, borderRadius: 100

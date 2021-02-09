@@ -57,7 +57,7 @@ const Carousel = ({ data }) => {
                     )}
                 />
 
-                <View style={styles.dotView}>
+                {/* <View style={styles.dotView}>
                     {data.map((_, i) => {
                         let opacity = position.interpolate({
                             inputRange: [i - 1, i, i + 1],
@@ -77,7 +77,7 @@ const Carousel = ({ data }) => {
                         )
                     })}
 
-                </View>
+                </View> */}
             </View>
         )
     }

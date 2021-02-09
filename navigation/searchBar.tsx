@@ -27,12 +27,12 @@ export default class SearchBar extends React.Component<any, any> {
     render() {
         const { searchValue } = this.state;
         return (
-            <View style={[{width: '70%', alignSelf: 'center'}, this.props.style]}>
+            <View style={[{width: '73%', alignSelf: 'center'}, this.props.style]}>
                 <Input
                     value={searchValue}
                     size='small'
                     status='basic'
-                    style={{backgroundColor: '#fff', borderRadius: 100, shadowOffset: { width: 2, height: 2, }, shadowColor: "#000", shadowOpacity: 0.15, shadowRadius: 5}}
+                    style={{backgroundColor: '#fff', borderRadius: 100, shadowOffset: { width: 2, height: 4, }, shadowColor: "rgba(200,200,200,.5)", shadowOpacity: 0.09, shadowRadius: 2, borderWidth: 0}}
                     placeholder='Buscar productos...'
                     accessoryLeft={this.renderIcon}
                     onChangeText={searchValue => this.setState({searchValue})}

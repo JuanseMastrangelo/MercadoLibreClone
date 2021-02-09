@@ -1,7 +1,7 @@
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
-import { ColorSchemeName } from 'react-native';
+import { ColorSchemeName, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { RootStackParamList } from '../types';
@@ -81,7 +81,9 @@ function ComponentsNavigator({navigation}: any) {
                 headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="black" style={{marginLeft: 30,fontSize: 24}} />),
                 headerBackTitleVisible: false,
                 headerRight: () => (
-                  <CartIcon navigation={navigation} style={{backgroundColor: 'transparent', marginTop: 15}} />
+                  <View style={{height: '100%', marginRight: 20}}>
+                    <CartIcon navigation={navigation} style={{backgroundColor: 'transparent', marginTop: 15}} />
+                  </View>
                 ),
               }}
             />
