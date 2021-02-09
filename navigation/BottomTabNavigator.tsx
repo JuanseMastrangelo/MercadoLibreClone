@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
-import { Platform, Text, View } from 'react-native';
+import { Dimensions, Platform, Text, View } from 'react-native';
 
 import { FontAwesome } from '@expo/vector-icons';
 
@@ -23,6 +23,9 @@ import TabTwoScreen from '../screens/TabTwoScreen';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { connect } from 'react-redux';
+import SearchBar from './searchBar';
+
+const {width} = Dimensions.get('window');
 
 const BottomTab = createBottomTabNavigator<any>();
 
@@ -32,12 +35,12 @@ export function BottomTabNavigator(props: any) {
         <BottomTab.Navigator
             initialRouteName="Inicio"
             tabBarOptions={{
-                activeTintColor: Colors.default.darkColor,
+                activeTintColor: Colors.default.primaryColor,
                 activeBackgroundColor: '#FFF',
                 inactiveBackgroundColor: '#FFF',
                 inactiveTintColor: '#bbb',
                 style: {
-                    height: 60,
+                    height: 50,
                     borderTopWidth: 1,
                     borderTopColor: "rgba(200,200,200,0.2)",
                     backgroundColor: 'white'
@@ -64,24 +67,24 @@ export function BottomTabNavigator(props: any) {
                 name="Carro"
                 component={TabFourNavigator}
                 options={{
-                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 10, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Carro</Text>,
+                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 10, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Mis Compras</Text>,
                     tabBarIcon: ({ color }) => <FontAwesome name="shopping-cart" color={color} size={20} style={{marginTop: 5}} />,
                 }}
             />
             <BottomTab.Screen
-                name="Buscar"
+                name="Notificaciones"
                 component={TabTwoNavigator}
                 options={{
-                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 10, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Categorias</Text>,
-                    tabBarIcon: ({ color }) => <FontAwesome name="search" color={color} size={20} style={{marginTop: 5}} />,
+                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 10, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Notificaciones</Text>,
+                    tabBarIcon: ({ color }) => <FontAwesome name="bell-o" color={color} size={20} style={{marginTop: 5}} />,
                 }}
             />
             <BottomTab.Screen
                 name="Profile"
                 component={TabFiveNavigator}
                 options={{
-                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 10, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Perfil</Text>,
-                    tabBarIcon: ({ color }) => <FontAwesome name="user-circle-o" color={color} size={20} style={{marginTop: 5}} />,
+                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 10, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Mas</Text>,
+                    tabBarIcon: ({ color }) => <FontAwesome name="navicon" color={color} size={20} style={{marginTop: 5}} />,
                 }}
             />
         </BottomTab.Navigator>
@@ -108,19 +111,18 @@ function TabOneNavigator({ navigation }: any) {
                 name="Home"
                 component={Home}
                 options={{
-                    headerTitle: 'Market',
-                    cardStyle: { backgroundColor: '#FFF' },
+                    headerTitle: '',
+                    cardStyle: { backgroundColor: 'rgba(250,250,250,1)' },
                     headerTitleStyle: { textAlign: 'center', color: '#000', fontWeight: 'bold', fontSize: 24, fontFamily: 'Poppins-SemiBold', alignSelf: 'center',height: '100%' },
                     headerStyle: { backgroundColor: '#FFF', shadowColor: 'transparent' },
                     headerStatusBarHeight: Platform.OS === 'ios' ? 40 : 20,
-                    headerLeft: () => (
-                        <TouchableOpacity style={{ marginLeft: 15, marginBottom: Platform.OS === 'ios' ? 10 : 0, height: Platform.OS === 'ios' ? 40 : 34, }}>
-                            <Ionicons name="ios-menu" size={35} color="#000" />
-                        </TouchableOpacity>
-                    ),
-                    headerRight: () => (
-                        <CartIcon navigation={navigation} style={{backgroundColor: '#FFF', marginTop: Platform.OS === 'ios' ? 8 : 24}} />
-                    ),
+                    header: () => (
+                        <View style={{width, paddingTop: 24, backgroundColor: Colors.default.yellow, height: 70, flexDirection: 'row',
+                        justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10}}>
+                            <SearchBar navigation={navigation} style={{marginRight: 40}} />
+                            <CartIcon navigation={navigation} style={{marginTop: 15}} />
+                        </View>
+                    )
                 }}
             />
         </TabOneStack.Navigator>

@@ -35,6 +35,7 @@ export default class ProfilePurchase extends React.Component<any, any> {
     }
 
     getPurchases = async () => {
+        this.setState({purchases: null});
         const userData = await AsyncStorage.getItem(authKey)
         const userId = JSON.parse(userData!).id;
         const userToken = JSON.parse(userData!).token;
@@ -190,7 +191,12 @@ export default class ProfilePurchase extends React.Component<any, any> {
         const { purchases } = this.state;
         return (
             <View style={{marginVertical: 20}}>
-                <Text style={{fontFamily: 'Poppins-SemiBold', fontSize: 16, color: '#CCC', marginBottom: 10}}>Detalles de compras</Text>
+                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10}}>
+                    <Text style={{fontFamily: 'Poppins-SemiBold', fontSize: 16, color: '#CCC'}}>Detalles de compras</Text>
+                    <TouchableOpacity onPress={() => this.getPurchases()}>
+                        <FontAwesome name="refresh" style={{ fontSize: 15, color: '#ccc' }}></FontAwesome>
+                    </TouchableOpacity>
+                </View>
                 {
                     purchases ?
                     <View style={{backgroundColor: 'white', borderRadius: 10, paddingHorizontal: 10, paddingVertical: 10,

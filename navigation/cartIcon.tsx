@@ -17,15 +17,14 @@ export class CartIcon extends React.Component<any> {
 
     render() {
         return (
-            <TouchableOpacity style={{ marginRight: 10, alignSelf: 'center',height: '100%', marginBottom: 10, width: 100, alignItems: 'flex-end' }}
+            <TouchableOpacity style={{ alignSelf: 'center', height: '100%', marginBottom: 10, alignItems: 'flex-end'}}
             onPress={() => this.goToCart()}>
                 <Image
-                    source={{uri: 'https://i.pinimg.com/originals/09/88/dc/0988dc27ab24d196b91d085c786c292d.png'}}
+                    source={{uri: 'https://icons.iconarchive.com/icons/iconsmind/outline/512/Shopping-Cart-icon.png'}}
                     fadeDuration={0}
                     style={[styles.iconBag, this.props.style]}
                 />
-                
-                <View style={{ backgroundColor: 'red', width: 20, height: 20, borderRadius: 10000, justifyContent: 'center', alignItems: 'center', position: 'absolute', bottom: 20, right: 10 }}>
+                <View style={{ backgroundColor: 'red', width: 20, height: 20, borderRadius: 10000, justifyContent: 'center', alignItems: 'center', position: 'absolute', bottom: 20, right: 0 }}>
                     <Text style={{ color: '#FFF' }}>{this.props.state.cart.items.length}</Text>
                 </View>
             </TouchableOpacity>
@@ -34,9 +33,9 @@ export class CartIcon extends React.Component<any> {
 }
 const styles = StyleSheet.create({
     iconBag: {
-        width: 21,
+        width: 25,
         height: 21,
-        marginRight: 20
+        marginRight: 10
     },
 })
 

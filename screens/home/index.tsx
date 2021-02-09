@@ -12,7 +12,7 @@ import Colors from '../../constants/Colors';
 
 import { CategoriesComponent } from '../../components/shop/categories';
 // import { CategoryComponent } from '../../components/shop/category';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 import { SlideImages, Coupon } from '../../demoData';
 import { CategoryComponent } from '../../components/shop/category';
@@ -20,7 +20,8 @@ import { authKey, urlApi } from '../../constants/KeyConfig';
 import { bindActionCreators } from 'redux';
 import { HttpService } from '../../constants/HttpService';
 import AsyncStorage from '@react-native-community/async-storage';
-import { Button } from '@ui-kitten/components';
+import { Button, Input } from '@ui-kitten/components';
+import { FontAwesome } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
 
@@ -31,7 +32,8 @@ export class Home extends React.Component<any, any> {
         super(props)
         this.state = {
             newProducts: null,
-            errorFetch: false
+            errorFetch: false,
+            searchValue: ''
         }
         this.httpService = new HttpService();
     }
@@ -73,9 +75,9 @@ export class Home extends React.Component<any, any> {
     
 
     render() {
-        const { newProducts, errorFetch } = this.state
+        const { newProducts, errorFetch, searchValue } = this.state
         return (
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={{}}>
                 <View style={{ position: 'absolute', top: -80, width, left: 0 }}><Text style={{ color: 'black', textAlign: 'center', fontFamily: 'Poppins-Regular' }}>Gracias por utilizar nuestra tienda! ❤</Text></View>
                 <View style={{
                     transform: [{ rotate: '40deg' }], backgroundColor: Colors.default.yellowLight, width: 300, height: 250, position: 'absolute',
@@ -85,19 +87,21 @@ export class Home extends React.Component<any, any> {
                     transform: [{ rotate: '40deg' }], backgroundColor: Colors.default.yellowLight, width: 130, height: 230, position: 'absolute',
                     top: 340, right: -30, borderRadius: 100
                 }}></View>
-                <Carousel data={SlideImages} />
-                <CategoriesComponent navigation={this.props.navigation} ></CategoriesComponent>
-                {
-                    errorFetch ?
-                    <View style={{width: '100%', justifyContent: 'center', flexDirection: 'row', alignItems: 'center'}}>
-                        <Button appearance='outline' status="basic" size="small" onPress={() => this.loadNewsProducts()}>Reintentar</Button>
-                    </View>
-                    :
-                    <CategoryComponent navigation={this.props.navigation} title="Más recientes" data={newProducts}></CategoryComponent>
-                }
-                <Image source={{ uri: Coupon }} resizeMode="contain" style={{ width, height: 140, marginVertical: 40 }}></Image>
-                {/* <CategoryComponent title="Nuevos" data={ProductBestSellers}></CategoryComponent> */}
-            </ScrollView>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <Carousel data={SlideImages} />
+                    <CategoriesComponent navigation={this.props.navigation} ></CategoriesComponent>
+                    {
+                        errorFetch ?
+                        <View style={{width: '100%', justifyContent: 'center', flexDirection: 'row', alignItems: 'center'}}>
+                            <Button appearance='outline' status="basic" size="small" onPress={() => this.loadNewsProducts()}>Reintentar</Button>
+                        </View>
+                        :
+                        <CategoryComponent navigation={this.props.navigation} title="Más recientes" data={newProducts}></CategoryComponent>
+                    }
+                    <Image source={{ uri: Coupon }} resizeMode="contain" style={{ width, height: 140, marginVertical: 40 }}></Image>
+                    {/* <CategoryComponent title="Nuevos" data={ProductBestSellers}></CategoryComponent> */}
+                </ScrollView>
+            </View>
         )
     }
 }
