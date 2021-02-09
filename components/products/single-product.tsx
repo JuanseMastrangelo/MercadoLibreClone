@@ -81,11 +81,6 @@ class SingleProduct extends React.Component<any, any> {
         this.setState({loading: true});
         this.httpService.post('/cart', {postId: product.id}).then((_:any) => {
             this.props.addCart(product);
-            Toast.show({
-                text: 'Agregado al carro',
-                type: 'success',
-                position: 'top'
-            })
             this.setState({loading: false});
         })
     }
@@ -95,11 +90,6 @@ class SingleProduct extends React.Component<any, any> {
         this.setState({loading: true});
         this.httpService.delete('/cart/'+product.id).then((_:any) => {
             this.props.cartRemove(product.id);
-            Toast.show({
-                text: 'Eliminado del carro',
-                type: 'danger',
-                position: 'top'
-            })
             this.setState({loading: false});
         });
     }

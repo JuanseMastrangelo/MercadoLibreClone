@@ -33,7 +33,7 @@ export class CategoryComponent extends React.Component<any> {
 
     render() {
         return (
-            <View style={{marginVertical: 20}}>
+            <View style={{marginVertical: 0}}>
                     <View>
                         <View style={{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 20}}>
                             <Text style={{fontSize: 20, fontFamily: 'Poppins-Medium'}}>{this.props.title}</Text>
