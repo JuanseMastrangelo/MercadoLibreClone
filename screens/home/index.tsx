@@ -12,7 +12,7 @@ import Colors from '../../constants/Colors';
 
 import { CategoriesComponent } from '../../components/shop/categories';
 // import { CategoryComponent } from '../../components/shop/category';
-import { ScrollView, TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 
 import { SlideImages, Coupon } from '../../demoData';
 import { CategoryComponent } from '../../components/shop/category';
@@ -20,8 +20,7 @@ import { authKey, urlApi } from '../../constants/KeyConfig';
 import { bindActionCreators } from 'redux';
 import { HttpService } from '../../constants/HttpService';
 import AsyncStorage from '@react-native-community/async-storage';
-import { Button, Input } from '@ui-kitten/components';
-import { FontAwesome } from '@expo/vector-icons';
+import { Button } from '@ui-kitten/components';
 
 const { width } = Dimensions.get('window');
 

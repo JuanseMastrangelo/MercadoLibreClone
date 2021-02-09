@@ -4,7 +4,7 @@ import { Spinner, Toast } from 'native-base';
 import * as React from 'react';
 import { Dimensions, Image, Text, View } from 'react-native';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 import Colors from '../../constants/Colors';
 import { HttpService } from '../../constants/HttpService';
 import { authKey, urlApi } from '../../constants/KeyConfig';
@@ -89,9 +89,12 @@ class ColumnGridViewComponent extends React.Component<any, any> {
         const is_favorite = favItems.filter((favItem: any) => favItem.id === item.id).length > 0;
         return (
             <TouchableOpacity
-                style={{ width: width / 2.3, marginTop: 10, height: 280, marginHorizontal: 10, borderWidth: 1, borderColor: 'rgba(200,200,200,.2)', backgroundColor: 'white' }}
+                style={{ width: width / 2.3, marginTop: 10, height: 280, marginHorizontal: 10,
+                    borderWidth: 1, borderColor: 'rgba(200,200,200,.2)', backgroundColor: 'white' }}
                 onPress={() => this.goToProduct(item)}>
-                <Image source={{ uri: JSON.parse(this.state.products[index].files)[0].path }} style={{ width: '100%', height: '70%', borderRadius: 10 }}></Image>
+                <View style={{ width: '100%', height: '70%', borderRadius: 10 }}>
+                    <Image resizeMode="contain" source={{ uri: JSON.parse(this.state.products[index].files)[0].path }} style={{ width: '100%', height: '100%', borderRadius: 10 }}></Image>
+                </View>
                 <View style={{ marginTop: 10, paddingHorizontal: 10 }}>
                     <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 10, }}>{item.title}</Text>
                     <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 15, fontWeight: 'bold' }}>$ {item.saleValue}</Text>
@@ -124,12 +127,12 @@ class ColumnGridViewComponent extends React.Component<any, any> {
     render() {
         const { products, childsCategories } = this.state
         return (
-            <View style={{marginTop: 60}}>
+            <View style={{marginTop: 0}}>
                 {
                     childsCategories.length > 0 &&
                     <FlatList
                         data={childsCategories}
-                        style={{marginTop: 14, paddingBottom: 10}}
+                        style={{paddingTop: 14, paddingBottom: 10}}
                         horizontal={true}
                         renderItem={({item}) => this.renderCategoriesChild(item)}
                         showsVerticalScrollIndicator={false}
@@ -142,6 +145,7 @@ class ColumnGridViewComponent extends React.Component<any, any> {
                     products.length > 0 ?
                         <FlatList
                             data={products}
+                            style={{height: height-120}}
                             horizontal={false}
                             renderItem={({item, index}) => this.renderItem(item, index)}
                             showsVerticalScrollIndicator={false}

@@ -16,6 +16,9 @@ import ColumnGridViewComponent from '../components/FlatLists/columnGridView';
 import { ProductDescriptionComponent } from '../components/products/product-description';
 import { ProductCommentsComponent } from '../components/products/product-comments';
 import SingleProduct from '../components/products/single-product';
+import ChatScreen from '../components/chat';
+import Colors from '../constants/Colors';
+import { Text } from 'native-base';
 
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
@@ -88,10 +91,33 @@ function ComponentsNavigator({navigation}: any) {
               }}
             />
             
+            
+            <ComponentsStack.Screen
+              name="Chat"
+              component={ChatScreen}
+              options={{
+                headerStyle: { backgroundColor: Colors.default.yellow, shadowColor: 'transparent' },
+                headerTitle: () => (
+                    <Text style={{ fontSize: 16 }}>Soporte</Text>
+                ),
+                cardStyle: { backgroundColor: '#FFF' },
+                headerTintColor: 'transparent',
+                headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="black" style={{marginLeft: 30,fontSize: 24}} />),
+                headerBackTitleVisible: false,
+                
+              }}
+            />
+            
             <ComponentsStack.Screen
               name="ColumnGridView"
               component={ColumnGridViewComponent}
-              options={{cardStyle: { backgroundColor: '#F9F9F9' }, headerStyle: { backgroundColor: '#FFF' }, headerTitleStyle: { color: '#000'}, headerBackTitleVisible: false, headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="black" style={{marginLeft: 30,fontSize: 24}} />),headerTransparent: true}}
+              options={{
+                cardStyle: { backgroundColor: '#F9F9F9' },
+                headerStyle: { backgroundColor: Colors.default.yellow, shadowColor: 'transparent' },
+                headerTitleStyle: { color: '#000'},
+                headerBackTitleVisible: false,
+                headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="black" style={{marginLeft: 30,fontSize: 24}} />),
+              }}
             />
         </ComponentsStack.Navigator>
     );

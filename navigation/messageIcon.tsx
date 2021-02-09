@@ -11,15 +11,15 @@ export class MessageIcon extends React.Component<any> {
         super(props)
     }
     
-    goToCart() {
-        this.props.navigation.dispatch(StackActions.replace('Root', {screen: 'Carro'}));
+    goToChat() {
+        this.props.navigation.push('Components', { screen: 'Chat' });
     }
 
 
     render() {
         return (
             <TouchableOpacity style={{ alignSelf: 'center', height: '100%', marginBottom: 10, marginLeft: 10, alignItems: 'flex-end'}}
-            onPress={() => this.goToCart()}>
+            onPress={() => this.goToChat()}>
                 <Image
                     source={{uri: 'https://cdn.iconscout.com/icon/free/png-256/message-672-675248.png'}}
                     fadeDuration={0}
