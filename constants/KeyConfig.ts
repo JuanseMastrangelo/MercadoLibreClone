@@ -4,6 +4,9 @@ export const authKey = '@storage/auth';
 export const urlApi = 'https://softwareargentina.store/api';
 // export const urlApi = 'http://192.168.1.22:8000/api';
 
+
+export const supportId = 'fauZXmN40NcYvcpFazRqWvaQQTu1';
+
 export const configFirebaseGoogleAuth = {
     expoClientId: `453970326786-b3hijjmtsokm6r7hcon1bupm4fjsj2ig.apps.googleusercontent.com`,
     iosClientId: `453970326786-uce7i05edtcjr5snkvclp4gj71pdfpkn.apps.googleusercontent.com`,

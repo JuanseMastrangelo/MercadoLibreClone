@@ -20,7 +20,7 @@ import BottomCartIcon from './bottomCartIcon';
 
 import { connect } from 'react-redux';
 import SearchBar from './searchBar';
-import { MessageIcon } from './messageIcon';
+import MessageIcon from './messageIcon';
 
 const {width} = Dimensions.get('window');
 
@@ -117,7 +117,7 @@ function TabOneNavigator({ navigation }: any) {
                     headerStyle: { backgroundColor: '#FFF', shadowColor: 'transparent' },
                     headerStatusBarHeight: Platform.OS === 'ios' ? 40 : 20,
                     header: () => (
-                        <View style={{width, paddingTop: 24, backgroundColor: Colors.default.yellow, height: 70, flexDirection: 'row',
+                        <View style={{width, paddingTop: 24, backgroundColor: Colors.default.primaryColor, height: 70, flexDirection: 'row',
                         justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10}}>
                             <SearchBar navigation={navigation} style={{marginRight: 20}} />
                             <View style={{flexDirection: 'row'}}>
@@ -157,14 +157,14 @@ function TabTreeNavigator({navigation}: any) {
                 component={WhiteList}
                 options={{
                     cardStyle: { backgroundColor: 'rgba(250,250,250,1)' },
-                    headerStyle: { backgroundColor: Colors.default.yellow, shadowColor: 'transparent' },
+                    headerStyle: { backgroundColor: Colors.default.primaryColor, shadowColor: 'transparent' },
                     headerRight: () => (
                         <View style={{alignItems: 'center', marginRight: 20, height: '100%'}}>
                             <CartIcon navigation={navigation} style={{marginTop: 15}} styleBadge={{bottom: 30}} />
                         </View>
                     ),
                     headerTitle: () => (
-                        <Text style={{ fontSize: 16 }}>Favoritos</Text>
+                        <Text style={{ fontSize: 16, color: 'white' }}>Favoritos</Text>
                     ),
                     headerBackTitleVisible: false,
                     headerBackTitleStyle: {display: 'none'},
@@ -184,9 +184,9 @@ function TabFourNavigator() {
                 component={Cart}
                 options={{
                     cardStyle: { backgroundColor: 'rgba(250,250,250,1)' },
-                    headerStyle: { backgroundColor: Colors.default.yellow, shadowColor: 'transparent' },
+                    headerStyle: { backgroundColor: Colors.default.primaryColor, shadowColor: 'transparent' },
                     headerTitle: () => (
-                        <Text style={{ fontSize: 16 }}>Carrito</Text>
+                        <Text style={{ fontSize: 16, color: 'white' }}>Carrito</Text>
                     ),
                     headerBackTitleVisible: false,
                     headerBackTitleStyle: {display: 'none'},
@@ -208,14 +208,14 @@ function TabFiveNavigator({ navigation }: any) {
                 options={{
                     cardStyle: { backgroundColor: '#FFF' },
                     headerTitleStyle: { textAlign: 'center', color: '#000',  fontWeight: 'bold', alignSelf: 'center',height: '100%', marginTop: Platform.OS === 'ios' ? 10 : 0, marginLeft: Platform.OS === 'ios' ? 0 : 60 },
-                    headerStyle: { backgroundColor: Colors.default.yellow, shadowColor: 'transparent' },
+                    headerStyle: { backgroundColor: Colors.default.primaryColor, shadowColor: 'transparent' },
                     headerRight: () => (
                         <View style={{alignItems: 'center', marginRight: 20, height: '100%'}}>
                         <CartIcon navigation={navigation} style={{marginTop: 15}} styleBadge={{bottom: 30}} />
                         </View>
                     ),
                     headerTitle: () => (
-                        <Text style={{ fontSize: 16 }}>Configuración</Text>
+                        <Text style={{ fontSize: 16, color: 'white' }}>Configuración</Text>
                     ),
                     headerBackTitleVisible: false,
                     headerBackTitleStyle: {display: 'none'},

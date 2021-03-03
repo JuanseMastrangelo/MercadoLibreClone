@@ -1,4 +1,5 @@
 
+import { FontAwesome } from '@expo/vector-icons';
 import { ActionSheet, Text, Thumbnail, View } from 'native-base';
 import * as React from 'react';
 import { Image, Linking } from 'react-native';
@@ -60,7 +61,6 @@ export default class MessageSreen extends React.Component<any, any> {
                 }).then(res => {
                     return res.json();
                 }).then(urlMetadata => {
-                    console.log(urlMetadata);
                     this.setState({urlMetadata})
                 })
             }
@@ -90,7 +90,7 @@ export default class MessageSreen extends React.Component<any, any> {
     }
 
     onLongPressMessage = (item: any) => {
-        ActionSheet.show(
+        /* ActionSheet.show(
             {
               options: BUTTONS,
               cancelButtonIndex: CANCEL_INDEX,
@@ -101,7 +101,7 @@ export default class MessageSreen extends React.Component<any, any> {
                     this.props.selectedItemResponse(item);
                 }
             }
-          )
+          ) */
     }
 
     truncateString = (str: string, num: number) => {
@@ -150,6 +150,12 @@ export default class MessageSreen extends React.Component<any, any> {
                         text={item.content} truncate={0}
                     />
                     <View style={{ justifyContent: 'flex-end', flexDirection: 'row' }}>
+                        {
+                            item.visto ?
+                            <FontAwesome name="eye" style={{fontSize: 13, color: '#aaa' }}></FontAwesome>
+                            :
+                            <FontAwesome name="check" style={{fontSize: 13, color: '#aaa' }}></FontAwesome>
+                        }
                         <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 10, color: '#666', marginLeft: 20 }}>{new Date(item.timestamp).toLocaleTimeString()}</Text>
                     </View>
                 </TouchableOpacity>

@@ -40,16 +40,16 @@ class PurchaseComponent extends React.Component<any, any> {
             userData: null,
             custom: null,
             shippingCost: null,
-            shippingCP: '8324',
-            shippingNameComplete: 'Juanse Mastrangelo',
+            shippingCP: '',
+            shippingNameComplete: '',
             shippingProvincia: new IndexPath(2),
             shippingLocalidad: new IndexPath(2),
-            shippingCalle: 'Av. Alem',
-            shippingPiso: '2 A',
-            shippingNumero: '1323',
-            shippingReferencias: 'Departamento',
-            shippingEntreCalles: 'Tucuman',
-            shippingContacto: '2994054471',
+            shippingCalle: '',
+            shippingPiso: '',
+            shippingNumero: '',
+            shippingReferencias: '',
+            shippingEntreCalles: '',
+            shippingContacto: '',
             loading: false,
             showPopup: false
         }
@@ -74,23 +74,35 @@ class PurchaseComponent extends React.Component<any, any> {
         });
         this.httpService.get('/UserLocations', header).then((res: any) => res.json()).then((data: any) => {
             this.setState({loading: false});
-            const locations = JSON.parse(data[0].locations);
-            this.props.setShipping(locations);
-            const locationSelected = locations.filter((el: any) => el.selected)[0].correo;
-            
-            const isCorreo = locationSelected ? 0 : 1;
-            const { shippingCP, shippingNameComplete, shippingLocalidad, shippingReferencias, shippingEntreCalles,
-                shippingCalle, shippingPiso, shippingNumero, shippingContacto, shippingProvincia } = locations[1].custom;
-            this.setState(
-                {
-                    custom: isCorreo,
-                    shippingCP, shippingNameComplete, shippingCalle, shippingPiso, shippingNumero,
-                    shippingContacto, shippingReferencias, shippingEntreCalles,
-                    shippingProvincia: new IndexPath(shippingProvincia.row),
-                    shippingLocalidad: new IndexPath(shippingLocalidad.row)
-                }
-            );
-            this.calcEnvio();
+            if (!data || data.length === 0) {
+                Toast.show({
+                    text: 'Por favor seleccione forma de entrega',
+                    type: 'warning',
+                    position: 'top'
+                })
+                const defaultLocation = [{"correo":true,"selected":true}]
+                this.props.setShipping(defaultLocation);
+                this.setState( { custom: 0 } );
+                this.calcEnvio();
+            } else {
+                const locations = JSON.parse(data[0].locations);
+                this.props.setShipping(locations);
+                const locationSelected = locations.filter((el: any) => el.selected)[0].correo;
+                
+                const isCorreo = locationSelected ? 0 : 1;
+                const { shippingCP, shippingNameComplete, shippingLocalidad, shippingReferencias, shippingEntreCalles,
+                    shippingCalle, shippingPiso, shippingNumero, shippingContacto, shippingProvincia } = locations[1].custom;
+                this.setState(
+                    {
+                        custom: isCorreo,
+                        shippingCP, shippingNameComplete, shippingCalle, shippingPiso, shippingNumero,
+                        shippingContacto, shippingReferencias, shippingEntreCalles,
+                        shippingProvincia: new IndexPath(shippingProvincia.row),
+                        shippingLocalidad: new IndexPath(shippingLocalidad.row)
+                    }
+                );
+                this.calcEnvio();
+            }
         });
     }
 
@@ -231,31 +243,50 @@ class PurchaseComponent extends React.Component<any, any> {
         }
 
         this.setState({loading: true});
-
+        console.log(this.props.state.shipping);
         const { locations } = this.props.state.shipping;
         const locationSelected = locations.filter((el: any) => (el.correo === false))[0];
 
-        if (custom === 0) {
-            locationSelected.custom.shippingCP = shippingCP
-        }
 
-        const personalizado = custom === 0 ? locationSelected.custom : {
-            shippingCP, shippingNameComplete, shippingProvincia, shippingLocalidad, shippingCalle, shippingPiso, shippingNumero,
-            shippingContacto, shippingReferencias, shippingEntreCalles,
-            Localidad: Localidades[shippingProvincia.row],
-            Provincia: Provincias[shippingProvincia.row]
-        }
-        const body = [
-            {
-                correo: true,
-                selected: custom === 0
-            },
-            {
-                correo: false,
-                selected: custom !== 0,
-                custom: personalizado
+        let body: any;
+        if (custom === 0 && locationSelected && locationSelected.custom) {
+            locationSelected.custom.shippingCP = shippingCP;
+
+            const personalizado = custom === 0 ? locationSelected.custom : {
+                shippingCP, shippingNameComplete, shippingProvincia, shippingLocalidad, shippingCalle, shippingPiso, shippingNumero,
+                shippingContacto, shippingReferencias, shippingEntreCalles,
+                Localidad: Localidades[shippingProvincia.row],
+                Provincia: Provincias[shippingProvincia.row]
             }
-        ]
+            body = [
+                {
+                    correo: true,
+                    selected: custom === 0
+                },
+                {
+                    correo: false,
+                    selected: custom !== 0,
+                    custom: personalizado
+                }
+            ]
+        } else { // Si es la primera vez que se logea e intenta pagar
+            body = [
+                {
+                    correo: true,
+                    selected: custom === 0
+                },
+                {
+                    correo: false,
+                    selected: custom !== 0,
+                    custom: {
+                        shippingCP, shippingNameComplete, shippingProvincia, shippingLocalidad, shippingCalle, shippingPiso, shippingNumero,
+                        shippingContacto, shippingReferencias, shippingEntreCalles,
+                        Localidad: Localidades[shippingProvincia.row],
+                        Provincia: Provincias[shippingProvincia.row]
+                    }
+                }
+            ]
+        }
 
 
         this.httpService.post('/UserLocations', {locations: body}).then((res: any) => res.text()).then((data: any) => {

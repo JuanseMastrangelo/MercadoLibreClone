@@ -3,7 +3,7 @@ import * as React from 'react';
 import Constants from 'expo-constants';
 import { Dimensions, Image, Platform } from 'react-native';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
-import { authKey, firebaseConfig } from '../../constants/KeyConfig';
+import { authKey, firebaseConfig, supportId } from '../../constants/KeyConfig';
 
 const { height, width } = Dimensions.get('window');
 import * as firebase from 'firebase';
@@ -46,20 +46,25 @@ export default class ChatScreen extends React.Component<any, any> {
     }
 
     componentDidMount = async () => {
-        this.getMessages();
         this.getUser();
     }
 
     getMessages = async () => {
+        const {user} = this.state;
         const lastId = await AsyncStorage.getItem('lastIdReaded');
         try {
             firebase.database().ref("chats").on("value", async (snapshot) => {
                 let lastIdItem: any;
                 let messages: any = [];
                 snapshot.forEach((snap) => {
-                    messages.push(snap.val());
+                    const message = snap.val();
+                    message['key'] = snap.key;
+                    if (((message.to == user.id)) || ((message.uid == user.id))) {
+                        messages.push(message);
+                    }
                 });
                 this.setState({ messages });
+                this.setSeeState();
                 
                 /* await firebase.database().ref().child("chats").orderByKey().limitToLast(1).once('value').then(async (ss: any) => { // Get last message
                     lastIdItem = ss.key;
@@ -73,7 +78,19 @@ export default class ChatScreen extends React.Component<any, any> {
         }
     }
 
-    
+    setSeeState() {
+        const {user} = this.state;
+        const { messages } = this.state;
+        var updates: any = {};
+        const messagesFilter = messages.filter((m: any) => (m.to === user.id) && !m.visto);
+        messagesFilter.forEach((message: any) => {
+            if(message.key) {
+                message['visto'] = true;
+                updates['/chats/' + message.key] = message;
+            }
+        })
+        firebase.database().ref().update(updates)
+    }
 
     sendMessage = async () => {
         const { user, textareaValue, imageSelected, itemResponse } = this.state;
@@ -84,7 +101,9 @@ export default class ChatScreen extends React.Component<any, any> {
                 uid: user.id,
                 userName: user.name,
                 imageSelected: imageSelected,
-                itemResponse
+                itemResponse,
+                to: supportId,
+                visto: false
             });
             
             this.setState({ textareaValue: '', imageSelected: null, itemResponse: null });
@@ -96,6 +115,7 @@ export default class ChatScreen extends React.Component<any, any> {
         const userData = await AsyncStorage.getItem(authKey)
         const user = JSON.parse(userData!);
         this.setState({ user });
+        this.getMessages();
     }
 
     bindTextarea = (e: any) => {

@@ -46,6 +46,7 @@
     "react-native-safe-area-context": "~3.0.7",
     "react-native-screens": "~2.9.0",
     "react-native-svg": "12.1.0",
+    "react-native-tour": "^0.3.7",
     "react-native-ui-lib": "^5.20.2",
     "react-native-web": "~0.11.7",
     "react-native-webview": "9.4.0",

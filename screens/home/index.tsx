@@ -6,6 +6,7 @@ import Carousel from './Slideshow/Main';
 
 import { connect } from 'react-redux';
 import { actionCreators as actionsCart } from '../../utils/actions/cart';
+import { actionCreators as actionsMessages } from '../../utils/actions/messages';
 import { actionCreators as actionsFavorites } from '../../utils/actions/favorite';
 
 import Colors from '../../constants/Colors';
@@ -23,6 +24,11 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { Button } from '@ui-kitten/components';
 
 const { width } = Dimensions.get('window');
+
+import * as firebase from 'firebase';
+
+import { HomeTour } from '../../components/tour/homeTour'
+
 
 export class Home extends React.Component<any, any> {
     httpService: any = null;
@@ -58,6 +64,26 @@ export class Home extends React.Component<any, any> {
         this.httpService.get('/favorites', header).then((res:any) => res.json()).then((favoritesItems: any) => {
             this.props.setFavoriteForce(favoritesItems);
         })
+
+        this.getMessages();
+    }
+
+    getMessages = async () => {
+        const userData = await AsyncStorage.getItem(authKey)
+        const user = JSON.parse(userData!);
+        const userId = (user.id).toString();
+        console.log(userId);
+        firebase.database().ref("chats").orderByChild('to').equalTo(user.id).on("value", async (snapshot: any) => {
+            let countNotSee = 0;
+            snapshot.forEach((snap: any) => {
+                const message = snap.val();
+                if (message.visto === false) {
+                    countNotSee++;
+                }
+            });
+            this.props.setMessagesNotReaded(countNotSee);
+
+        });
     }
 
     loadNewsProducts = async() => {
@@ -77,14 +103,11 @@ export class Home extends React.Component<any, any> {
         return (
             <View style={{}}>
                 <View style={{ position: 'absolute', top: -80, width, left: 0 }}><Text style={{ color: 'black', textAlign: 'center', fontFamily: 'Poppins-Regular' }}>Gracias por utilizar nuestra tienda! ❤</Text></View>
+                
                 {/* <View style={{
-                    transform: [{ rotate: '40deg' }], backgroundColor: Colors.default.yellowLight, width: 300, height: 250, position: 'absolute',
-                    top: -40, left: -120, borderBottomEndRadius: 100, borderTopEndRadius: 100
-                }}></View> */}
-                <View style={{
                     transform: [{ rotate: '40deg' }], backgroundColor: Colors.default.yellowLight, width: 130, height: 230, position: 'absolute',
                     top: 340, right: -30, borderRadius: 100
-                }}></View>
+                }}></View> */}
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <Carousel data={SlideImages} />
                     <CategoriesComponent navigation={this.props.navigation} ></CategoriesComponent>
@@ -108,7 +131,8 @@ export class Home extends React.Component<any, any> {
 function mapDispatchToProps(dispatch: any) {
     return {
         setFavoriteForce: bindActionCreators(actionsFavorites.favoriteForce, dispatch),
-        setCartItemsForce: bindActionCreators(actionsCart.forceProduct, dispatch)
+        setCartItemsForce: bindActionCreators(actionsCart.forceProduct, dispatch),
+        setMessagesNotReaded: bindActionCreators(actionsMessages.notSeeMessages, dispatch),
     }
 }
 

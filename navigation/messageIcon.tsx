@@ -26,7 +26,7 @@ export class MessageIcon extends React.Component<any> {
                     style={[styles.iconBag, this.props.style]}
                 />
                 <View style={[styles.badge, this.props.styleBadge]}>
-                    <Text style={{ color: '#FFF' }}>0</Text>
+                    <Text style={{ color: '#FFF' }}>{this.props.state.messages.count}</Text>
                 </View>
             </TouchableOpacity>
         )
