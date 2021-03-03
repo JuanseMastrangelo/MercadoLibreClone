@@ -14,6 +14,7 @@ const { width, height } = Dimensions.get('window');
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { actionCreators as actions } from '../../utils/actions/favorite';
+import { Card } from 'react-native-ui-lib';
 
 class WhiteList extends React.Component<any, any> {
     httpService: any = null;
@@ -65,8 +66,9 @@ class WhiteList extends React.Component<any, any> {
         const favItems = this.props.state.favorites.items;
         const is_favorite = favItems.filter((favItem: any) => favItem.id === item.id).length > 0;
         return (
-            <TouchableOpacity
-                style={{ width: width / 2.3, marginTop: 10, height: 280, marginHorizontal: 10, borderWidth: 1, borderColor: 'rgba(200,200,200,.2)', backgroundColor: 'white' }}
+            <Card
+                style={{ width: width / 2.3, marginTop: 10, height: 280, marginHorizontal: 10, borderWidth: 1, borderColor: 'rgba(200,200,200,.2)', backgroundColor: 'white',
+                 }}
                 onPress={() => this.goToProduct(item)}>
                 <View style={{ width: '100%', height: '70%', borderRadius: 10, borderBottomWidth: 0.4, borderBottomColor: 'rgba(200,200,200,.4)'}}>
                     <Image source={{ uri: JSON.parse(favItems[index].files)[0].path }} resizeMode="contain" style={{ width: '100%', height: '100%', borderRadius: 10 }}></Image>
@@ -85,25 +87,25 @@ class WhiteList extends React.Component<any, any> {
                         <FontAwesome size={23} name={is_favorite ? 'heart' : 'heart-o'} color={is_favorite ? Colors.default.accentColor : Colors.default.greyColor}></FontAwesome>
                     </TouchableOpacity>
                 </View>
-            </TouchableOpacity>
+            </Card>
         )
     }
 
     emptyFavorites = () => (
         <ScrollView showsVerticalScrollIndicator={false} style={{ height: height * 0.75 }} scrollEnabled={false}>
-            <View style={{ justifyContent: 'center', alignItems: 'center', height: height * 0.75 }}>
+            <View style={{ justifyContent: 'center', alignItems: 'center', height: height * 0.45 }}>
                 <View style={{ alignItems: 'center', paddingHorizontal: 50 }}>
                     <View style={{ width: 100, height: 100, borderRadius: 1000, backgroundColor: '#eee', justifyContent: 'center', alignItems: 'center' }}>
                         <FontAwesome color="red" size={40} name="heart-o"></FontAwesome>
                     </View>
-                    <Text style={{ fontSize: 25, fontFamily: 'Poppins-Regular', fontWeight: 'bold', marginTop: 30 }}>WhiteList vacio</Text>
+                    <Text style={{ fontSize: 25, fontFamily: 'Poppins-Regular', fontWeight: 'bold', marginTop: 30 }}>WhiteList vacío</Text>
                     <Text style={{ fontSize: 12, fontFamily: 'Poppins-Medium', fontWeight: 'bold', textAlign: 'center', color: Colors.default.greyColor, marginTop: 10 }}>
                         Agrega productos a favoritos para que aparezcan en esta area
                 </Text>
 
-                    <TouchableOpacity style={{ marginTop: 60, borderWidth: 1, paddingHorizontal: 20, paddingVertical: 10 }} onPress={() => this.goToCategories()}>
+                    {/* <TouchableOpacity style={{ marginTop: 60, borderWidth: 1, paddingHorizontal: 20, paddingVertical: 10 }} onPress={() => this.goToCategories()}>
                         <Text style={{ fontSize: 14, fontFamily: 'Poppins-Regular', fontWeight: 'bold' }}>Ir de compras</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
             </View>
         </ScrollView>
@@ -114,20 +116,6 @@ class WhiteList extends React.Component<any, any> {
         const { items } = this.props.state.favorites;
         return (
             <View style={{ marginTop: 0 }}>
-                <View style={{
-                    transform: [{ rotate: '40deg' }], backgroundColor: Colors.default.yellowLight, width: 200, height: 250, position: 'absolute',
-                    top: -40, left: -120, borderBottomEndRadius: 100, borderTopEndRadius: 100
-                }}></View>
-                <View style={{
-                    transform: [{ rotate: '40deg' }], backgroundColor: Colors.default.yellowLight, width: 130, height: 230, position: 'absolute',
-                    bottom: 40, right: -30, borderRadius: 100
-                }}></View>
-                <View
-                    style={{
-                        transform: [{ rotate: '-40deg' }], backgroundColor: '#F1F7FC', width: 200, height: 100, position: 'absolute',
-                        bottom: -20, left: -70
-                    }}></View>
-                {/* <Text style={{ color: 'black', fontSize: 30, fontFamily: 'Poppins-SemiBold', width: '90%', alignSelf: 'center' }}>Favoritos</Text> */}
                 {
                     items ?
                     items.length > 0 ?

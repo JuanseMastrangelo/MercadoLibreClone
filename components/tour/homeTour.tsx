@@ -44,7 +44,6 @@ export class HomeTour extends React.Component<any, any> {
     }
 
     finishStep() {
-        const { stepShow } = this.state;
         this.setState({ stepShow: -1 })
     }
 
@@ -52,10 +51,7 @@ export class HomeTour extends React.Component<any, any> {
     render() {
         const { stepShow } = this.state;
         return (
-            <View style={{ width, height, position: 'absolute', top: 0, left: 0 }}>
-
-                {
-                    stepShow !== -1 &&
+                stepShow !== -1 &&
                     <View style={{ width, height, position: 'absolute', top: 0, left: 0 }}>
                         <View style={{ width, height, position: 'absolute', top: 0, left: 0, backgroundColor: 'rgba(0,0,0,.6)' }}></View>
                         {
@@ -67,7 +63,7 @@ export class HomeTour extends React.Component<any, any> {
                                             <View style={{ width, position: 'relative' }}>
                                                 <View style={[{
                                                     position: 'absolute',
-                                                    backgroundColor: 'rgba(200,200,200,.5)', marginBottom: 10
+                                                    backgroundColor: 'rgba(200,200,200,.3)', marginBottom: 10
                                                 }, step.props]}></View>
                                                 <View style={{
                                                     backgroundColor: '#F5DBC1', width: '90%', flexDirection: 'row',
@@ -101,9 +97,6 @@ export class HomeTour extends React.Component<any, any> {
                             )
                         }
                     </View>
-                }
-            </View>
-
         )
     }
 }
