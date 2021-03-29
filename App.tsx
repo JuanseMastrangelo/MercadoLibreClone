@@ -17,7 +17,7 @@ import { Provider } from 'react-redux';
 import rootReducer  from './utils/reducers';
 import { createStore } from 'redux';
 import { useFonts } from 'expo-font';
-import { Stepper } from './components/tour/stepper';
+import Stepper from './components/tour/stepper';
 const store = createStore(rootReducer);
 
 export default function App() {

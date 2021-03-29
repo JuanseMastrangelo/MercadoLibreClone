@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Button, Input, Spinner } from '@ui-kitten/components';
 import * as React from 'react';
-import { StatusBar, Text, Dimensions, AsyncStorage, View } from 'react-native';
+import { StatusBar, Text, Dimensions, AsyncStorage, View, Image } from 'react-native';
 import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import Colors from '../../constants/Colors';
 import { authKey, configFirebaseGoogleAuth, firebaseConfig } from '../../constants/KeyConfig';
@@ -124,15 +124,19 @@ export default class LoginScreen extends React.Component<any, any> {
         );
 
         return(
-            <View>
+            <View style={{height, width, position: 'relative'}}>
+                <Image style={{ width, height, resizeMode: 'cover', position: 'absolute'}} source={{uri: 'https://i.pinimg.com/564x/63/f5/66/63f566eeb91c2d424a6627671b9b911f.jpg'}}></Image>
+                
+                <Image source={{uri: 'https://www.amphoralogistics.com/_nuxt/img/landing.cca6a42.gif'}}
+                style={{width: 300, height: 300, position: 'absolute', right: 0, bottom: 0}} />
                 {
                     verificateLogged && !loading ?
                     <View>
                         <View style={{width, paddingHorizontal: 30, paddingTop: height*0.1}}>
-                            <Text style={{color: Colors.default.darkColor, fontSize: 50, fontWeight: 'bold'}}>Hola,</Text>
-                            <Text style={{color: Colors.default.darkColor, fontSize: 20, fontWeight: 'bold'}}>Que gusto verte de nuevo</Text>
+                            <Text style={{color: '#FFF', fontSize: 50, fontWeight: 'bold'}}>Hola,</Text>
+                            <Text style={{color: '#FFF', fontSize: 20, fontWeight: 'bold'}}>somos tu plataforma de compras en linea! Inicia sesión para continuar.</Text>
                         </View>
-                        <View style={{paddingHorizontal: 28, width, marginTop: height*0.1}}>
+                        {/* <View style={{paddingHorizontal: 28, width, marginTop: height*0.1}}>
                             <Input
                                 label='Correo electrónico'
                                 value={emailInput}
@@ -156,21 +160,20 @@ export default class LoginScreen extends React.Component<any, any> {
                                 </Button>
                             </TouchableOpacity>
                         </View>
-                        <Text style={{width, textAlign: 'center', paddingVertical: 20, fontWeight: 'bold'}}>ó</Text>
-
-                        <View style={{ paddingHorizontal: 28, width, alignItems: 'center'}}>
+                        <Text style={{width, textAlign: 'center', paddingVertical: 20, fontWeight: 'bold'}}>ó</Text> */}
+                        <View style={{ paddingHorizontal: 28, width, alignItems: 'center', marginTop: height*0.1}}>
                             <TouchableOpacity onPress={this.initAsync}>
                                 <Button size='medium' style={{width: '100%', backgroundColor: '#1da1f2', borderColor: '#1da1f2'}} accessoryLeft={GoogleIcon}>
                                     Iniciar sesión con Google
                                 </Button>
                             </TouchableOpacity>
                         </View>
-                        <Text onPress={() => {this.redirectTo('RegisterScreen')}} style={{width, textAlign: 'center', paddingVertical: 20, fontWeight: 'bold', textDecorationLine: 'underline', textDecorationColor: '#000'}}>Registrarme ahora!</Text>
+                        {/* <Text onPress={() => {this.redirectTo('RegisterScreen')}} style={{width, textAlign: 'center', paddingVertical: 20, fontWeight: 'bold', textDecorationLine: 'underline', textDecorationColor: '#000'}}>Registrarme ahora!</Text> */}
                     </View>
                 : 
                 <View style={{width, height, alignItems: 'center', justifyContent: 'center'}}>
                     <Spinner></Spinner>
-                    <Text>Verificando sesión...</Text>
+                    <Text style={{color: 'white'}}>Verificando sesión...</Text>
                 </View>
                 }
                 

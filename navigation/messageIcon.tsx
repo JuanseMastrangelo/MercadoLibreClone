@@ -29,17 +29,17 @@ export class MessageIcon extends React.Component<any, any> {
 
 
     sendNotification() {
-        Toast.show({
-            text: 'Nuevo mensaje sin leer',
-            buttonText: 'Ver',
-            duration: 3000,
-            position: 'bottom',
-            buttonStyle: { backgroundColor: "#5cb85c" },
-            onClose: (reason) => { if (reason == 'user') {this.goToChat();} }
-        })
         const { countMessages } = this.state;
         if (+countMessages < +this.props.state.messages.count) {
             // this.schedulePushNotification();
+            Toast.show({
+                text: 'Nuevo mensaje sin leer',
+                buttonText: 'Ver',
+                duration: 3000,
+                position: 'bottom',
+                buttonStyle: { backgroundColor: "#5cb85c" },
+                onClose: (reason) => { if (reason == 'user') {this.goToChat();} }
+            })
             this.setState({ countMessages: this.props.state.messages.count });
         }
     }

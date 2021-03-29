@@ -62,7 +62,6 @@ export default class ProfilePurchase extends React.Component<any, any> {
                 const orderArray = res.sort((a: any, b: any) => {
                     return new Date(b.created_at) - new Date(a.created_at);
                 });
-                console.log(orderArray);
                 const slice = orderArray.slice(0, 7);
                 this.setState({purchases: slice});
             })
@@ -90,10 +89,10 @@ export default class ProfilePurchase extends React.Component<any, any> {
     }
 
     stringStyleByOrderStatus = (status: string, shipId: string) => {
-        if (shipId != '1') {
+        if (shipId == '1') {
             if (status === 'payment_in_process') {
                 return (
-                    <Text style={{fontFamily: 'Poppins-Regular', fontSize: 12, color: Colors.default.yellow}}>Esperando Pago</Text>
+                    <Text style={{fontFamily: 'Poppins-Regular', fontSize: 12, color: Colors.default.darkColor}}>Esperando Pago</Text>
                 );
             } else if (status === 'paid') {
                 return (
@@ -102,7 +101,7 @@ export default class ProfilePurchase extends React.Component<any, any> {
             }
             else {
                 return (
-                    <Text style={{fontFamily: 'Poppins-Regular', fontSize: 12, color: Colors.default.yellow}}>{status}</Text>
+                    <Text style={{fontFamily: 'Poppins-Regular', fontSize: 12, color: Colors.default.darkColor}}>{status}</Text>
                 );
             }
         } else {
@@ -179,7 +178,7 @@ export default class ProfilePurchase extends React.Component<any, any> {
                             </View>
                         </View>
                         {
-                            showDetailOf.info_mp.order_status === 'paid' &&
+                            showDetailOf.shipId != '1' &&
                             <Button size="small" status="success" onPress={() => this.showReceipt()}>Ver factura</Button>
                         }
                         <View style={{marginTop: 20, paddingBottom: 10 }}>
@@ -204,7 +203,7 @@ export default class ProfilePurchase extends React.Component<any, any> {
             <View style={{marginVertical: 20}}>
                 <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10}}>
                     <Text style={{fontFamily: 'Poppins-SemiBold', fontSize: 16, color: '#CCC'}}>Detalles de compras</Text>
-                    <TouchableOpacity onPress={() => this.getPurchases()}>
+                    <TouchableOpacity onPress={() => this.getPurchases()} style={{paddingHorizontal: 25, paddingVertical: 5}}>
                         <FontAwesome name="refresh" style={{ fontSize: 15, color: '#ccc' }}></FontAwesome>
                     </TouchableOpacity>
                 </View>

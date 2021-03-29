@@ -18,7 +18,7 @@ export class BottomCartIcon extends React.Component<any> {
                    this.props.state.cart && this.props.state.cart.items && (this.props.state.cart.items.length > 0) &&
                    (
                     <View style={{ backgroundColor: 'red', width: 20, height: 20, borderRadius: 10000, justifyContent: 'center', alignItems: 'center',
-                    position: 'absolute', top: 20, right: -13 }}>
+                    position: 'absolute', top: 15, right: -13 }}>
                         <Text style={{ color: '#FFF' }}>{this.props.state.cart.items.length}</Text>
                     </View>
                    )

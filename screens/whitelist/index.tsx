@@ -36,7 +36,7 @@ class WhiteList extends React.Component<any, any> {
     }
 
     toggleFavorite = (item:any) => {
-        let { items } = this.props.state.favorites;
+        /* let { items } = this.props.state.favorites;
         const is_favorite = items.filter((el: any) => el.id === item.id).length > 0;
         this.httpService.post('/favorites', {postId: item.id}).then((_:any) => {
             Toast.show({
@@ -50,7 +50,7 @@ class WhiteList extends React.Component<any, any> {
             } else {
                 this.props.addFavorite(item);
             }
-        });
+        }); */
     }
 
     refreshWhiteList = () => {
@@ -93,12 +93,19 @@ class WhiteList extends React.Component<any, any> {
 
     emptyFavorites = () => (
         <ScrollView showsVerticalScrollIndicator={false} style={{ height: height * 0.75 }} scrollEnabled={false}>
-            <View style={{ justifyContent: 'center', alignItems: 'center', height: height * 0.45 }}>
+            <View style={{ justifyContent: 'center', alignItems: 'center', height: height * 0.45, marginTop: 80}}>
                 <View style={{ alignItems: 'center', paddingHorizontal: 50 }}>
-                    <View style={{ width: 100, height: 100, borderRadius: 1000, backgroundColor: '#eee', justifyContent: 'center', alignItems: 'center' }}>
-                        <FontAwesome color="red" size={40} name="heart-o"></FontAwesome>
+                    <View style={{ width: 100, height: 100, borderRadius: 1000, backgroundColor: '#FFF', justifyContent: 'center', alignItems: 'center' }}>
+                        {/* <FontAwesome color="red" size={40} name="heart-o"></FontAwesome> */}
+                        <Image
+                            resizeMode="cover"
+                            source={require('../../assets/images/whitelist.gif')}
+                            fadeDuration={0}
+                            style={{ width: 150, height: 150, borderRadius: 10000 }}
+                        />
+                        
                     </View>
-                    <Text style={{ fontSize: 25, fontFamily: 'Poppins-Regular', fontWeight: 'bold', marginTop: 30 }}>WhiteList vacío</Text>
+                    <Text style={{ fontSize: 25, fontFamily: 'Poppins-Regular', fontWeight: 'bold', marginTop: 60 }}>WhiteList vacío</Text>
                     <Text style={{ fontSize: 12, fontFamily: 'Poppins-Medium', fontWeight: 'bold', textAlign: 'center', color: Colors.default.greyColor, marginTop: 10 }}>
                         Agrega productos a favoritos para que aparezcan en esta area
                 </Text>

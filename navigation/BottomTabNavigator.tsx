@@ -38,9 +38,9 @@ export function BottomTabNavigator(props: any) {
                 inactiveTintColor: '#bbb',
                 style: {
                     height: 50,
-                    borderTopWidth: 1,
+                    borderTopWidth: .5,
                     borderTopColor: "rgba(200,200,200,0.2)",
-                    backgroundColor: 'white'
+                    backgroundColor: 'rgba(250,250,250,.9)'
                 }
                 // showLabel: false,
             }}>
@@ -68,9 +68,10 @@ export function BottomTabNavigator(props: any) {
                     tabBarLabel: ({ color }) => null,
                     // tabBarIcon: ({ color }) => <FontAwesome name="shopping-cart" color={color} size={20} style={{marginTop: 5}} />,
                     tabBarIcon: ({ color }) => (
-                        <View style={{backgroundColor: color, height: 70, borderRadius: 1000,
-                        width: 70, alignItems: 'center', justifyContent: 'center'}}>
-                            <BottomCartIcon color={'white'}></BottomCartIcon>
+                        <View style={{height: 70, borderRadius: 1000,
+                        width: 70, alignItems: 'center', justifyContent: 'center',
+                        backgroundColor: (color === Colors.default.primaryColor) ? color : '#FFF', borderWidth: (color !== Colors.default.primaryColor) && 1, borderColor: 'rgba(200,200,200,.25)'}}>
+                            <BottomCartIcon color={(color === Colors.default.primaryColor) ? '#FFF' : color}></BottomCartIcon>
                         </View>
                     ),
                 }}

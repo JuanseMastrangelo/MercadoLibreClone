@@ -7,6 +7,7 @@ import Carousel from './Slideshow/Main';
 import { connect } from 'react-redux';
 import { actionCreators as actionsCart } from '../../utils/actions/cart';
 import { actionCreators as actionsMessages } from '../../utils/actions/messages';
+import { actionCreators as actionsSteps } from '../../utils/actions/steps';
 import { actionCreators as actionsFavorites } from '../../utils/actions/favorite';
 
 import Colors from '../../constants/Colors';
@@ -84,12 +85,15 @@ export class Home extends React.Component<any, any> {
             this.props.setMessagesNotReaded(countMessagesNotSee);
         });
     }
+
+
     loadNewsProducts = async() => {
         try {
             this.setState({errorFetch: false})
             let newProductsFetch = await fetch(urlApi + '/products/news');
             const newProducts = await newProductsFetch.json();
             this.setState({newProducts: newProducts.data});
+            this.props.setHomeStep(true);
         } catch (e) {
             this.setState({errorFetch: true})
         }
@@ -124,6 +128,10 @@ export class Home extends React.Component<any, any> {
             </View>
         )
     }
+
+    componentWillUnmount() {
+        this.props.setHomeStep(false);
+    }
 }
 
 
@@ -132,6 +140,7 @@ function mapDispatchToProps(dispatch: any) {
         setFavoriteForce: bindActionCreators(actionsFavorites.favoriteForce, dispatch),
         setCartItemsForce: bindActionCreators(actionsCart.forceProduct, dispatch),
         setMessagesNotReaded: bindActionCreators(actionsMessages.notSeeMessages, dispatch),
+        setHomeStep: bindActionCreators(actionsSteps.homeStep, dispatch),
     }
 }
 

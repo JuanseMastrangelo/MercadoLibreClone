@@ -1,4 +1,5 @@
 export const authKey = '@storage/auth';
+export const stepHome = 'stepHome';
 
 
 export const urlApi = 'https://softwareargentina.store/api';
