@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage';
+import { StackActions } from '@react-navigation/routers';
 import { Button } from '@ui-kitten/components';
 import { Text, View } from 'native-base';
 import * as React from 'react';
@@ -92,6 +93,7 @@ export class HomeTour extends React.Component<any, any> {
         /* if (tourAlready) {
             this.setState({ stepShow: -1 })
         } */
+
     }
 
     nextStep() {

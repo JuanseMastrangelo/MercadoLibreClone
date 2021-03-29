@@ -203,7 +203,7 @@ function TabFourNavigator() {
                     cardStyle: { backgroundColor: 'rgba(250,250,250,1)' },
                     headerStyle: { backgroundColor: Colors.default.primaryColor, shadowColor: 'transparent' },
                     headerTitle: () => (
-                        <Text style={{ fontSize: 16, color: 'white' }}>Carrito</Text>
+                        <Text style={{ fontSize: 16, color: 'white' }}>Mi Carro</Text>
                     ),
                     headerBackTitleVisible: false,
                     headerBackTitleStyle: {display: 'none'},

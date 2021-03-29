@@ -170,6 +170,8 @@ class PurchaseComponent extends React.Component<any, any> {
         const { showPopup } = this.state;
         if (!showPopup) { this.getDataOfShipping(); }
         this.setState({ showPopup: !showPopup })
+        showPopup &&
+        this.props.navigation.setOptions({ title: 'Envío' })
     }
 
     clearCart = () => { this.props.cleanCart(); }
@@ -243,7 +245,6 @@ class PurchaseComponent extends React.Component<any, any> {
         }
 
         this.setState({loading: true});
-        console.log(this.props.state.shipping);
         const { locations } = this.props.state.shipping;
         const locationSelected = locations.filter((el: any) => (el.correo === false))[0];
 
@@ -311,23 +312,21 @@ class PurchaseComponent extends React.Component<any, any> {
         const { custom, shippingCP, shippingNameComplete, shippingCalle, shippingProvincia, shippingLocalidad, shippingPiso,
             shippingNumero, shippingReferencias, shippingEntreCalles, shippingContacto, loading } = this.state;
         return (
-                <View style={{ height, width, top: 0, left: 0, alignItems: 'center', backgroundColor: 'white' }}>
-                    <View style={{ justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20, paddingTop: 40, paddingBottom: 15, backgroundColor: Colors.default.yellow, width }}>
-                            <Text style={{ color: 'white', fontWeight: 'bold', fontFamily: 'Poppins-Regular', fontSize: 17 }}>
-                                Destino de envío
-                            </Text>
-                            <View style={{position: 'absolute', left: 0, top: 25}}>
-                                <TouchableOpacity style={{paddingVertical: 15, paddingHorizontal: 20}} onPress={() => this.popupController()}>
-                                    <FontAwesome name="arrow-left" color="white" style={{fontSize: 20}}></FontAwesome>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={{position: 'absolute', right: 0, top: 25}}>
-                                <TouchableOpacity style={{paddingVertical: 15, paddingHorizontal: 20}} onPress={() => this.saveLocation()}>
-                                    <FontAwesome name="check" color="white" style={{fontSize: 20}}></FontAwesome>
-                                </TouchableOpacity>
-                            </View>
+                <View style={{ height, width, top: 0, left: 0, alignItems: 'center', backgroundColor: 'white', paddingHorizontal: 20}}>
+                    <View style={{ justifyContent: 'space-between', alignItems: 'center', paddingTop: 70, width: '100%', flexDirection: 'row'}}>
+                        <Text style={{ color: '#333', fontWeight: 'bold', fontFamily: 'Poppins-Regular', fontSize: 17 }}>
+                            Destino de envío
+                        </Text>
+                        <View style={{ flexDirection: 'row' }}>
+                            <Button size="small" status="success" onPress={() => this.saveLocation()}>
+                                Guardar
+                            </Button>
+                            <Button size="small" style={{marginLeft: 5}} status="danger" onPress={() => this.setState({showPopup: false})}>
+                                X
+                            </Button>
+                        </View>
                     </View>
-                    <ScrollView style={{marginBottom: 50}}>
+                    <ScrollView style={{marginBottom: 50}} horizontal={false}>
                         <RadioGroup
                             style={{flexDirection: 'row', marginTop: 20}}
                             selectedIndex={custom}

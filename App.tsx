@@ -14,17 +14,21 @@ import { Root } from 'native-base';
 
 // Redux
 import { Provider } from 'react-redux';
-import rootReducer  from './utils/reducers';
+import rootReducer from './utils/reducers';
 import { createStore } from 'redux';
 import { useFonts } from 'expo-font';
 import Stepper from './components/tour/stepper';
 const store = createStore(rootReducer);
 
+
+import AnimatedSplash from "react-native-animated-splash-screen";
+
+
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
 
-  
+
   let [fontsLoaded] = useFonts({
     'Poppins-Regular': require('./assets/fonts/Poppins-Regular.ttf'),
     'Poppins-SemiBold': require('./assets/fonts/Poppins-SemiBold.ttf'),
@@ -44,13 +48,13 @@ export default function App() {
       <Provider store={store}>
         <ApplicationProvider {...eva} theme={eva.light}>
           <Root>
-            <Stepper>
-              <Navigation colorScheme={colorScheme} />
-            </Stepper>
-            <StatusBar style="light" />
+              <Stepper>
+                <Navigation colorScheme={colorScheme} />
+              </Stepper>
+              <StatusBar style="light" />
           </Root>
         </ApplicationProvider>
-      </Provider>
+      </Provider >
     );
   }
 }
