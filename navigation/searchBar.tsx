@@ -13,9 +13,6 @@ export default class SearchBar extends React.Component<any, any> {
         }
     }
     
-    goToCart() {
-        this.props.navigation.dispatch(StackActions.replace('Root', {screen: 'Carro'}));
-    }
 
 
     renderIcon = () => (
@@ -23,6 +20,11 @@ export default class SearchBar extends React.Component<any, any> {
             <FontAwesome name="search" color="#ccc"></FontAwesome>
         </TouchableWithoutFeedback>
     );
+
+    search = () => {
+        const { searchValue } = this.state;
+        this.props.navigation.push('Components', { screen: 'SearchScreen', params: {searchValue} });
+    }
 
     render() {
         const { searchValue } = this.state;
@@ -32,6 +34,7 @@ export default class SearchBar extends React.Component<any, any> {
                     value={searchValue}
                     size='small'
                     status='basic'
+                    onSubmitEditing={this.search}
                     style={{backgroundColor: '#fff', borderRadius: 100, shadowOffset: { width: 2, height: 4, }, shadowColor: "rgba(200,200,200,.5)", shadowOpacity: 0.09, shadowRadius: 2, borderWidth: 0}}
                     placeholder='Buscar productos...'
                     accessoryLeft={this.renderIcon}

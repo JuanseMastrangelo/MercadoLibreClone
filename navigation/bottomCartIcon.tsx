@@ -12,12 +12,13 @@ export class BottomCartIcon extends React.Component<any> {
     render() {
         const { color } = this.props;
         return (
-            <View style={{height: '100%', justifyContent: 'flex-end'}}>
+            <View style={{height: '100%', justifyContent: 'center'}}>
                 <FontAwesome name="shopping-cart" color={color} style={{position: 'relative', fontSize: 23}}></FontAwesome>
                 {
                    this.props.state.cart && this.props.state.cart.items && (this.props.state.cart.items.length > 0) &&
                    (
-                    <View style={{ backgroundColor: 'red', width: 20, height: 20, borderRadius: 10000, justifyContent: 'center', alignItems: 'center', position: 'absolute', bottom: 5, right: -13 }}>
+                    <View style={{ backgroundColor: 'red', width: 20, height: 20, borderRadius: 10000, justifyContent: 'center', alignItems: 'center',
+                    position: 'absolute', top: 20, right: -13 }}>
                         <Text style={{ color: '#FFF' }}>{this.props.state.cart.items.length}</Text>
                     </View>
                    )

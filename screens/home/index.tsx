@@ -72,7 +72,6 @@ export class Home extends React.Component<any, any> {
         const userData = await AsyncStorage.getItem(authKey)
         const user = JSON.parse(userData!);
         const userId = (user.id).toString();
-        console.log(userId);
         firebase.database().ref("chats").orderByChild('to').equalTo(user.id).on("value", async (snapshot: any) => {
             let countNotSee = 0;
             snapshot.forEach((snap: any) => {
@@ -82,7 +81,6 @@ export class Home extends React.Component<any, any> {
                 }
             });
             this.props.setMessagesNotReaded(countNotSee);
-
         });
     }
 
@@ -101,8 +99,8 @@ export class Home extends React.Component<any, any> {
     render() {
         const { newProducts, errorFetch } = this.state
         return (
-            <View style={{}}>
-                <View style={{ position: 'absolute', top: -80, width, left: 0 }}><Text style={{ color: 'black', textAlign: 'center', fontFamily: 'Poppins-Regular' }}>Gracias por utilizar nuestra tienda! ❤</Text></View>
+            <View>
+                {/* <View style={{ position: 'absolute', top: -80, width, left: 0 }}><Text style={{ color: 'black', textAlign: 'center', fontFamily: 'Poppins-Regular' }}>Gracias por utilizar nuestra tienda! ❤</Text></View> */}
                 
                 {/* <View style={{
                     transform: [{ rotate: '40deg' }], backgroundColor: Colors.default.yellowLight, width: 130, height: 230, position: 'absolute',
@@ -120,6 +118,14 @@ export class Home extends React.Component<any, any> {
                         <CategoryComponent navigation={this.props.navigation} title="Más recientes" data={newProducts}></CategoryComponent>
                     }
                     <Image source={{ uri: Coupon }} resizeMode="contain" style={{ width, height: 140, marginVertical: 40 }}></Image>
+                    {
+                        errorFetch ?
+                        <View style={{width: '100%', justifyContent: 'center', flexDirection: 'row', alignItems: 'center'}}>
+                            <Button appearance='outline' status="basic" size="small" onPress={() => this.loadNewsProducts()}>Reintentar</Button>
+                        </View>
+                        :
+                        <CategoryComponent navigation={this.props.navigation} title="Más vendidos en la semana" data={newProducts}></CategoryComponent>
+                    }
                     {/* <CategoryComponent title="Nuevos" data={ProductBestSellers}></CategoryComponent> */}
                 </ScrollView>
             </View>

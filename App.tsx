@@ -47,7 +47,7 @@ export default function App() {
             <Stepper>
               <Navigation colorScheme={colorScheme} />
             </Stepper>
-            <StatusBar style="inverted" />
+            <StatusBar style="light" />
           </Root>
         </ApplicationProvider>
       </Provider>

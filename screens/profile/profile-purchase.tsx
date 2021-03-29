@@ -3,14 +3,14 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { StackActions } from '@react-navigation/native';
 import { Spinner, Toast } from 'native-base';
 import * as React from 'react';
-import { Dimensions, Image, Text, View } from 'react-native';
-import { FlatList, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import { Dimensions, Text, View } from 'react-native';
+import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import Colors from '../../constants/Colors';
 import { authKey, urlApi } from '../../constants/KeyConfig';
-import ProfileHeader from './profile-header';
+import * as WebBrowser from 'expo-web-browser';
 
 import { Dialog, PanningProvider } from 'react-native-ui-lib';
-import { Button, Divider } from '@ui-kitten/components';
+import { Button } from '@ui-kitten/components';
 
 const { width } = Dimensions.get('window');
 
@@ -39,7 +39,7 @@ export default class ProfilePurchase extends React.Component<any, any> {
         const userData = await AsyncStorage.getItem(authKey)
         const userId = JSON.parse(userData!).id;
         const userToken = JSON.parse(userData!).token;
-        fetch(urlApi + '/getAllOrdersFromMEPA', {
+        fetch(urlApi + '/salesByUserId2/' + userId, {
                 method: 'GET',
                 headers: new Headers({
                 'Accept': 'application/json',
@@ -48,9 +48,8 @@ export default class ProfilePurchase extends React.Component<any, any> {
                 })
             })
             .then(response => response.json())
-            .then(({response}) => {
-                const arrayOrders = response.elements;
-                const orderByUser = arrayOrders.filter((order: any) => {
+            .then((res) => {
+                /* const orderByUser = res.filter((order: any) => {
                     if (order.additional_info && order.additional_info !== '') {
                         try {
                             const json_additional_info = JSON.parse(order.additional_info);
@@ -59,10 +58,11 @@ export default class ProfilePurchase extends React.Component<any, any> {
                             }
                         } catch (error) {}
                     }
-                })
-                const orderArray = orderByUser.sort((a: any, b: any) => {
-                    return new Date(b.date_created) - new Date(a.date_created);
+                }) */
+                const orderArray = res.sort((a: any, b: any) => {
+                    return new Date(b.created_at) - new Date(a.created_at);
                 });
+                console.log(orderArray);
                 const slice = orderArray.slice(0, 7);
                 this.setState({purchases: slice});
             })
@@ -85,19 +85,29 @@ export default class ProfilePurchase extends React.Component<any, any> {
         }
     }
 
-    stringStyleByOrderStatus = (status: string) => {
-        if (status === 'payment_in_process') {
+    showReceipt = () => {
+        WebBrowser.openBrowserAsync('https://softwareargentina.store/');
+    }
+
+    stringStyleByOrderStatus = (status: string, shipId: string) => {
+        if (shipId != '1') {
+            if (status === 'payment_in_process') {
+                return (
+                    <Text style={{fontFamily: 'Poppins-Regular', fontSize: 12, color: Colors.default.yellow}}>Esperando Pago</Text>
+                );
+            } else if (status === 'paid') {
+                return (
+                    <Text style={{fontFamily: 'Poppins-Regular', fontSize: 12, color: Colors.default.primaryColor}}>En revisión</Text>
+                );
+            }
+            else {
+                return (
+                    <Text style={{fontFamily: 'Poppins-Regular', fontSize: 12, color: Colors.default.yellow}}>{status}</Text>
+                );
+            }
+        } else {
             return (
-                <Text style={{fontFamily: 'Poppins-Regular', fontSize: 12, color: Colors.default.yellow}}>Esperando Pago</Text>
-            );
-        } else if (status === 'paid') {
-            return (
-                <Text style={{fontFamily: 'Poppins-Regular', fontSize: 12, color: Colors.default.primaryColor}}>En revisión</Text>
-            );
-        }
-        else {
-            return (
-                <Text style={{fontFamily: 'Poppins-Regular', fontSize: 12, color: Colors.default.yellow}}>{status}</Text>
+                <Text style={{fontFamily: 'Poppins-Regular', fontSize: 12, color: Colors.default.green}}>En camino</Text>
             );
         }
     }
@@ -112,17 +122,17 @@ export default class ProfilePurchase extends React.Component<any, any> {
                         source={{uri: 'https://d500.epimg.net/cincodias/imagenes/2019/11/29/smartphones/1575040739_322747_1575040826_noticia_normal.jpg'}}></Image> */}
                         <View>
                             <Text style={{fontFamily: 'Poppins-SemiBold', fontSize: 15}}>{
-                                item.items.length === 1 ? this.truncateString(item.items[0].title, 14)
-                                : item.items.length + ' artículos'
+                                item.info_mp.items.length === 1 ? this.truncateString(item.info_mp.items[0].title, 14)
+                                : item.info_mp.items.length + ' artículos'
                             }</Text>
                             <Text style={{fontFamily: 'Poppins-Regular', fontSize: 12, color: '#ccc'}}>{
-                                new Date(item.date_created).toLocaleDateString()
+                                item.created_at
                             }</Text>
                         </View>
                     </View>
                     <View style={{alignItems: 'flex-end'}}>
-                        <Text style={{fontFamily: 'Poppins-Regular', fontSize: 12}}>$ {(item.total_amount + item.shipping_cost).toFixed(2)}</Text>
-                        {this.stringStyleByOrderStatus(item.order_status)}
+                        <Text style={{fontFamily: 'Poppins-Regular', fontSize: 12}}>$ {(item.info_mp.total_amount + item.info_mp.shipping_cost).toFixed(2)}</Text>
+                        {this.stringStyleByOrderStatus(item.info_mp.order_status, item.shipId)}
                     </View>
                 </TouchableOpacity>
                 <View style={{marginVertical: 5, backgroundColor: 'rgba(200,200,200,.4)', height: 1}}></View>
@@ -152,7 +162,7 @@ export default class ProfilePurchase extends React.Component<any, any> {
                         </View>
                         <View style={{borderBottomWidth: .3, borderColor: '#ccc', width: '100%', marginBottom: 10}}>
                             {
-                                showDetailOf.items.map((item: any) => (
+                                showDetailOf.info_mp.items.map((item: any) => (
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5, alignItems: 'center'}}>
                                         <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12 }}>{item.title}</Text>
                                         <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12 }}>$ {item.unit_price}</Text>
@@ -161,24 +171,25 @@ export default class ProfilePurchase extends React.Component<any, any> {
                             }
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5, alignItems: 'center'}}>
                                 <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12 }}>Envio</Text>
-                                <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12 }}>$ {showDetailOf.shipping_cost}</Text>
+                                <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12 }}>$ {showDetailOf.info_mp.shipping_cost}</Text>
                             </View>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5, alignItems: 'center'}}>
                                 <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 12 }}>Total</Text>
-                                <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 12 }}>$ {(showDetailOf.total_amount + showDetailOf.shipping_cost).toFixed(2)}</Text>
+                                <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 12 }}>$ {(showDetailOf.info_mp.total_amount + showDetailOf.info_mp.shipping_cost).toFixed(2)}</Text>
                             </View>
                         </View>
                         {
-                            showDetailOf.order_status === 'paid' &&
-                            <Button size="small" status="success" onPress={() => this.setState({showDialog: false})}>Ver factura</Button>
+                            showDetailOf.info_mp.order_status === 'paid' &&
+                            <Button size="small" status="success" onPress={() => this.showReceipt()}>Ver factura</Button>
                         }
                         <View style={{marginTop: 20, paddingBottom: 10 }}>
                             <View style={{flexDirection: 'row'}}>
                                 <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 12 }}>Estado: </Text>
-                                {this.stringStyleByOrderStatus(showDetailOf.order_status)}
+                                {this.stringStyleByOrderStatus(showDetailOf.info_mp.order_status, showDetailOf.shipId)}
                             </View>
-                            <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12 }}>Fecha de creación: {new Date(showDetailOf.date_created).toLocaleDateString()}</Text>
-                            <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12 }}>Cant. pagos: {showDetailOf.payments.length}</Text>
+                            <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12 }}>Fecha de despacho: {showDetailOf.updated_at}</Text>
+                            <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12 }}>Fecha de creación: {new Date(showDetailOf.info_mp.date_created).toLocaleDateString()}</Text>
+                            <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12 }}>Cant. pagos: {showDetailOf.info_mp.payments.length}</Text>
                         </View>
                     </View>
               }

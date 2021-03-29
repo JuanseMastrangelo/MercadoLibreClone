@@ -1,16 +1,12 @@
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
-import { Input } from '@ui-kitten/components';
 import { Spinner } from 'native-base';
 import * as React from 'react';
 import { Dimensions, Image, Text, View } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-import Colors from '../../constants/Colors';
 import { urlApi } from '../../constants/KeyConfig';
-import { Categories } from '../../demoData';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
-import { ProductBestSellers } from '../../demoData';
 
 export default class Buys extends React.Component<any, any> {
 
@@ -45,22 +41,9 @@ export default class Buys extends React.Component<any, any> {
         );
         return (
             <View>
-                <View
-                    style={{
-                        transform: [{ rotate: '-40deg' }], backgroundColor: Colors.default.yellow, width: 200, height: 100, position: 'absolute',
-                        top: -40, left: -70
-                    }}></View>
-                <ScrollView showsVerticalScrollIndicator={false} style={{ paddingTop: 50 }}>
-                    <View style={{ width, paddingHorizontal: 20 }}>
-                        <Input
-                            value={searchValue}
-                            placeholder='Buscar producto...'
-                            accessoryRight={renderIcon}
-                            onChangeText={value => this.setState({ searchValue: value })}
-                        />
-                    </View>
+                <ScrollView showsVerticalScrollIndicator={false} style={{ paddingTop: 0, height }}>
 
-                    <View style={{ marginVertical: 10, paddingHorizontal: 20, width, height: 80 }}>
+                    <View style={{ marginVertical: 10, paddingHorizontal: 10, width, height: 80 }}>
                         <View style={{ width: '100%', borderRadius: 10, height: '100%' }}>
                             <Image style={{ width: '100%', borderRadius: 10, height: '100%', position: 'relative' }} source={require('../../assets/images/bg_banner.png')}></Image>
                             <View style={{ position: 'absolute', top: 0, left: 0, height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center' }}>
@@ -70,7 +53,7 @@ export default class Buys extends React.Component<any, any> {
                     </View>
 
 
-                    <View style={{ paddingHorizontal: 20, width }}>
+                    <View style={{ paddingHorizontal: 10, width }}>
                         {
                             categories ?
                             categories.map((item: any, index: number) => {

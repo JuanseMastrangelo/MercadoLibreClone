@@ -1,5 +1,4 @@
-import { FontAwesome } from '@expo/vector-icons';
-import { Button, Divider, Modal } from '@ui-kitten/components';
+import { Button, Modal } from '@ui-kitten/components';
 import * as React from 'react';
 import { Dimensions, Image, Text, View } from 'react-native';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
@@ -12,9 +11,8 @@ var CANCEL_INDEX = 1;
 
 import {Card} from 'react-native-ui-lib';
 
-import { ActionSheet, Picker, Toast } from 'native-base';
+import { ActionSheet } from 'native-base';
 import Colors from '../../constants/Colors';
-import { StackActions } from '@react-navigation/native';
 
 export class VerticalGridViewComponent extends React.Component<any, any> {
 
@@ -93,7 +91,7 @@ export class VerticalGridViewComponent extends React.Component<any, any> {
                             <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12, color: '#ccc', textTransform: 'capitalize' }}>Color: {item.colour}</Text>
                             
                             <View style={{justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row'}}>
-                                <Picker
+                                {/* <Picker
                                     mode="dropdown"
                                     style={{ borderWidth: 1, borderColor: 'rgba(200,200,200,.4)', height: 30, width: 50, justifyContent: 'center', borderRadius: 5}}
                                     placeholder="Cantidades"
@@ -106,7 +104,7 @@ export class VerticalGridViewComponent extends React.Component<any, any> {
                                     <Picker.Item label="4" value={4} />
                                     <Picker.Item label="5" value={5} />
                                     <Picker.Item label="6" value={6} />
-                                </Picker>
+                                </Picker> */}
                                 <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 17, color: '#333' }}>$ {item.saleValue}</Text>
                             </View>
                         </View>

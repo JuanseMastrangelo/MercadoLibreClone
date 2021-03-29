@@ -8058,6 +8058,11 @@ react-native-text-size@4.0.0-rc.1:
   resolved "https://registry.yarnpkg.com/react-native-text-size/-/react-native-text-size-4.0.0-rc.1.tgz#1e048d345dd6a5a8e1269e0585c1a5948c478da5"
   integrity sha512-CysqjU2jK6Yc+a+kEI222pUyTY2ywcU2HqbFqf1KHymW6OPTdvBBHqbEJKL0QiLhQaFYDbqicM+h990s9TP00g==
 
+react-native-tour@^0.3.7:
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/react-native-tour/-/react-native-tour-0.3.7.tgz#16dc137e7cf3cf8e726690ef6137702b33b92a9c"
+  integrity sha512-Ke9j9N7BLAObMk93z8TBJWNUHLpk4StVO/0+470jKxrePqKP4OuqkCFapIgE/f13JBwKU3f6yJ2+8Jjfvz/AKw==
+
 react-native-ui-lib@^5.20.2:
   version "5.20.2"
   resolved "https://registry.yarnpkg.com/react-native-ui-lib/-/react-native-ui-lib-5.20.2.tgz#8d2a5fd67f6e21f6d3a0a237f50749e718f67a1e"

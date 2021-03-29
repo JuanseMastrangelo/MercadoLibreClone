@@ -64,19 +64,23 @@ export function BottomTabNavigator(props: any) {
                 name="Carro"
                 component={TabFourNavigator}
                 options={{
-                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 9, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Mis Compras</Text>,
+                    // tabBarLabel: ({ color }) => <Text style={{ fontSize: 9, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold', color: '#000' }}>Mis Compras</Text>,
+                    tabBarLabel: ({ color }) => null,
                     // tabBarIcon: ({ color }) => <FontAwesome name="shopping-cart" color={color} size={20} style={{marginTop: 5}} />,
                     tabBarIcon: ({ color }) => (
-                        <BottomCartIcon color={color}></BottomCartIcon>
+                        <View style={{backgroundColor: color, height: 70, borderRadius: 1000,
+                        width: 70, alignItems: 'center', justifyContent: 'center'}}>
+                            <BottomCartIcon color={'white'}></BottomCartIcon>
+                        </View>
                     ),
                 }}
             />
             <BottomTab.Screen
-                name="Notificaciones"
+                name="Categorias"
                 component={TabTwoNavigator}
                 options={{
-                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 9, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Notificaciones</Text>,
-                    tabBarIcon: ({ color }) => <FontAwesome name="bell-o" color={color} size={20} style={{marginTop: 5}} />,
+                    tabBarLabel: ({ color }) => <Text style={{ color, fontSize: 9, marginBottom: 5, fontWeight: 'bold', fontFamily: 'Poppins-SemiBold' }}>Categorías</Text>,
+                    tabBarIcon: ({ color }) => <FontAwesome name="list-ul" color={color} size={20} style={{marginTop: 5}} />,
                 }}
             />
             <BottomTab.Screen
@@ -133,15 +137,27 @@ function TabOneNavigator({ navigation }: any) {
 }
 
 const TabTwoStack = createStackNavigator<any>();
-function TabTwoNavigator() {
+function TabTwoNavigator({ navigation }: any) {
     return (
         <TabTwoStack.Navigator>
             <TabTwoStack.Screen
                 name="Buys"
                 component={Buys}
                 options={{
-                    cardStyle: { backgroundColor: '#FFF' },
-                    headerShown: false,
+                    headerTitle: '',
+                    cardStyle: { backgroundColor: '#F9F9F9' },
+                    headerTitleStyle: { textAlign: 'center', color: '#000', fontWeight: 'bold', fontSize: 24, fontFamily: 'Poppins-SemiBold', alignSelf: 'center',height: '100%' },
+                    headerStyle: { backgroundColor: '#FFF', shadowColor: 'transparent' },
+                    headerStatusBarHeight: Platform.OS === 'ios' ? 40 : 20,
+                    header: () => (
+                        <View style={{width, paddingTop: 24, backgroundColor: Colors.default.primaryColor, height: 70, flexDirection: 'row',
+                        justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                            <SearchBar navigation={navigation} style={{marginRight: 20}} />
+                            <View style={{flexDirection: 'row'}}>
+                                <CartIcon navigation={navigation} style={{marginTop: 15}} />
+                            </View>
+                        </View>
+                    )
                 }}
             />
         </TabTwoStack.Navigator>

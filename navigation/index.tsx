@@ -1,12 +1,13 @@
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
-import { ColorSchemeName, View } from 'react-native';
+import { ColorSchemeName, Dimensions, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { RootStackParamList } from '../types';
 import {BottomTabNavigator} from './BottomTabNavigator';
 
+const {width} = Dimensions.get('window');
 
 import CartIcon from './cartIcon';
 
@@ -17,8 +18,11 @@ import { ProductDescriptionComponent } from '../components/products/product-desc
 import { ProductCommentsComponent } from '../components/products/product-comments';
 import SingleProduct from '../components/products/single-product';
 import ChatScreen from '../components/chat';
+import SearchScreen from '../components/search';
 import Colors from '../constants/Colors';
 import { Text } from 'native-base';
+import SearchBar from './searchBar';
+import ChatRoomsScreen from '../components/chat/rooms';
 
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
@@ -96,15 +100,47 @@ function ComponentsNavigator({navigation}: any) {
               name="Chat"
               component={ChatScreen}
               options={{
-                headerStyle: { backgroundColor: Colors.default.yellow, shadowColor: 'transparent' },
+                headerStyle: { backgroundColor: Colors.default.primaryColor, shadowColor: 'transparent' },
+                cardStyle: { backgroundColor: '#FFF' },
+                headerTintColor: 'white',
+                headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="white" style={{marginLeft: 30,fontSize: 24}} />),
+                headerBackTitleVisible: false,
+                
+              }}
+            />
+
+            <ComponentsStack.Screen
+              name="ChatRoomsScreen"
+              component={ChatRoomsScreen}
+              options={{
+                headerStyle: { backgroundColor: Colors.default.primaryColor, shadowColor: 'transparent' },
                 headerTitle: () => (
-                    <Text style={{ fontSize: 16 }}>Soporte</Text>
+                    <Text style={{ fontSize: 16, color: 'white' }}>Vendedores</Text>
                 ),
                 cardStyle: { backgroundColor: '#FFF' },
                 headerTintColor: 'transparent',
-                headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="black" style={{marginLeft: 30,fontSize: 24}} />),
+                headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="white" style={{marginLeft: 30,fontSize: 24}} />),
                 headerBackTitleVisible: false,
                 
+              }}
+            />
+            
+            
+            <ComponentsStack.Screen
+              name="SearchScreen"
+              component={SearchScreen}
+              options={{
+                headerStyle: { backgroundColor: Colors.default.primaryColor, shadowColor: 'transparent' },
+                headerTitle: null,
+                cardStyle: { backgroundColor: '#FFF' },
+                headerTintColor: 'transparent',
+                headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="white" style={{marginLeft: 30,fontSize: 24}} />),
+                headerBackTitleVisible: false,
+                headerRight: () => (
+                  <View style={{backgroundColor: 'transparent', width, flexDirection: 'row', alignItems: 'center'}}>
+                      <SearchBar navigation={navigation} style={{ marginLeft: 60, width: '70%'}} />
+                  </View>
+              )
               }}
             />
             
@@ -113,10 +149,10 @@ function ComponentsNavigator({navigation}: any) {
               component={ColumnGridViewComponent}
               options={{
                 cardStyle: { backgroundColor: '#F9F9F9' },
-                headerStyle: { backgroundColor: Colors.default.yellow, shadowColor: 'transparent' },
-                headerTitleStyle: { color: '#000'},
+                headerStyle: { backgroundColor: Colors.default.primaryColor, shadowColor: 'transparent' },
+                headerTitleStyle: { color: 'white'},
                 headerBackTitleVisible: false,
-                headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="black" style={{marginLeft: 30,fontSize: 24}} />),
+                headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="white" style={{marginLeft: 30,fontSize: 24}} />),
               }}
             />
         </ComponentsStack.Navigator>

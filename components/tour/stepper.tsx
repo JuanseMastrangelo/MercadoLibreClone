@@ -14,7 +14,7 @@ export class Stepper extends React.Component<any> {
         return (
             <View style={{ width, height }}>
                 {this.props.children}
-                <HomeTour></HomeTour>
+                {/* <HomeTour></HomeTour> */}
             </View>
         )
     }

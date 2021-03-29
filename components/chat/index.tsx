@@ -41,25 +41,26 @@ export default class ChatScreen extends React.Component<any, any> {
             notification: null,
             index: null,
             imageSelected: null,
-            itemResponse: null
+            itemResponse: null,
         }
     }
 
     componentDidMount = async () => {
         this.getUser();
+        const { seller } = this.props.route.params;
+        this.props.navigation.setOptions({ title: seller.NombreCompleto })
     }
 
     getMessages = async () => {
         const {user} = this.state;
-        const lastId = await AsyncStorage.getItem('lastIdReaded');
+        const { seller } = this.props.route.params;
         try {
             firebase.database().ref("chats").on("value", async (snapshot) => {
-                let lastIdItem: any;
                 let messages: any = [];
                 snapshot.forEach((snap) => {
                     const message = snap.val();
                     message['key'] = snap.key;
-                    if (((message.to == user.id)) || ((message.uid == user.id))) {
+                    if (((message.to == user.id) && (message.uid == seller['UID'])) || ((message.uid == user.id) && (message.to == seller['UID']))) {
                         messages.push(message);
                     }
                 });
@@ -83,6 +84,7 @@ export default class ChatScreen extends React.Component<any, any> {
         const { messages } = this.state;
         var updates: any = {};
         const messagesFilter = messages.filter((m: any) => (m.to === user.id) && !m.visto);
+        console.log(messagesFilter);
         messagesFilter.forEach((message: any) => {
             if(message.key) {
                 message['visto'] = true;
@@ -93,6 +95,7 @@ export default class ChatScreen extends React.Component<any, any> {
     }
 
     sendMessage = async () => {
+        const { seller } = this.props.route.params;
         const { user, textareaValue, imageSelected, itemResponse } = this.state;
         if (textareaValue.trim() != '' || imageSelected) {
             await firebase.database().ref("chats").push({
@@ -102,7 +105,7 @@ export default class ChatScreen extends React.Component<any, any> {
                 userName: user.name,
                 imageSelected: imageSelected,
                 itemResponse,
-                to: supportId,
+                to: seller['UID'],
                 visto: false
             });
             

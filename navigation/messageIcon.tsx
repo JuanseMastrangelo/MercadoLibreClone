@@ -12,7 +12,7 @@ export class MessageIcon extends React.Component<any> {
     }
     
     goToChat() {
-        this.props.navigation.push('Components', { screen: 'Chat' });
+        this.props.navigation.push('Components', { screen: 'ChatRoomsScreen' });
     }
 
 

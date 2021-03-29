@@ -14,11 +14,11 @@ const { width, heigth } = Dimensions.get('window')
 const CarouselSingleProduct = ({ data, id, favorite }) => {
     const scrollX = new Animated.Value(0)
     let position = Animated.divide(scrollX, width)
-    const [dataList, setDataList] = useState(data)
 
     useEffect(()=> {
-        setDataList(data)
+        // setDataList(data)
     })
+
 
     
 
