@@ -1,14 +1,26 @@
-import { FontAwesome } from '@expo/vector-icons';
-import { StackActions } from '@react-navigation/native';
 import * as React from 'react';
 import { Image, Text, View, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { connect } from 'react-redux';
 
-export class MessageIcon extends React.Component<any> {
+import * as Notifications from 'expo-notifications';
+import { Toast } from 'native-base';
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+    }),
+});
+
+
+export class MessageIcon extends React.Component<any, any> {
     constructor(props: any) {
         super(props)
+        this.state = {
+            countMessages: this.props.state.messages.count
+        }
     }
     
     goToChat() {
@@ -16,7 +28,37 @@ export class MessageIcon extends React.Component<any> {
     }
 
 
+    sendNotification() {
+        Toast.show({
+            text: 'Nuevo mensaje sin leer',
+            buttonText: 'Ver',
+            duration: 3000,
+            position: 'bottom',
+            buttonStyle: { backgroundColor: "#5cb85c" },
+            onClose: (reason) => { if (reason == 'user') {this.goToChat();} }
+        })
+        const { countMessages } = this.state;
+        if (+countMessages < +this.props.state.messages.count) {
+            // this.schedulePushNotification();
+            this.setState({ countMessages: this.props.state.messages.count });
+        }
+    }
+
+
+    schedulePushNotification = async () => {
+        await Notifications.scheduleNotificationAsync({
+            content: {
+                title: "Tienes mensajes nuevos",
+                body: this.props.state.messages.count + ' mensajes nuevos en el inicio',
+                // data: { data: 'goes here' },
+            },
+            trigger: null,
+        });
+    }
+
+
     render() {
+        this.sendNotification();
         return (
             <TouchableOpacity style={{ alignSelf: 'center', height: '100%', marginBottom: 10, marginLeft: 10, alignItems: 'flex-end'}}
             onPress={() => this.goToChat()}>

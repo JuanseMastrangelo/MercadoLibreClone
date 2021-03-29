@@ -27,17 +27,19 @@ const { width } = Dimensions.get('window');
 
 import * as firebase from 'firebase';
 
-import { HomeTour } from '../../components/tour/homeTour'
 
 
 export class Home extends React.Component<any, any> {
     httpService: any = null;
+    notificationListener: any = null;
+    responseListener: any = null;
 
     constructor(props: any) {
         super(props)
         this.state = {
             newProducts: null,
-            errorFetch: false
+            errorFetch: false,
+            countMessagesNotSee: 0
         }
         this.httpService = new HttpService();
     }
@@ -71,19 +73,17 @@ export class Home extends React.Component<any, any> {
     getMessages = async () => {
         const userData = await AsyncStorage.getItem(authKey)
         const user = JSON.parse(userData!);
-        const userId = (user.id).toString();
         firebase.database().ref("chats").orderByChild('to').equalTo(user.id).on("value", async (snapshot: any) => {
-            let countNotSee = 0;
+            let countMessagesNotSee = 0;
             snapshot.forEach((snap: any) => {
                 const message = snap.val();
                 if (message.visto === false) {
-                    countNotSee++;
+                    countMessagesNotSee++;
                 }
             });
-            this.props.setMessagesNotReaded(countNotSee);
+            this.props.setMessagesNotReaded(countMessagesNotSee);
         });
     }
-
     loadNewsProducts = async() => {
         try {
             this.setState({errorFetch: false})
@@ -100,12 +100,6 @@ export class Home extends React.Component<any, any> {
         const { newProducts, errorFetch } = this.state
         return (
             <View>
-                {/* <View style={{ position: 'absolute', top: -80, width, left: 0 }}><Text style={{ color: 'black', textAlign: 'center', fontFamily: 'Poppins-Regular' }}>Gracias por utilizar nuestra tienda! ❤</Text></View> */}
-                
-                {/* <View style={{
-                    transform: [{ rotate: '40deg' }], backgroundColor: Colors.default.yellowLight, width: 130, height: 230, position: 'absolute',
-                    top: 340, right: -30, borderRadius: 100
-                }}></View> */}
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <Carousel data={SlideImages} />
                     <CategoriesComponent navigation={this.props.navigation} ></CategoriesComponent>
@@ -126,7 +120,6 @@ export class Home extends React.Component<any, any> {
                         :
                         <CategoryComponent navigation={this.props.navigation} title="Más vendidos en la semana" data={newProducts}></CategoryComponent>
                     }
-                    {/* <CategoryComponent title="Nuevos" data={ProductBestSellers}></CategoryComponent> */}
                 </ScrollView>
             </View>
         )
