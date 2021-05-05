@@ -41,7 +41,6 @@ class PurchaseComponent extends React.Component<any, any> {
             userData: null,
             loading: false,
             showPopup: false,
-            locationSelected: null,
             shippingCost: 600
         }
         this.httpService = new HttpService();
@@ -50,17 +49,16 @@ class PurchaseComponent extends React.Component<any, any> {
     }
 
     componentDidMount() {
+        this.getUserData();
+    }
+
+    getUserLocation() {
         const { shipping } = this.props.state
         const locations = shipping.locations[0].locations;
         const jsonLocations = JSON.parse(locations);
         const locationSelected = jsonLocations.filter((el: any) => (el.selected))[0];
-        console.log(locationSelected);
-        this.setState({ locationSelected });
-
-
-        this.getUserData();
+        return locationSelected;
     }
-
 
     getUserData = async () => {
         const userData = await AsyncStorage.getItem(authKey)
@@ -122,12 +120,8 @@ class PurchaseComponent extends React.Component<any, any> {
     }
 
 
-    popupController = () => {
-        const { showPopup } = this.state;
-        this.setState({ showPopup: !showPopup })
-        if (showPopup) {
-            this.props.navigation.setOptions({ title: 'Envío' });
-        }
+    openPopupShipping = () => {
+        this.setState({ showPopup: false }, () => {this.setState({ showPopup: true })})
     }
 
     clearCart = () => { this.props.cleanCart(); }
@@ -162,9 +156,10 @@ class PurchaseComponent extends React.Component<any, any> {
 
 
     render() {
-        const { urlBuy, modalVisible, cargando, showPopup, shippingCost, custom, locationSelected } = this.state;
+        const { urlBuy, modalVisible, cargando, showPopup, shippingCost, custom } = this.state;
         const { products } = this.props;
-
+        const locationSelected = this.getUserLocation();
+        console.log(locationSelected);
         let totalValorProducts = 0;
         products.map((el: any, index: number) => (totalValorProducts = totalValorProducts + parseFloat(el.saleValue)))
         return (
@@ -182,7 +177,7 @@ class PurchaseComponent extends React.Component<any, any> {
                         {
                             locationSelected &&
                             (<View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3 }}>
-                                <Button size='tiny' status="basic" onPress={() => this.popupController()}>
+                                <Button size='tiny' status="basic" onPress={() => this.openPopupShipping()}>
                                     {
                                         locationSelected.correo ?
                                             'Correo Argentino'

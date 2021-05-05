@@ -49,6 +49,7 @@ class InitialSyncApp extends React.Component<any, any> {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer '+ userId,
         });
+        console.log(userId);
 
         this.setState({syncCart: false, syncLocation: false, syncFavorites: false});
         this.httpService.get('/cart', header).then((res:any) => res.json()).then((cartItems: any) => {
