@@ -17,11 +17,8 @@ import { Provider } from 'react-redux';
 import rootReducer from './utils/reducers';
 import { createStore } from 'redux';
 import { useFonts } from 'expo-font';
-import Stepper from './components/tour/stepper';
 const store = createStore(rootReducer);
 
-
-import AnimatedSplash from "react-native-animated-splash-screen";
 
 
 export default function App() {
@@ -48,9 +45,7 @@ export default function App() {
       <Provider store={store}>
         <ApplicationProvider {...eva} theme={eva.light}>
           <Root>
-              <Stepper>
-                <Navigation colorScheme={colorScheme} />
-              </Stepper>
+              <Navigation colorScheme={colorScheme}  />
               <StatusBar style="light" />
           </Root>
         </ApplicationProvider>

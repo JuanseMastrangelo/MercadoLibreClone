@@ -39,9 +39,9 @@ export class CategoriesComponent extends React.Component<any, any> {
             <TouchableOpacity onPress={() => this.viewCategorie(item)} style={{width: 80, height: 100, marginRight: 10}}>
                 <View style={{width: 70, height: 70, borderRadius: 1000, backgroundColor: '#fff', shadowOffset: { width: 2, height: 4, }, shadowColor: "#000", shadowOpacity: 0.09, shadowRadius: 2, padding: 5, 
             alignSelf: 'center'}}>
-                    <Image style={{width: '100%', height: '100%', borderRadius: 1000}} resizeMode="contain" source={{uri: JSON.parse(this.state.categories[index].files)[0].path}}></Image>
+                    {/* <Image style={{width: '100%', height: '100%', borderRadius: 1000}} resizeMode="contain" source={{uri: JSON.parse(this.state.categories[index].files)[0].path}}></Image> */}
                 </View>
-                <Text style={{fontFamily: 'Poppins-Regular', textAlign: 'center', fontSize: 10, marginTop: 10, color: '#777', textTransform: 'capitalize'}}>{item.name}</Text>
+                {/* <Text style={{fontFamily: 'Poppins-Regular', textAlign: 'center', fontSize: 10, marginTop: 10, color: '#777', textTransform: 'capitalize'}}>{item.name}</Text> */}
             </TouchableOpacity>
         )
     }

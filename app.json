@@ -21,6 +21,9 @@
     "ios": {
       "supportsTablet": true
     },
+    "android": {
+      "package": "com.test.acctecno"
+    },
     "web": {
       "favicon": "./assets/images/favicon.png"
     },

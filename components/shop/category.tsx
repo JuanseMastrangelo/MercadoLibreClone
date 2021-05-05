@@ -19,7 +19,7 @@ export class CategoryComponent extends React.Component<any> {
     renderItem = (item: any, index: number) => {
         return(
             <Card style={{width: 150, height: 280, marginRight: 10, borderWidth: 1, shadowColor: 'transparent', borderColor: 'rgba(200,200,200,.2)', backgroundColor: 'white'}} onPress={() => this.goToProduct(item)}>
-                <Image resizeMode="contain" source={{uri: JSON.parse(this.props.data[index].files)[0].path}} style={{width: '100%', height: '70%'}}></Image>
+                {/* <Image resizeMode="contain" source={{uri: JSON.parse(this.props.data[index].files)[0].path}} style={{width: '100%', height: '70%'}}></Image> */}
                 <View style={{marginTop: 10, paddingHorizontal: 10}}>
                     <Text style={{fontFamily: 'Poppins-Regular', fontSize: 10, }}>{item.title}</Text>
                     <Text style={{fontFamily: 'Poppins-SemiBold', fontSize: 15, fontWeight: 'bold'}}>$ {item.saleValue}</Text>

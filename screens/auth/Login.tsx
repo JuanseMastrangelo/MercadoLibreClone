@@ -7,6 +7,7 @@ import Colors from '../../constants/Colors';
 import { authKey, configFirebaseGoogleAuth, firebaseConfig } from '../../constants/KeyConfig';
 
 import { urlApi } from '../../constants/KeyConfig';
+import InitialSyncApp from '../../components/initialSyncApp';
 
 const { height, width } = Dimensions.get('window');
 
@@ -33,7 +34,7 @@ export default class LoginScreen extends React.Component<any, any> {
 
         this.state = {
             secureTextEntry: true,
-            verificateLogged: false,
+            isAuthenticated: false,
             emailInput: '',
             passInput: '',
             loading: false
@@ -43,8 +44,8 @@ export default class LoginScreen extends React.Component<any, any> {
 
     componentDidMount = async () => {
         const userSession = await AsyncStorage.getItem(authKey);
-        userSession && this.redirectTo('Root');
-        this.setState({verificateLogged: true});
+        userSession && this.setState({isAuthenticated: true});
+        
     }
 
 
@@ -54,8 +55,7 @@ export default class LoginScreen extends React.Component<any, any> {
             this.setState({loading: true});
             firebase.auth().signInWithEmailAndPassword(emailInput, passInput).then(async (user: any) => {
                 await AsyncStorage.setItem(authKey, JSON.stringify(user));
-                this.setState({loading: false});
-                this.redirectTo('Root')
+                this.setState({loading: false, isAuthenticated: true});
             }).catch((err: any) => {
                 alert(err)
                 this.setState({loading: false});
@@ -105,13 +105,12 @@ export default class LoginScreen extends React.Component<any, any> {
         })).then(async (_:any) => {
             userData = Object.assign({},{token}, userData);
             await AsyncStorage.setItem(authKey, JSON.stringify(userData))
-            this.setState({loading: false});
-            this.redirectTo('Root')
+            this.setState({isAuthenticated: true});
         })
     }
 
     render() {
-        const { secureTextEntry, verificateLogged, emailInput, passInput, loading } = this.state;
+        const { secureTextEntry, isAuthenticated, emailInput, passInput } = this.state;
 
         const toggleSecureEntry = () => {
             this.setState({secureTextEntry: !secureTextEntry})
@@ -130,7 +129,7 @@ export default class LoginScreen extends React.Component<any, any> {
                 <Image source={{uri: 'https://www.amphoralogistics.com/_nuxt/img/landing.cca6a42.gif'}}
                 style={{width: 300, height: 300, position: 'absolute', right: 0, bottom: 0}} />
                 {
-                    verificateLogged && !loading ?
+                    !isAuthenticated ?
                     <View>
                         <View style={{width, paddingHorizontal: 30, paddingTop: height*0.1}}>
                             <Text style={{color: '#FFF', fontSize: 50, fontWeight: 'bold'}}>Hola,</Text>
@@ -171,10 +170,7 @@ export default class LoginScreen extends React.Component<any, any> {
                         {/* <Text onPress={() => {this.redirectTo('RegisterScreen')}} style={{width, textAlign: 'center', paddingVertical: 20, fontWeight: 'bold', textDecorationLine: 'underline', textDecorationColor: '#000'}}>Registrarme ahora!</Text> */}
                     </View>
                 : 
-                <View style={{width, height, alignItems: 'center', justifyContent: 'center'}}>
-                    <Spinner></Spinner>
-                    <Text style={{color: 'white'}}>Verificando sesión...</Text>
-                </View>
+                <InitialSyncApp navigation={this.props.navigation}></InitialSyncApp>
                 }
                 
             </View>
