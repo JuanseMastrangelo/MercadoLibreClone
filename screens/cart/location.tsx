@@ -6,17 +6,15 @@ const { width, height } = Dimensions.get('window');
 
 import { HttpService } from '../../constants/HttpService';
 
-import * as firebase from 'firebase';
-import AsyncStorage from '@react-native-community/async-storage';
-import { authKey } from '../../constants/KeyConfig';
 
 // Redux
 import { connect } from 'react-redux';
-import { Text, Toast } from 'native-base';
-import { Button, Card, IndexPath, Input, Modal, Radio, RadioGroup, Select, Spinner } from '@ui-kitten/components';
+import { Icon, Picker, Text, Toast } from 'native-base';
+import { Button, Card, IndexPath, Input, Layout, Radio, RadioGroup, Select, SelectItem, Spinner } from '@ui-kitten/components';
 import { ScrollView } from 'react-native-gesture-handler';
 import { bindActionCreators } from 'redux';
 import { actionShipping } from '../../utils/actions/shipping';
+import { urlApi } from '../../constants/KeyConfig';
 
 class Location extends React.Component<any, any> {
     httpService: any = null;
@@ -30,8 +28,10 @@ class Location extends React.Component<any, any> {
             shippingCost: null,
             shippingCP: '',
             shippingNameComplete: '',
-            shippingProvincia: new IndexPath(2),
-            shippingLocalidad: new IndexPath(2),
+            shippingProvincia: null,
+            shippingMunicipio: null,
+            Provincias: [],
+            Municipios: [],
             shippingCalle: '',
             shippingPiso: '',
             shippingNumero: '',
@@ -46,30 +46,66 @@ class Location extends React.Component<any, any> {
         const { shipping } = this.props.state;
         const locations = shipping.locations[0].locations;
         const jsonLocations = JSON.parse(locations);
+        const locationNoCorreo = jsonLocations.filter((el: any) => (!el.correo))[0].custom;
+
+        
+        if (locationNoCorreo && locationNoCorreo.shippingProvincia) {
+            this.getProvincias(locationNoCorreo.shippingProvincia);
+        } else {
+            this.getProvincias();
+            this.fillInputs();
+        }
+        
+    }
+
+    fillInputs() {
+        const { shipping } = this.props.state;
+        const locations = shipping.locations[0].locations;
+        const jsonLocations = JSON.parse(locations);
         const locationSelected = jsonLocations.filter((el: any) => (el.selected))[0];
         const locationNoCorreo = jsonLocations.filter((el: any) => (!el.correo))[0].custom;
-        
         this.setState(
             {
                 custom: locationSelected.correo ? 0 : 1,
-                shippingCP: ''+ (locationNoCorreo.shippingCP || ''),
-                shippingNameComplete: ''+ (locationNoCorreo.shippingNameComplete || ''),
-                shippingCalle: ''+ (locationNoCorreo.shippingCalle || ''),
-                shippingPiso: ''+ (locationNoCorreo.shippingPiso || ''),
-                shippingNumero: ''+ (locationNoCorreo.shippingNumero || ''),
-                shippingReferencias: ''+ (locationNoCorreo.shippingReferencias || ''),
-                shippingEntreCalles: ''+ (locationNoCorreo.shippingEntreCalles || ''),
-                shippingContacto: ''+ (locationNoCorreo.shippingContacto || '')
+                shippingCP: '' + (locationNoCorreo.shippingCP || ''),
+                shippingNameComplete: '' + (locationNoCorreo.shippingNameComplete || ''),
+                shippingCalle: '' + (locationNoCorreo.shippingCalle || ''),
+                shippingPiso: '' + (locationNoCorreo.shippingPiso || ''),
+                shippingNumero: '' + (locationNoCorreo.shippingNumero || ''),
+                shippingReferencias: '' + (locationNoCorreo.shippingReferencias || ''),
+                shippingEntreCalles: '' + (locationNoCorreo.shippingEntreCalles || ''),
+                shippingContacto: '' + (locationNoCorreo.shippingContacto || ''),
+                shippingProvincia: +(locationNoCorreo.shippingProvincia || null),
+                shippingMunicipio: +(locationNoCorreo.shippingMunicipio || null)
             })
-        
+    }
+
+    getProvincias(provSelected?: number) {
+        fetch(urlApi + '/provincias').then((res: any) => res.json()).then((data: any) => {
+            this.setState({ Provincias: data });
+
+            if (provSelected) {
+                fetch(urlApi + '/municipios/provincia/'+provSelected).then((res: any) => res.json()).then((data: any) => {
+                    this.setState({ Municipios: data });
+                    this.fillInputs();
+                });
+            }
+        });
+    }
+
+    getMunicipios(idProv: number) {
+        fetch(urlApi + '/municipios/provincia/'+idProv).then((res: any) => res.json()).then((data: any) => {
+            this.setState({ Municipios: data });
+        });
     }
 
     saveLocation = () => {
         const { shippingCP, custom, shippingCalle, shippingNameComplete, shippingPiso, shippingNumero,
-            shippingReferencias, shippingEntreCalles, shippingContacto } = this.state;
+            shippingReferencias, shippingEntreCalles, shippingContacto, shippingProvincia, shippingMunicipio } = this.state;
         const defaultLocation = [
             { "correo": true, "selected": (custom === 0) },
-            { "correo": false, "selected": (custom === 1),
+            {
+                "correo": false, "selected": (custom === 1),
                 "custom": {
                     shippingCP,
                     shippingCalle,
@@ -78,32 +114,36 @@ class Location extends React.Component<any, any> {
                     shippingNumero,
                     shippingReferencias,
                     shippingEntreCalles,
-                    shippingContacto
+                    shippingContacto,
+                    shippingProvincia,
+                    shippingMunicipio
                 }
             }];
-        
+
         this.httpService.post('/UserLocations', { locations: defaultLocation }).then((res: any) => res.text()).then((data: any) => {
             this.setState({ modalVisible: false, syncLocation: true });
             this.props.close()
 
-            const locationReduxStorage = [{locations: JSON.stringify(defaultLocation)}];
+            const locationReduxStorage = [{ locations: JSON.stringify(defaultLocation) }];
             this.props.setShippingForce(locationReduxStorage);
         });
     }
 
     disabledButton(): boolean {
-        const { shippingCP, shippingNameComplete, shippingCalle, shippingNumero, custom } = this.state;
+        const { shippingCP, shippingNameComplete, shippingCalle, shippingNumero, custom,
+            shippingMunicipio, shippingProvincia } = this.state;
         let verifyPersonalizado = true;
         if (custom === 1) {
-            verifyPersonalizado = (shippingNameComplete.trim() !== '') && (shippingCalle.trim() !== '') && (shippingNumero.trim() !== '');
+            verifyPersonalizado = (shippingNameComplete.trim() !== '') && (shippingCalle.trim() !== '') && (shippingNumero.trim() !== '') && 
+            shippingMunicipio && shippingProvincia;
         }
-        
+
         return (shippingCP.trim() !== '') && verifyPersonalizado;
     }
 
     render() {
-        const { custom, shippingCP, shippingNameComplete, shippingCalle, shippingProvincia, shippingLocalidad, shippingPiso,
-            shippingNumero, shippingReferencias, shippingEntreCalles, shippingContacto, loading } = this.state;
+        const { custom, shippingCP, shippingNameComplete, shippingCalle, shippingProvincia, Provincias, shippingPiso,
+            shippingNumero, shippingReferencias, shippingEntreCalles, shippingContacto, loading, Municipios, shippingMunicipio } = this.state;
 
         return (
             <View style={{ height: '100%', width: '100%', top: 0, left: 0, alignItems: 'center', backgroundColor: 'white', paddingHorizontal: 20 }}>
@@ -134,7 +174,7 @@ class Location extends React.Component<any, any> {
                                 value={shippingCP}
                                 label='Código Postal *:'
                                 placeholder=''
-                                style={(shippingCP.trim() === '') && {borderColor: 'red'}}
+                                style={(shippingCP.trim() === '') && { borderColor: 'red' }}
                                 onChangeText={nextValue => this.setState({ shippingCP: nextValue })}
                             />
                         </View>
@@ -145,42 +185,63 @@ class Location extends React.Component<any, any> {
                                     value={shippingNameComplete}
                                     label='Nombre Completo:'
                                     placeholder=''
-                                    style={(shippingNameComplete.trim() === '') && {borderColor: 'red'}}
+                                    style={(shippingNameComplete.trim() === '') && { borderColor: 'red' }}
                                     onChangeText={nextValue => this.setState({ shippingNameComplete: nextValue })}
                                 />
                             </View>
                         }
                     </View>
 
-                    <View style={{ width: width * 0.9, marginVertical: 10, paddingHorizontal: 10 }}>
-                        {/* <Select
-                                disabled={custom === 0}
-                                label='Provincia:'
-                                value={Provincias[shippingProvincia.row]}
-                                selectedIndex={shippingProvincia}
-                                onSelect={index => this.setState({shippingProvincia: index})}>
-                                    {
-                                        Provincias.map(item => (
-                                            <SelectItem title={item} />
-                                        ))
-                                    }
-                            </Select> */}
-                    </View>
 
-                    <View style={{ width: width * 0.9, marginVertical: 10, paddingHorizontal: 10 }}>
-                        {/* <Select
-                                disabled={custom === 0}
-                                label='Localidad / Barrio:'
-                                value={Localidades[shippingLocalidad.row]}
-                                selectedIndex={shippingLocalidad}
-                                onSelect={index => this.setState({shippingLocalidad: index})}>
+
+                    {
+                        custom === 1 &&
+                        <View style={{ width: width * 0.9, marginVertical: 10, paddingHorizontal: 10 }}>
+                            <Picker
+                                mode="dropdown"
+                                iosIcon={<Icon name="arrow-down" />}
+                                style={{ borderWidth: 1, width: '100%' }}
+                                placeholder="Seleccionar Provincia"
+                                headerBackButtonText="Volver"
+                                iosHeader="Seleccionar"
+                                placeholderStyle={{ color: "#000" }}
+                                placeholderIconColor="#007aff"
+                                selectedValue={shippingProvincia}
+                                onValueChange={(key) => {this.getMunicipios(key);this.setState({shippingProvincia: key})}}
+                            >
                                 {
-                                    Localidades.map(item => (
-                                        <SelectItem title={item} />
+                                    Provincias.map((item: any) => (
+                                        <Picker.Item label={item.nombre} value={item.id} />
                                     ))
                                 }
-                            </Select> */}
-                    </View>
+                            </Picker>
+                        </View>
+                    }
+
+{
+                        custom === 1 &&
+                        <View style={{ width: width * 0.9, marginVertical: 10, paddingHorizontal: 10 }}>
+                            <Picker
+                                enabled={Municipios.length > 0}
+                                mode="dropdown"
+                                iosIcon={<Icon name="arrow-down" />}
+                                style={{ borderWidth: 1, width: '100%' }}
+                                placeholder="Seleccionar Municipio"
+                                headerBackButtonText="Volver"
+                                iosHeader="Seleccionar"
+                                placeholderStyle={{ color: (Municipios.length > 0) ? "#000" : '#ccc' }}
+                                placeholderIconColor={ (Municipios.length > 0) ? "#007aff" : '#ccc' }
+                                selectedValue={shippingMunicipio}
+                                onValueChange={(key) => {this.setState({shippingMunicipio: key})}}
+                            >
+                                {
+                                    Municipios.map((item: any) => (
+                                        <Picker.Item label={item.nombre} value={item.id} />
+                                    ))
+                                }
+                            </Picker>
+                        </View>
+                    }
 
                     {
                         custom === 1 &&
@@ -191,7 +252,7 @@ class Location extends React.Component<any, any> {
                                     value={shippingCalle}
                                     label='Calle:'
                                     placeholder=''
-                                    style={(shippingCalle.trim() === '') && {borderColor: 'red'}}
+                                    style={(shippingCalle.trim() === '') && { borderColor: 'red' }}
                                     onChangeText={nextValue => this.setState({ shippingCalle: nextValue })}
                                 />
                             </View>
@@ -202,7 +263,7 @@ class Location extends React.Component<any, any> {
                                         value={shippingNumero}
                                         label='Número:'
                                         placeholder=''
-                                        style={(shippingNumero.trim() === '') && {borderColor: 'red'}}
+                                        style={(shippingNumero.trim() === '') && { borderColor: 'red' }}
                                         onChangeText={nextValue => this.setState({ shippingNumero: nextValue })}
                                     />
                                 </View>
@@ -211,7 +272,7 @@ class Location extends React.Component<any, any> {
                                         value={shippingPiso}
                                         label='Piso / Departamento:'
                                         placeholder=''
-                                        onChangeText={nextValue => {this.setState({ shippingPiso: nextValue });}}
+                                        onChangeText={nextValue => { this.setState({ shippingPiso: nextValue }); }}
                                     />
                                 </View>
                             </View>
@@ -221,7 +282,7 @@ class Location extends React.Component<any, any> {
                                     value={shippingEntreCalles}
                                     label='Entre calles:'
                                     placeholder=''
-                                    onChangeText={nextValue => {this.setState({ shippingEntreCalles: nextValue });}}
+                                    onChangeText={nextValue => { this.setState({ shippingEntreCalles: nextValue }); }}
                                 />
                             </View>
 
@@ -230,7 +291,7 @@ class Location extends React.Component<any, any> {
                                     value={shippingReferencias}
                                     label='Referencias:'
                                     placeholder=''
-                                    onChangeText={nextValue => {this.setState({ shippingReferencias: nextValue });}}
+                                    onChangeText={nextValue => { this.setState({ shippingReferencias: nextValue }); }}
                                 />
                             </View>
 
@@ -239,7 +300,7 @@ class Location extends React.Component<any, any> {
                                     value={shippingContacto}
                                     label='Teléfono de contacto:'
                                     placeholder=''
-                                    onChangeText={nextValue => {this.setState({ shippingContacto: nextValue });}}
+                                    onChangeText={nextValue => { this.setState({ shippingContacto: nextValue }); }}
                                 />
                             </View>
 

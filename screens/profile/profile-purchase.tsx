@@ -59,10 +59,8 @@ export default class ProfilePurchase extends React.Component<any, any> {
                         } catch (error) {}
                     }
                 }) */
-                const orderArray = res.sort((a: any, b: any) => {
-                    return new Date(b.created_at) - new Date(a.created_at);
-                });
-                const slice = orderArray.slice(0, 7);
+                const orderByDate = res.reverse();
+                const slice = orderByDate.slice(0, 7);
                 this.setState({purchases: slice});
             })
             .catch((error) => {
@@ -84,8 +82,8 @@ export default class ProfilePurchase extends React.Component<any, any> {
         }
     }
 
-    showReceipt = () => {
-        WebBrowser.openBrowserAsync('https://softwareargentina.store/');
+    showReceipt = (id: number) => {
+        WebBrowser.openBrowserAsync('https://softwareargentina.store?id='+id);
     }
 
     stringStyleByOrderStatus = (status: string, shipId: string) => {
@@ -179,16 +177,19 @@ export default class ProfilePurchase extends React.Component<any, any> {
                         </View>
                         {
                             showDetailOf.shipId != '1' &&
-                            <Button size="small" status="success" onPress={() => this.showReceipt()}>Ver factura</Button>
+                            <Button size="small" status="success" onPress={() => this.showReceipt(showDetailOf.id)}>Ver factura</Button>
                         }
                         <View style={{marginTop: 20, paddingBottom: 10 }}>
                             <View style={{flexDirection: 'row'}}>
                                 <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 12 }}>Estado: </Text>
                                 {this.stringStyleByOrderStatus(showDetailOf.info_mp.order_status, showDetailOf.shipId)}
                             </View>
-                            <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12 }}>Fecha de despacho: {showDetailOf.updated_at}</Text>
-                            <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12 }}>Fecha de creación: {new Date(showDetailOf.info_mp.date_created).toLocaleDateString()}</Text>
-                            <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12 }}>Cant. pagos: {showDetailOf.info_mp.payments.length}</Text>
+                            {
+                                (showDetailOf.shipId != 1) &&
+                                <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 12 }}>Fecha de despacho: {showDetailOf.updated_at}</Text>
+                            }
+                            <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 12 }}>Fecha de creación: {new Date(showDetailOf.info_mp.date_created).toLocaleDateString()}</Text>
+                            <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 12 }}>Cant. pagos: {showDetailOf.info_mp.payments.length}</Text>
                         </View>
                     </View>
               }

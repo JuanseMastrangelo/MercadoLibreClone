@@ -10,7 +10,7 @@ import WebView from 'react-native-webview';
 import { Spinner, Toast } from 'native-base';
 
 
-import { Button, Divider, IndexPath, Input, Radio, RadioGroup, Select, SelectItem } from '@ui-kitten/components';
+import { Button } from '@ui-kitten/components';
 
 
 import { connect } from 'react-redux';
@@ -63,7 +63,7 @@ class PurchaseComponent extends React.Component<any, any> {
     getUserData = async () => {
         const userData = await AsyncStorage.getItem(authKey)
         this.setState({ userData: JSON.parse(userData!) });
-        // this.calcEnvio();
+        this.getCartProduct();
     }
 
 
@@ -148,6 +148,28 @@ class PurchaseComponent extends React.Component<any, any> {
 
     closeBuyModal = () => {
         this.setState({ modalVisible: false });
+        this.getCartProduct();
+    }
+
+    getCartProduct() {
+        const { userData } = this.state;
+        const token = userData.token;
+        const header = new Headers({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+ token,
+        });
+        
+        this.httpService.get('/cart', header).then((res:any) => res.json()).then((cartItems: any) => {
+            this.props.setCartItemsForce(cartItems);
+            
+        }).catch((error: any) => {
+            Toast.show({
+                text: 'Error al cargar el carro',
+                type: 'warning',
+                position: 'top'
+            })
+        })
     }
 
 

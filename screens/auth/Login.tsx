@@ -34,7 +34,7 @@ export default class LoginScreen extends React.Component<any, any> {
 
         this.state = {
             secureTextEntry: true,
-            isAuthenticated: false,
+            isAuthenticated: null,
             emailInput: '',
             passInput: '',
             loading: false
@@ -124,13 +124,13 @@ export default class LoginScreen extends React.Component<any, any> {
 
         return(
             <View style={{height, width, position: 'relative'}}>
-                <Image style={{ width, height, resizeMode: 'cover', position: 'absolute'}} source={{uri: 'https://i.pinimg.com/564x/63/f5/66/63f566eeb91c2d424a6627671b9b911f.jpg'}}></Image>
-                
-                <Image source={{uri: 'https://www.amphoralogistics.com/_nuxt/img/landing.cca6a42.gif'}}
-                style={{width: 300, height: 300, position: 'absolute', right: 0, bottom: 0}} />
                 {
-                    !isAuthenticated ?
+                    isAuthenticated !== true ?
                     <View>
+                    <Image style={{ width, height, resizeMode: 'cover', position: 'absolute'}} source={{uri: 'https://i.pinimg.com/564x/63/f5/66/63f566eeb91c2d424a6627671b9b911f.jpg'}}></Image>
+                    
+                    <Image source={{uri: 'https://www.amphoralogistics.com/_nuxt/img/landing.cca6a42.gif'}}
+                    style={{width: 300, height: 300, position: 'absolute', right: 0, bottom: 0}} />
                         <View style={{width, paddingHorizontal: 30, paddingTop: height*0.1}}>
                             <Text style={{color: '#FFF', fontSize: 50, fontWeight: 'bold'}}>Hola,</Text>
                             <Text style={{color: '#FFF', fontSize: 20, fontWeight: 'bold'}}>somos tu plataforma de compras en linea! Inicia sesión para continuar.</Text>
@@ -169,7 +169,7 @@ export default class LoginScreen extends React.Component<any, any> {
                         </View>
                         {/* <Text onPress={() => {this.redirectTo('RegisterScreen')}} style={{width, textAlign: 'center', paddingVertical: 20, fontWeight: 'bold', textDecorationLine: 'underline', textDecorationColor: '#000'}}>Registrarme ahora!</Text> */}
                     </View>
-                : 
+                :
                 <InitialSyncApp navigation={this.props.navigation}></InitialSyncApp>
                 }
                 

@@ -138,7 +138,7 @@ class InitialSyncApp extends React.Component<any, any> {
             <View style={{ width, height }}>
                 <View style={{width, height, alignItems: 'center', justifyContent: 'center'}}>
                     <Spinner></Spinner>
-                    <Text style={{color: 'white', marginTop: 10}}>Sincronizando...</Text>
+                    <Text style={{color: 'black', marginTop: 10}}>Sincronizando...</Text>
                 </View>
                 <Modal
                     visible={modalVisible}
