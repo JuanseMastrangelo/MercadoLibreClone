@@ -119,8 +119,8 @@ class InitialSyncApp extends React.Component<any, any> {
 
 
     redirectTo = (name: string) => {
-        this.props.navigation.navigate(name);
-        this.props.navigation.reset({ index: 0, routes: [{ name: name }], });
+        // this.props.navigation.navigate(name);
+        this.props.navigation.reset({ index: 0, routes: [{ name }], });
     }
 
     render() {

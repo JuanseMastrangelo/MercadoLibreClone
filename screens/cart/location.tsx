@@ -9,8 +9,9 @@ import { HttpService } from '../../constants/HttpService';
 
 // Redux
 import { connect } from 'react-redux';
-import { Icon, Picker, Text, Toast } from 'native-base';
-import { Button, Card, IndexPath, Input, Layout, Radio, RadioGroup, Select, SelectItem, Spinner } from '@ui-kitten/components';
+import { Icon, Text } from 'native-base';
+import { Picker } from "react-native";
+import { Button, Input, Radio, RadioGroup, Spinner } from '@ui-kitten/components';
 import { ScrollView } from 'react-native-gesture-handler';
 import { bindActionCreators } from 'redux';
 import { actionShipping } from '../../utils/actions/shipping';
@@ -199,13 +200,7 @@ class Location extends React.Component<any, any> {
                         <View style={{ width: width * 0.9, marginVertical: 10, paddingHorizontal: 10 }}>
                             <Picker
                                 mode="dropdown"
-                                iosIcon={<Icon name="arrow-down" />}
                                 style={{ borderWidth: 1, width: '100%' }}
-                                placeholder="Seleccionar Provincia"
-                                headerBackButtonText="Volver"
-                                iosHeader="Seleccionar"
-                                placeholderStyle={{ color: "#000" }}
-                                placeholderIconColor="#007aff"
                                 selectedValue={shippingProvincia}
                                 onValueChange={(key) => {this.getMunicipios(key);this.setState({shippingProvincia: key})}}
                             >
@@ -224,13 +219,7 @@ class Location extends React.Component<any, any> {
                             <Picker
                                 enabled={Municipios.length > 0}
                                 mode="dropdown"
-                                iosIcon={<Icon name="arrow-down" />}
                                 style={{ borderWidth: 1, width: '100%' }}
-                                placeholder="Seleccionar Municipio"
-                                headerBackButtonText="Volver"
-                                iosHeader="Seleccionar"
-                                placeholderStyle={{ color: (Municipios.length > 0) ? "#000" : '#ccc' }}
-                                placeholderIconColor={ (Municipios.length > 0) ? "#007aff" : '#ccc' }
                                 selectedValue={shippingMunicipio}
                                 onValueChange={(key) => {this.setState({shippingMunicipio: key})}}
                             >

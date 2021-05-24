@@ -72,7 +72,7 @@ export default class LoginScreen extends React.Component<any, any> {
 
 
     redirectTo = (name: string) => {
-        this.props.navigation.navigate(name);
+        // this.props.navigation.navigate(name);
         this.props.navigation.reset({ index: 0, routes: [{ name: name }], });
     }
 
@@ -127,13 +127,25 @@ export default class LoginScreen extends React.Component<any, any> {
                 {
                     isAuthenticated !== true ?
                     <View>
-                    <Image style={{ width, height, resizeMode: 'cover', position: 'absolute'}} source={{uri: 'https://i.pinimg.com/564x/63/f5/66/63f566eeb91c2d424a6627671b9b911f.jpg'}}></Image>
-                    
-                    <Image source={{uri: 'https://www.amphoralogistics.com/_nuxt/img/landing.cca6a42.gif'}}
-                    style={{width: 300, height: 300, position: 'absolute', right: 0, bottom: 0}} />
-                        <View style={{width, paddingHorizontal: 30, paddingTop: height*0.1}}>
-                            <Text style={{color: '#FFF', fontSize: 50, fontWeight: 'bold'}}>Hola,</Text>
-                            <Text style={{color: '#FFF', fontSize: 20, fontWeight: 'bold'}}>somos tu plataforma de compras en linea! Inicia sesión para continuar.</Text>
+                    {/* {<Image style={{ width, height, resizeMode: 'cover', position: 'absolute'}} source={{uri: 'https://www.setaswall.com/wp-content/uploads/2018/01/Gaussian-Blur-Backgrounds-720x1440.jpg'}}></Image>} */}
+                        <View style={{display: 'flex', justifyContent: 'space-between', height, paddingHorizontal:40,
+                        paddingVertical: 120}}>
+                            <View style={{display: 'flex', alignItems: 'center'}}>
+                                <Text style={{fontSize: 13, fontFamily: 'Poppins-Regular', marginBottom: 10}}>Métodos de pagos habilitados:</Text>
+                                {<Image style={{ width: '100%', height: 140, resizeMode: 'cover'}} source={{uri: 'https://www.brownlouis.com/wp-content/uploads/2020/04/mediosdepago.png'}}></Image>}
+                            </View>
+                            <View>
+                                <View>
+                                    <Text style={{fontSize: 40, fontWeight: 'bold', color: '#000', fontFamily: 'Poppins-SemiBold'}}>Ingresar</Text>
+                                    <Text style={{fontSize: 17, color: '#555', marginTop: 30}}>Somos tu plataforma de compras en linea! Inicia sesión para continuar.</Text>
+                                </View>
+                                
+                                <TouchableOpacity onPress={this.initAsync} style={{marginTop: 50, backgroundColor: Colors.default.primaryColor,
+                                paddingVertical: 13, display: 'flex', alignItems: 'center'}}>
+                                    {renderIcon}
+                                    <Text style={{color: '#FFF', fontFamily: 'Poppins-Regular'}}>Iniciar sesión con Google</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                         {/* <View style={{paddingHorizontal: 28, width, marginTop: height*0.1}}>
                             <Input
@@ -160,13 +172,6 @@ export default class LoginScreen extends React.Component<any, any> {
                             </TouchableOpacity>
                         </View>
                         <Text style={{width, textAlign: 'center', paddingVertical: 20, fontWeight: 'bold'}}>ó</Text> */}
-                        <View style={{ paddingHorizontal: 28, width, alignItems: 'center', marginTop: height*0.1}}>
-                            <TouchableOpacity onPress={this.initAsync}>
-                                <Button size='medium' style={{width: '100%', backgroundColor: '#1da1f2', borderColor: '#1da1f2'}} accessoryLeft={GoogleIcon}>
-                                    Iniciar sesión con Google
-                                </Button>
-                            </TouchableOpacity>
-                        </View>
                         {/* <Text onPress={() => {this.redirectTo('RegisterScreen')}} style={{width, textAlign: 'center', paddingVertical: 20, fontWeight: 'bold', textDecorationLine: 'underline', textDecorationColor: '#000'}}>Registrarme ahora!</Text> */}
                     </View>
                 :

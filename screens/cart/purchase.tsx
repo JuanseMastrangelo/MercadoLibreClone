@@ -161,6 +161,7 @@ class PurchaseComponent extends React.Component<any, any> {
         });
         
         this.httpService.get('/cart', header).then((res:any) => res.json()).then((cartItems: any) => {
+            console.log(cartItems)
             this.props.setCartItemsForce(cartItems);
             
         }).catch((error: any) => {
@@ -264,19 +265,14 @@ class PurchaseComponent extends React.Component<any, any> {
                     transparent={true}
                     visible={modalVisible}
                     animationType="slide"
-                    presentationStyle='overFullScreen'
+                    presentationStyle='pageSheet'
                 >
                     <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', width, paddingHorizontal: 10 }}>
-                        <TouchableOpacity style={{
-                            paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'flex-end',
-                            backgroundColor: 'red', borderRadius: 10, width: 100, marginTop: 20, paddingVertical: 7, alignItems: 'center'
-                        }}
-                            onPress={() => this.closeBuyModal()}>
-                            <Text style={{ color: 'white' }}>Cerrar</Text>
-                            <FontAwesome style={{ color: 'white', fontSize: 10, marginLeft: 9 }} name="close"></FontAwesome>
-                        </TouchableOpacity>
+                        <Button size="small" style={{backgroundColor: 'red'}} onPress={() => this.closeBuyModal()}>Cerrar</Button>
                     </View>
-                    <WebView source={{ uri: urlBuy }} style={{ marginTop: 5, width, height }} />
+                    <ScrollView style={{marginTop: 5, width, zIndex: 1}}>
+                    <WebView source={{ uri: urlBuy }} style={{ width, height }} />
+                    </ScrollView>
                 </Modal>
 
                 {

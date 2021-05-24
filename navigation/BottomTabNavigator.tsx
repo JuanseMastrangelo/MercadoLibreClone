@@ -70,7 +70,7 @@ export function BottomTabNavigator(props: any) {
                     tabBarIcon: ({ color }) => (
                         <View style={{height: 70, borderRadius: 1000,
                         width: 70, alignItems: 'center', justifyContent: 'center',
-                        backgroundColor: (color === Colors.default.primaryColor) ? color : '#FFF', borderWidth: (color !== Colors.default.primaryColor) && 1, borderColor: 'rgba(200,200,200,.25)'}}>
+                        backgroundColor: (color === Colors.default.primaryColor) ? color : '#FFF', borderWidth: (color !== Colors.default.primaryColor) ? 1: 0, borderColor: 'rgba(200,200,200,.25)'}}>
                             <BottomCartIcon color={(color === Colors.default.primaryColor) ? '#FFF' : color}></BottomCartIcon>
                         </View>
                     ),
