@@ -1,11 +1,12 @@
 import { StackActions } from '@react-navigation/native';
 import * as React from 'react';
 import { Image, Text, View, StyleSheet } from 'react-native';
+import AutoHeightImage from 'react-native-auto-height-image';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { connect } from 'react-redux';
 
-export class CartIcon extends React.Component<any> {
+class CartIcon extends React.Component<any> {
     constructor(props: any) {
         super(props)
     }
@@ -19,29 +20,37 @@ export class CartIcon extends React.Component<any> {
         return (
             <TouchableOpacity style={{ alignSelf: 'center', height: '100%', marginBottom: 10, alignItems: 'flex-end'}}
             onPress={() => this.goToCart()}>
-                <Image
-                    source={{uri: 'https://icons.iconarchive.com/icons/iconsmind/outline/512/Shopping-Cart-icon.png'}}
-                    fadeDuration={0}
-                    style={[styles.iconBag, this.props.style]}
-                />
-                <View style={[styles.badge, this.props.styleBadge]}>
-                    <Text style={{ color: '#FFF' }}>{this.props.state.cart.items.length}</Text>
+                <View style={[styles.iconBag, this.props.style]}>
+                    <AutoHeightImage
+                        width={30}
+                        source={{uri: 'https://www.iconpacks.net/icons/2/free-shopping-cart-icon-3047-thumb.png'}}
+                    />
                 </View>
+
+                {
+                    this.props.state.cart.items.length > 0 &&
+                    <View style={[styles.badge, this.props.styleBadge]}>
+                        <Text style={{ color: '#FFF', fontSize: 10, fontFamily: 'Poppins-SemiBold', marginTop: 3}}>{this.props.state.cart.items.length}</Text>
+                    </View>
+                }
             </TouchableOpacity>
         )
     }
 }
 const styles = StyleSheet.create({
     iconBag: {
-        width: 25,
-        height: 21,
-        marginRight: 10
+        marginRight: 10,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'relative',
     },
     badge: {
         backgroundColor: 'red',
-        width: 20,
-        height: 20,
+        width: 15,
+        height: 15,
         borderRadius: 10000,
+        display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         position: 'absolute',

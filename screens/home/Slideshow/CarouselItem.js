@@ -1,10 +1,8 @@
 import React from 'react'
-import { View, StyleSheet, Text, Image, Dimensions, SafeAreaViewComponent } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-import { Ionicons } from '@expo/vector-icons';
+import { View, StyleSheet, Image, Dimensions } from 'react-native'
 import { Spinner } from '@ui-kitten/components';
-import Colors from '../../../constants/Colors';
-const { width, height } = Dimensions.get('window')
+const { width } = Dimensions.get('window');
+
 
 
 const colors = ['#FE512E', '#4139C8'];
@@ -31,7 +29,6 @@ export default class CarouselItem extends React.Component {
     render() {
         const { item } = this.props;
         const { imageLoading } = this.state;
-        const backgroundColor = this.colorSelectCard();
 
         const imageLoader = (start) => {
             this.setState({imageLoading: start})
@@ -41,7 +38,7 @@ export default class CarouselItem extends React.Component {
             <View style={styles.container}>
                 <View style={styles.cardView}>
                     <Image style={styles.image} resizeMode="cover" source={{uri: item.url}} onLoadStart={() => imageLoader(true)} onLoadEnd={() => imageLoader(false)} />
-                    <View style={styles.textView}>
+                    {/* <View style={styles.textView}>
                         <Text style={styles.itemDescription}>{item.description}</Text>
                         <Text style={styles.itemTitle}>{item.title}</Text>
                     </View>
@@ -51,7 +48,7 @@ export default class CarouselItem extends React.Component {
                             <Text style={{color: 'white', marginRight: 10}}>Ver más</Text>
                             <Ionicons name="ios-arrow-forward" size={20} color="white" />
                         </TouchableOpacity>
-                    </View>
+                    </View> */}
                     {
                         imageLoading &&
                         <View style={{position:'absolute', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center'}}><Spinner></Spinner></View>
@@ -65,7 +62,8 @@ export default class CarouselItem extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        width,
+        width: width,
+        // marginHorizontal: 10,
         alignItems: 'center'
     },
 
@@ -82,7 +80,7 @@ const styles = StyleSheet.create({
     },
     image: {
         width: '100%',
-        height: height / 4,
+        height: 130,
         borderRadius: 10
     },
     itemTitle: {

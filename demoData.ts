@@ -1,21 +1,15 @@
 export const SlideImages = [
     {
         title: 'IPHONE',
-        url: 'https://i.blogs.es/d274cc/iphone-11-12/450_1000.jpg',
+        url: 'https://http2.mlstatic.com/D_NQ_625161-MLA45877956014_052021-OO.webp',
         description: "50% de descuento",
         id: 1
     },
     {
         title: 'SAMSUNG',
-        url: 'https://i.blogs.es/b4cfaa/samsung-galaxy-s20-ultra/1366_2000.jpg',
+        url: 'https://http2.mlstatic.com/D_NQ_846851-MLA46132153512_052021-OO.webp',
         description: "Nuevas unidades",
         id: 2
-    },
-    {
-        title: 'XIAOMI',
-        url: 'https://i.blogs.es/a652cf/huawei-mate-30-pro-26/1366_2000.jpg',
-        description: "",
-        id: 3
     }
 ]
 
@@ -52,7 +46,7 @@ export const Categories = [
 ]
 
 
-export const Coupon = 'https://www.wizcase.com/wp-content/uploads/2019/07/Trust-Zone-VPN-Coupon-Banner.png'
+export const Coupon = 'https://i.ibb.co/yyq1LpQ/Captura-de-pantalla-2021-05-26-134716.png'
 
 export const ProductBestSellers = [
     {

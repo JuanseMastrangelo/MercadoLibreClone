@@ -17,7 +17,7 @@ export default class SearchBar extends React.Component<any, any> {
 
     renderIcon = () => (
         <TouchableWithoutFeedback>
-            <FontAwesome name="search" color="#ccc"></FontAwesome>
+            <FontAwesome name="search" color="#ccc" style={{fontSize: 14, paddingHorizontal: 5}}></FontAwesome>
         </TouchableWithoutFeedback>
     );
 
@@ -29,14 +29,15 @@ export default class SearchBar extends React.Component<any, any> {
     render() {
         const { searchValue } = this.state;
         return (
-            <View style={[{width: '73%', alignSelf: 'center'}, this.props.style]}>
+            <View style={[{width: '83%', alignSelf: 'center'}, this.props.style]}>
                 <Input
                     value={searchValue}
                     size='small'
                     status='basic'
                     onSubmitEditing={this.search}
-                    style={{backgroundColor: '#fff', borderRadius: 100, shadowOffset: { width: 2, height: 4, }, shadowColor: "rgba(200,200,200,.5)", shadowOpacity: 0.09, shadowRadius: 2, borderWidth: 0}}
-                    placeholder='Buscar productos...'
+                    style={{backgroundColor: '#fff', borderRadius: 100,
+                    elevation: 1}}
+                    placeholder='Buscar en AccTecno'
                     accessoryLeft={this.renderIcon}
                     onChangeText={searchValue => this.setState({searchValue})}
                 />

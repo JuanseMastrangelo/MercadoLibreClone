@@ -27,6 +27,7 @@ export default function App() {
 
 
   let [fontsLoaded] = useFonts({
+    'Helvetica': require('./assets/fonts/Helvetica.ttf'),
     'Poppins-Regular': require('./assets/fonts/Poppins-Regular.ttf'),
     'Poppins-SemiBold': require('./assets/fonts/Poppins-SemiBold.ttf'),
     'Poppins-Medium': require('./assets/fonts/Poppins-Medium.ttf'),
@@ -46,7 +47,7 @@ export default function App() {
         <ApplicationProvider {...eva} theme={eva.light}>
           <Root>
               <Navigation colorScheme={colorScheme}  />
-              <StatusBar style="light" />
+              <StatusBar style="auto" />
           </Root>
         </ApplicationProvider>
       </Provider >

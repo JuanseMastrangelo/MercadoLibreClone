@@ -116,21 +116,12 @@ function TabOneNavigator({ navigation }: any) {
                 name="Home"
                 component={Home}
                 options={{
+                    headerTransparent: true,
                     headerTitle: '',
-                    cardStyle: { backgroundColor: 'rgba(250,250,250,1)' },
+                    cardStyle: { backgroundColor: 'rgba(250,250,250,.7)' },
                     headerTitleStyle: { textAlign: 'center', color: '#000', fontWeight: 'bold', fontSize: 24, fontFamily: 'Poppins-SemiBold', alignSelf: 'center',height: '100%' },
                     headerStyle: { backgroundColor: '#FFF', shadowColor: 'transparent' },
-                    headerStatusBarHeight: Platform.OS === 'ios' ? 40 : 20,
-                    header: () => (
-                        <View style={{width, paddingTop: 24, backgroundColor: Colors.default.primaryColor, height: 70, flexDirection: 'row',
-                        justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10}}>
-                            <SearchBar navigation={navigation} style={{marginRight: 20}} />
-                            <View style={{flexDirection: 'row'}}>
-                                <CartIcon navigation={navigation} style={{marginTop: 15}} />
-                                <MessageIcon navigation={navigation} style={{marginTop: 15}} />
-                            </View>
-                        </View>
-                    )
+                    headerStatusBarHeight: Platform.OS === 'ios' ? 40 : 20
                 }}
             />
         </TabOneStack.Navigator>

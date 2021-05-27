@@ -6,7 +6,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "buildAndroid": "expo build:android"
   },
   "jest": {
     "preset": "jest-expo"
@@ -30,6 +31,7 @@
     "expo-font": "~8.2.1",
     "expo-google-app-auth": "^8.1.2",
     "expo-image-picker": "~8.3.0",
+    "expo-linear-gradient": "^9.1.0",
     "expo-linking": "^1.0.1",
     "expo-notifications": "~0.3.3",
     "expo-splash-screen": "~0.5.0",
@@ -41,6 +43,7 @@
     "react-dom": "~16.11.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-38.0.2.tar.gz",
     "react-native-animated-splash-screen": "^2.0.5",
+    "react-native-auto-height-image": "^3.2.4",
     "react-native-autolink": "^3.0.0",
     "react-native-gesture-handler": "~1.6.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.3",

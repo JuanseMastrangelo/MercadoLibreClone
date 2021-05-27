@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     },
     image: {
         width,
-        minHeight: height / 1.6,
+        minHeight: height*0.3,
     },
     itemTitle: {
         color: 'white',

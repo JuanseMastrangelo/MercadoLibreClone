@@ -35,7 +35,7 @@ export class CategoryComponent extends React.Component<any> {
 
     render() {
         return (
-            <Card style={{marginVertical: 0, width: width*0.9, alignSelf: 'center'}}>
+            <Card style={{marginVertical: 0, width: width*0.9, alignSelf: 'center', elevation: 6}}>
                     <View>
                         <View style={{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 20}}>
                             <Text style={{fontSize: 17, fontFamily: 'Poppins-Medium'}}>{this.props.title}</Text>

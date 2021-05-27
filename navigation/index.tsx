@@ -82,10 +82,10 @@ function ComponentsNavigator({navigation}: any) {
               name="SingleProduct"
               component={SingleProduct}
               options={{
-                headerTransparent: true,
                 cardStyle: { backgroundColor: '#FFF' },
+                headerStyle: { backgroundColor: Colors.default.primaryColor}, 
                 headerTintColor: 'transparent',
-                headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="black" style={{marginLeft: 30,fontSize: 24}} />),
+                headerBackImage: ()=>(<Ionicons name="md-arrow-back" size={20} color="black" style={{paddingHorizontal: 10,fontSize: 24}} />),
                 headerBackTitleVisible: false,
                 headerRight: () => (
                   <View style={{height: '100%', marginRight: 20}}>

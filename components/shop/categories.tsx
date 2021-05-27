@@ -7,6 +7,7 @@ import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import { urlApi } from '../../constants/KeyConfig';
 
 import { Categories, ProductBestSellers } from '../../demoData';
+import Colors from '../../constants/Colors';
 
 export class CategoriesComponent extends React.Component<any, any> {
     
@@ -37,11 +38,22 @@ export class CategoriesComponent extends React.Component<any, any> {
     renderItem = (item: any, index: number) => {
         return(
             <TouchableOpacity onPress={() => this.viewCategorie(item)} style={{width: 80, height: 100, marginRight: 10}}>
-                <View style={{width: 70, height: 70, borderRadius: 1000, backgroundColor: '#fff', shadowOffset: { width: 2, height: 4, }, shadowColor: "#000", shadowOpacity: 0.09, shadowRadius: 2, padding: 5, 
+                <View style={{width: 60, height: 60, borderRadius: 1000, backgroundColor: '#fff', 
+                shadowColor: "#000",
+                shadowOffset: {
+                    width: 0,
+                    height: 3,
+                },
+                shadowOpacity: 0.27,
+                shadowRadius: 4.65,
+                
+                elevation: 6,
             alignSelf: 'center'}}>
-                    {<Image style={{width: '100%', height: '100%', borderRadius: 1000}} resizeMode="contain" source={{uri: JSON.parse(this.state.categories[index].files)[0].path}}></Image>}
+                    <View style={{padding: 15, borderRadius: 1000}}>
+                        <Image style={{width: '100%', height: '100%'}} resizeMode="cover" source={{uri: JSON.parse(this.state.categories[index].files)[0].path}}></Image>
+                    </View>
                 </View>
-                {<Text style={{fontFamily: 'Poppins-Regular', textAlign: 'center', fontSize: 10, marginTop: 10, color: '#777', textTransform: 'capitalize'}}>{item.name}</Text>}
+                {<Text style={{textAlign: 'center', fontSize: 9, marginTop: 5, color: '#555', fontFamily: 'Helvetica', textTransform: 'capitalize'}}>{item.name}</Text>}
             </TouchableOpacity>
         )
     }
