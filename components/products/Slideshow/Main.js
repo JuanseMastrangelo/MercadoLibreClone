@@ -1,26 +1,17 @@
-import { FontAwesome, Ionicons } from '@expo/vector-icons'
-import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, Dimensions, FlatList, Animated, Share } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-import Colors from '../../../constants/Colors'
+import React from 'react';
 import CarouselItem from './CarouselItem';
-import { authKey, urlApi } from '../../../constants/KeyConfig'
-import AsyncStorage from '@react-native-community/async-storage'
-import { Toast } from 'native-base'
+const { width } = Dimensions.get('window');
+import { FontAwesome } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { View, Text, StyleSheet, Dimensions, FlatList, Animated, Share } from 'react-native';
 
-const { width, heigth } = Dimensions.get('window')
 
 
 const CarouselSingleProduct = ({ data, id, favorite }) => {
     const scrollX = new Animated.Value(0)
-    let position = Animated.divide(scrollX, width)
+    let position = Animated.divide(scrollX, width);
+    const [positionIndex, setPositionIndex] = React.useState(1)
 
-    useEffect(()=> {
-        // setDataList(data)
-    })
-
-
-    
 
     async function share() {
         const result = await Share.share({
@@ -46,6 +37,7 @@ const CarouselSingleProduct = ({ data, id, favorite }) => {
                     data={data}
                     keyExtractor={(item, index) => 'key' + index}
                     horizontal
+                    style={{width}}
                     pagingEnabled
                     scrollEnabled
                     snapToAlignment="center"
@@ -55,12 +47,29 @@ const CarouselSingleProduct = ({ data, id, favorite }) => {
                     renderItem={({ item }) => {
                         return <CarouselItem item={item} />
                     }}
-                    onScroll={Animated.event(
-                        [{ nativeEvent: { contentOffset: { x: scrollX } } }]
-                    )}
+                    onScroll={(i) => {
+                        setPositionIndex(Math.round((i.nativeEvent.contentOffset.x / width)) + 1);
+                            Animated.event(
+                            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+                            { useNativeDriver: true }
+                        )}
+                    }
                 />
 
-                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: -30}}>
+                <View style={{position: 'absolute', top: 10, left: 0}}>
+                    <Text style={{borderRadius: 100, backgroundColor: '#E8E8E8', paddingHorizontal: 20,
+                    paddingVertical: 5, fontSize: 12}}>{positionIndex} / {data.length}</Text>
+                </View>
+
+
+                <View style={{position: 'absolute', bottom: -20, right: 0}}>
+                        <TouchableOpacity style={{height: 50, width: 50, borderRadius: 100, backgroundColor: '#E8E8E8',
+                        justifyContent: 'center', alignItems: 'center'}} onPress={() => share()}>
+                            <FontAwesome name="share-alt" style={{fontSize: 20, color: '#222'}}></FontAwesome>
+                        </TouchableOpacity>
+                </View>
+
+                {/* <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: -30}}>
                     <View style={styles.dotView}>
                         {data.map((_, i) => {
                             let opacity = position.interpolate({
@@ -82,12 +91,7 @@ const CarouselSingleProduct = ({ data, id, favorite }) => {
                         })}
 
                     </View>
-                    <View style={{flexDirection: 'row', marginRight: 20}}>
-                        <TouchableOpacity style={{marginRight: 5, paddingHorizontal: 10}} onPress={() => share()}>
-                            <Ionicons size={20} name="md-download" color={Colors.default.greyColor}></Ionicons>
-                        </TouchableOpacity>
-                    </View>
-                </View>
+                </View> */}
 
             </View>
         )

@@ -20,6 +20,7 @@ import * as Google from 'expo-google-app-auth';
 import * as firebase from 'firebase';
 import { Toast } from 'native-base';
 import { HttpService } from '../../constants/HttpService';
+import AutoHeightImage from 'react-native-auto-height-image';
 
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
@@ -30,7 +31,7 @@ export default class LoginScreen extends React.Component<any, any> {
     
     constructor(props: any) {
         super(props)
-        StatusBar.setBarStyle('dark-content', true);
+        // StatusBar.setBarStyle('dark-content', true);
 
         this.state = {
             secureTextEntry: true,
@@ -127,20 +128,23 @@ export default class LoginScreen extends React.Component<any, any> {
                 {
                     isAuthenticated !== true ?
                     <View>
-                    {/* {<Image style={{ width, height, resizeMode: 'cover', position: 'absolute'}} source={{uri: 'https://www.setaswall.com/wp-content/uploads/2018/01/Gaussian-Blur-Backgrounds-720x1440.jpg'}}></Image>} */}
-                        <View style={{display: 'flex', justifyContent: 'space-between', height, paddingHorizontal:40,
-                        paddingVertical: 120}}>
-                            <View style={{display: 'flex', alignItems: 'center'}}>
+                    <Image style={{ width, height, resizeMode: 'cover', position: 'absolute'}} source={{uri: 'https://assets.afcdn.com/story/20180108/1141060_w767h767c1cx396cy260.jpg'}}></Image>
+                        <View style={{display: 'flex', justifyContent: 'flex-end', height}}>
+                            {/* <View style={{display: 'flex', alignItems: 'center'}}>
                                 <Text style={{fontSize: 13, fontFamily: 'Poppins-Regular', marginBottom: 10}}>Métodos de pagos habilitados:</Text>
-                                {<Image style={{ width: '100%', height: 140, resizeMode: 'cover'}} source={{uri: 'https://www.brownlouis.com/wp-content/uploads/2020/04/mediosdepago.png'}}></Image>}
-                            </View>
-                            <View>
-                                <View>
+                                <AutoHeightImage
+                                    width={width*.8}
+                                    source={{uri: 'https://www.brownlouis.com/wp-content/uploads/2020/04/mediosdepago.png'}}
+                                />
+                            </View> */}
+                            <View style={{backgroundColor:'rgba(250,250,250,.7)', width, paddingTop: 20}}>
+                                <View style={{paddingHorizontal: 20}}>
                                     <Text style={{fontSize: 40, fontWeight: 'bold', color: '#000', fontFamily: 'Poppins-SemiBold'}}>Ingresar</Text>
-                                    <Text style={{fontSize: 17, color: '#555', marginTop: 30}}>Somos tu plataforma de compras en linea! Inicia sesión para continuar.</Text>
+                                    <Text style={{fontSize: 17, color: '#333', marginTop: 30}}>Somos tu plataforma de compras en linea! Inicia sesión para continuar.</Text>
                                 </View>
                                 
-                                <TouchableOpacity onPress={this.initAsync} style={{marginTop: 50, backgroundColor: Colors.default.primaryColor,
+                                <TouchableOpacity onPress={this.initAsync} style={{marginTop: 50,
+                                backgroundColor: Colors.default.secondaryColor,
                                 paddingVertical: 13, display: 'flex', alignItems: 'center'}}>
                                     {renderIcon}
                                     <Text style={{color: '#FFF', fontFamily: 'Poppins-Regular'}}>Iniciar sesión con Google</Text>

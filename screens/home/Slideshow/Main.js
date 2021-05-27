@@ -52,9 +52,12 @@ const Carousel = ({ data }) => {
                     renderItem={({ item }) => {
                         return <CarouselItem item={item} />
                     }}
-                    onScroll={Animated.event(
-                        [{ nativeEvent: { contentOffset: { x: scrollX } } }]
-                    )}
+                    onScroll={(i) => {
+                            Animated.event(
+                            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+                            { useNativeDriver: true }
+                        )}
+                    }
                 />
 
                 {/* <View style={styles.dotView}>

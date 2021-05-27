@@ -113,10 +113,10 @@ export class VerticalGridViewComponent extends React.Component<any, any> {
                 <View style={{flexDirection: 'row', paddingTop: 10, width: '100%',
                 paddingHorizontal: 10, borderTopWidth: 0, backgroundColor: 'white'}}>
                     <TouchableOpacity onPress={() => this.goToProduct(item)} style={{ alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={{color: Colors.default.primaryColor}}>Detalles</Text>
+                        <Text style={{color: Colors.default.secondaryColor}}>Detalles</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => this.removeFromCart(item)} style={{ alignItems: 'center', justifyContent: 'center', marginLeft: 20 }}>
-                        <Text style={{color: Colors.default.primaryColor}}>Eliminar</Text>
+                        <Text style={{color: Colors.default.secondaryColor}}>Eliminar</Text>
                     </TouchableOpacity>
                 </View>
             </Card>

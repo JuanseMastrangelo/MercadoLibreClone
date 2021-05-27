@@ -182,16 +182,15 @@ class PurchaseComponent extends React.Component<any, any> {
         const { urlBuy, modalVisible, cargando, showPopup, shippingCost, custom } = this.state;
         const { products } = this.props;
         const locationSelected = this.getUserLocation();
-        console.log(locationSelected);
         let totalValorProducts = 0;
         products.map((el: any, index: number) => (totalValorProducts = totalValorProducts + parseFloat(el.saleValue)))
         return (
-            <View style={{ position: 'absolute', bottom: 53, left: 0, width }}>
+            <View style={{ width }}>
                 {
                     (products.length > 0) &&
                     <View style={{
                         paddingHorizontal: 20, backgroundColor: 'white', borderTopEndRadius: 10, borderTopStartRadius: 10, paddingVertical: 10, width: '100%', alignSelf: 'center',
-                        borderWidth: 1, borderColor: 'rgba(200,200,200,.5)', position: 'absolute', bottom: 60
+                        borderWidth: 1, borderColor: 'rgba(200,200,200,.5)'
                     }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3 }}>
                             <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 12, fontWeight: 'bold', color: '#000' }}>Total de compra</Text>

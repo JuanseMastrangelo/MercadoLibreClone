@@ -8,7 +8,7 @@ import Colors from '../../constants/Colors';
 const { width, height } = Dimensions.get('window');
 import WebView from 'react-native-webview';
 
-import { Spinner, Toast } from 'native-base';
+import { Spinner, Tab, Tabs, Toast } from 'native-base';
 import PurchaseComponent from './purchase';
 
 
@@ -20,12 +20,23 @@ import { VerticalGridViewComponent } from '../../components/FlatLists/verticalGr
 
 
 import { HttpService } from '../../constants/HttpService';
+import { Button } from '@ui-kitten/components';
+import { CategoryComponent } from '../../components/shop/category';
+import { urlApi } from '../../constants/KeyConfig';
 let socket: any = null;
 export class Cart extends React.Component<any, any> {
     httpService: any = null;
     constructor(props: any) {
         super(props)
         this.httpService = new HttpService();
+        this.state = {
+            errorFetch: false,
+            newProducts: null
+        }
+    }
+
+    componentDidMount() {
+        this.loadNewsProducts();
     }
 
     goToShopping() {
@@ -34,7 +45,7 @@ export class Cart extends React.Component<any, any> {
 
     emptyCartRender = () => {
         return (
-            <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 100 }}>
+            <View style={{ justifyContent: 'center', alignItems: 'center', paddingTop: 100 }}>
                 <View style={{ alignItems: 'center', paddingHorizontal: 50 }}>
                     <View style={{ width: 100, height: 100, borderRadius: 1000, backgroundColor: 'rgba(200,200,200,.4)', justifyContent: 'center', alignItems: 'center' }}>
                         <Image
@@ -43,24 +54,25 @@ export class Cart extends React.Component<any, any> {
                             fadeDuration={0}
                             style={{ width: 150, height: 150, borderRadius: 10000 }}
                         />
-                        {/* <Image
-                            resizeMode="contain"
-                            source={{ uri: 'https://i.pinimg.com/originals/09/88/dc/0988dc27ab24d196b91d085c786c292d.png' }}
-                            fadeDuration={0}
-                            style={{ width: 40, height: 40 }}
-                        /> */}
                     </View>
                     <Text style={{ fontSize: 25, fontFamily: 'Poppins-Regular', fontWeight: 'bold', marginTop: 60, textAlign: 'center' }}>Carro de compras vacio</Text>
                     <Text style={{ fontSize: 12, fontFamily: 'Poppins-Medium', fontWeight: 'bold', textAlign: 'center', color: Colors.default.greyColor, marginTop: 10 }}>
                         Agrega productos al carro de compras para que aparezcan en esta area
                     </Text>
-
-                    {/* <TouchableOpacity style={{ marginTop: 60, borderWidth: 1, paddingHorizontal: 20, paddingVertical: 10 }} onPress={() => this.goToShopping()}>
-                        <Text style={{ fontSize: 14, fontFamily: 'Poppins-Regular', fontWeight: 'bold' }}>Comprar ahora!</Text>
-                    </TouchableOpacity> */}
                 </View>
             </View>
         )
+    }
+
+    loadNewsProducts = async () => {
+        try {
+            this.setState({ errorFetch: false })
+            let newProductsFetch = await fetch(urlApi + '/products/news');
+            const newProducts = await newProductsFetch.json();
+            this.setState({ newProducts: newProducts.data });
+        } catch (e) {
+            this.setState({ errorFetch: true })
+        }
     }
 
 
@@ -81,25 +93,53 @@ export class Cart extends React.Component<any, any> {
 
     render() {
         const { items } = this.props.state.cart;
+        const { newProducts, errorFetch } = this.state;
         return (
             <View style={{ height }}>
-                <View style={{ marginTop: 0 }}>
+                <Tabs
+                    style={{elevation: 0}}
+                    tabBarUnderlineStyle={{backgroundColor: '#444', height: 1}}
+                    >
+                    <Tab heading="Carrito"
+                        textStyle={{color: '#555', fontSize: 15, fontFamily: 'Poppins-Medium', letterSpacing: .5}}
+                        activeTextStyle={{color: '#000', fontSize: 16, fontFamily: 'Poppins-Medium', letterSpacing: .5}}
+                        tabStyle={{backgroundColor: Colors.default.primaryColorLight}}
+                        activeTabStyle={{backgroundColor: Colors.default.primaryColorLight}}
+                    >
                     {
                         items ? 
                         (items.length > 0) ?
-                            <ScrollView showsVerticalScrollIndicator={true} style={{ height: height*0.60 }}>
-                                {<VerticalGridViewComponent removeToCart={(e: any) => this.removeItemFromList(e)} navigation={this.props.navigation} data={items} ></VerticalGridViewComponent>}
+                            <ScrollView>
+                                <View style={{minHeight: height*.5, backgroundColor: '#F2F2F2'}}>
+                                    <VerticalGridViewComponent removeToCart={(e: any) => this.removeItemFromList(e)} navigation={this.props.navigation} data={items} ></VerticalGridViewComponent>
+                                </View>
+                                
+                                <PurchaseComponent products={items} />
+
+                                <View style={{marginVertical: 50}}>
+                                    {
+                                        errorFetch ?
+                                        <View style={{ width: '100%', justifyContent: 'center', flexDirection: 'row', alignItems: 'center' }}>
+                                            <Button appearance='outline' status="basic" size="small" onPress={() => this.loadNewsProducts()}>Reintentar</Button>
+                                        </View>
+                                        :
+                                        <CategoryComponent navigation={this.props.navigation} title="Más vendidos en la semana" data={newProducts}></CategoryComponent>
+                                    }
+                                </View>
                             </ScrollView>
+                        
                         : this.emptyCartRender()
                         :
                         <View><Spinner color="black" size={20}></Spinner></View>
                     }
-
-                </View>
-                {
-                    items && 
-                    <PurchaseComponent products={items} />
-                }
+                    </Tab>
+                    <Tab heading="Guardado"
+                        textStyle={{color: '#555', fontSize: 15, fontFamily: 'Poppins-Medium', letterSpacing: .5}}
+                        activeTextStyle={{color: '#000', fontSize: 16, fontFamily: 'Poppins-Medium', letterSpacing: .5}}
+                        tabStyle={{backgroundColor: Colors.default.primaryColorLight}}
+                        activeTabStyle={{backgroundColor: Colors.default.primaryColorLight}}>
+                        </Tab>
+                </Tabs>
             </View>
         )
     }

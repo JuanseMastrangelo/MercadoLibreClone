@@ -32,7 +32,7 @@ export function BottomTabNavigator(props: any) {
         <BottomTab.Navigator
             initialRouteName="Inicio"
             tabBarOptions={{
-                activeTintColor: Colors.default.primaryColor,
+                activeTintColor: Colors.default.secondaryColor,
                 activeBackgroundColor: '#FFF',
                 inactiveBackgroundColor: '#FFF',
                 inactiveTintColor: '#bbb',
@@ -118,10 +118,13 @@ function TabOneNavigator({ navigation }: any) {
                 options={{
                     headerTransparent: true,
                     headerTitle: '',
-                    cardStyle: { backgroundColor: 'rgba(250,250,250,.7)' },
+                    cardStyle: { backgroundColor: '#FFF' },
                     headerTitleStyle: { textAlign: 'center', color: '#000', fontWeight: 'bold', fontSize: 24, fontFamily: 'Poppins-SemiBold', alignSelf: 'center',height: '100%' },
                     headerStyle: { backgroundColor: '#FFF', shadowColor: 'transparent' },
-                    headerStatusBarHeight: Platform.OS === 'ios' ? 40 : 20
+                    headerStatusBarHeight: Platform.OS === 'ios' ? 40 : 20,
+                    headerBackTitleVisible: false,
+                    headerBackTitleStyle: {display: 'none'},
+                    headerBackImage: () => null
                 }}
             />
         </TabOneStack.Navigator>
@@ -140,7 +143,10 @@ function TabTwoNavigator({ navigation }: any) {
                     cardStyle: { backgroundColor: '#F2F2F2' },
                     headerTitleStyle: { textAlign: 'center', color: '#000', fontSize: 14, fontFamily: 'Poppins-Light', marginTop: 10, letterSpacing: .5 },
                     headerStyle: { backgroundColor: Colors.default.primaryColorLight, elevation: 0 },
-                    headerStatusBarHeight: Platform.OS === 'ios' ? 40 : 20
+                    headerStatusBarHeight: Platform.OS === 'ios' ? 40 : 20,
+                    headerBackTitleVisible: false,
+                    headerBackTitleStyle: {display: 'none'},
+                    headerBackImage: () => null
                 }}
             />
         </TabTwoStack.Navigator>
@@ -155,15 +161,18 @@ function TabTreeNavigator({navigation}: any) {
                 name="Favoritos"
                 component={WhiteList}
                 options={{
-                    cardStyle: { backgroundColor: 'rgba(250,250,250,1)' },
-                    headerStyle: { backgroundColor: Colors.default.primaryColor, shadowColor: 'transparent' },
+                    cardStyle: { backgroundColor: '#F2F2F2' },
+                    headerTitleStyle: { textAlign: 'center', color: '#000', fontSize: 16, fontFamily: 'Poppins-Regular', marginTop: 10, letterSpacing: .5 },
+                    headerStyle: { backgroundColor: Colors.default.primaryColorLight, elevation: 0 },
                     headerRight: () => (
-                        <View style={{alignItems: 'center', marginRight: 20, height: '100%'}}>
-                            <CartIcon navigation={navigation} style={{marginTop: 15}} styleBadge={{bottom: 30}} />
+                        <View style={{height: '100%', marginRight: 20, flexDirection: 'row', alignItems: 'center'}}>
+                            <FontAwesome onPress={() => navigation.push('Components', { screen: 'SearchScreen', params: {searchValue: ''} })} name="search" color="#000" style={{fontSize: 22, marginRight: 20, marginTop: Platform.OS === 'ios' ? 5 : 0}}></FontAwesome>
+                            <CartIcon navigation={navigation} style={{backgroundColor: 'transparent', marginTop: Platform.OS === 'ios' ? 15 : 20}} />
                         </View>
                     ),
-                    headerTitle: () => (
-                        <Text style={{ fontSize: 16, color: 'white' }}>Favoritos</Text>
+                    headerLeft: () => (
+                        <View style={{height: '100%', marginRight: 25, flexDirection: 'row', alignItems: 'center', visibility: 'hidden'}}>
+                        </View>
                     ),
                     headerBackTitleVisible: false,
                     headerBackTitleStyle: {display: 'none'},
@@ -175,21 +184,26 @@ function TabTreeNavigator({navigation}: any) {
 }
 
 const TabFourStack = createStackNavigator<any>();
-function TabFourNavigator() {
+function TabFourNavigator({ navigation }: any) {
     return (
         <TabFourStack.Navigator>
             <TabFourStack.Screen
                 name="Carro"
                 component={Cart}
                 options={{
-                    cardStyle: { backgroundColor: 'rgba(250,250,250,1)' },
-                    headerStyle: { backgroundColor: Colors.default.primaryColor, shadowColor: 'transparent' },
-                    headerTitle: () => (
-                        <Text style={{ fontSize: 16, color: 'white' }}>Mi Carro</Text>
-                    ),
+                    headerTitle: '',
+                    cardStyle: { backgroundColor: '#F2F2F2' },
+                    headerTitleStyle: { textAlign: 'center', color: '#000', fontSize: 16, fontFamily: 'Poppins-Regular', marginTop: 10, letterSpacing: .5 },
+                    headerStyle: { backgroundColor: Colors.default.primaryColorLight, elevation: 0, shadowColor: 'transparent' },
                     headerBackTitleVisible: false,
                     headerBackTitleStyle: {display: 'none'},
-                    headerBackImage: () => null
+                    headerBackImage: () => null,
+                    headerRight: () => (
+                        <View style={{alignItems: 'center', marginRight: 20, height: '100%'}}>
+                            <FontAwesome onPress={() => navigation.push('Components', { screen: 'SearchScreen', params: {searchValue: ''} })} name="search" color="#000"
+                            style={{fontSize: 22, marginRight: 25, marginTop: 15}}></FontAwesome>
+                        </View>
+                    ),
                 }}
             />
         </TabFourStack.Navigator>

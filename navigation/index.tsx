@@ -1,7 +1,7 @@
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, DarkTheme, StackActions } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
-import { ColorSchemeName, Dimensions, View } from 'react-native';
+import { ColorSchemeName, Dimensions, Platform, View } from 'react-native';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 
 import { RootStackParamList } from '../types';
@@ -89,7 +89,9 @@ function ComponentsNavigator({navigation}: any) {
                 headerBackImage: ()=>(<Ionicons name="md-arrow-back" size={20} color="black" style={{paddingHorizontal: 10,fontSize: 24}} />),
                 headerBackTitleVisible: false,
                 headerRight: () => (
-                  <View style={{height: '100%', marginRight: 20}}>
+                  <View style={{height: '100%', marginRight: 25, flexDirection: 'row', alignItems: 'center'}}>
+                    <FontAwesome onPress={() => navigation.dispatch(StackActions.replace('Root', {screen: 'Compras'}))} name="heart-o" color="#000" style={{fontSize: 22, marginRight: 25, marginTop: Platform.OS === 'ios' ? 0 : -10}}></FontAwesome>
+                    <FontAwesome onPress={() => navigation.push('Components', { screen: 'SearchScreen', params: {searchValue: ''} })} name="search" color="#000" style={{fontSize: 22, marginRight: 25, marginTop: Platform.OS === 'ios' ? 0 : -10}}></FontAwesome>
                     <CartIcon navigation={navigation} style={{backgroundColor: 'transparent', marginTop: 15}} />
                   </View>
                 ),
@@ -151,13 +153,14 @@ function ComponentsNavigator({navigation}: any) {
               options={{
                 cardStyle: { backgroundColor: '#F2F2F2' },
                 headerStyle: { backgroundColor: Colors.default.primaryColor, elevation: 0},
-                headerTitleStyle: { textAlign: 'center', color: '#000', fontSize: 14, fontFamily: 'Poppins-Light', marginTop: 5, letterSpacing: .5 },
-                headerBackImage: ()=>(<Ionicons name="md-arrow-back" size={20} color="black" style={{paddingHorizontal: 10,fontSize: 24}} />),
+                headerTitleStyle: { textAlign: 'center', color: '#000', fontSize: 14, fontFamily: 'Poppins-Light', marginTop: Platform.OS === 'ios' ? 0 : 5, letterSpacing: .5 },
+                headerBackImage: ()=>(<Ionicons name="md-arrow-back" size={20} color="black" style={{paddingHorizontal: Platform.OS === 'ios' ? 20 : 10,fontSize: 24}} />),
                 headerRight: () => (
                   <TouchableOpacity onPress={() => navigation.push('Components', { screen: 'SearchScreen', params: {searchValue: ''} })}>
-                    <FontAwesome name="search" color="#000" style={{fontSize: 20, paddingHorizontal: 20}}></FontAwesome>
+                    <FontAwesome name="search" color="#000" style={{fontSize: 20, paddingHorizontal: 30}}></FontAwesome>
                   </TouchableOpacity>
-              )
+                ),
+                headerBackTitleVisible: false
               }}
             />
         </ComponentsStack.Navigator>

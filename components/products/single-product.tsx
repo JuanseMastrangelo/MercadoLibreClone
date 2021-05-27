@@ -104,7 +104,7 @@ class SingleProduct extends React.Component<any, any> {
         const favItems = this.props.state.favorites.items;
         const is_favorite = favItems.filter((favItem: any) => favItem.id === product.id).length > 0;
         return (
-            <View style={{paddingBottom: 50}}>
+            <View>
                 <ScrollView showsHorizontalScrollIndicator={false}>
                     <View style={{ marginTop: 10, paddingVertical: 10, paddingHorizontal: 15 }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingRight: 10 }}>
@@ -172,7 +172,9 @@ class SingleProduct extends React.Component<any, any> {
                             </View>
                         </View> */}
 
-                        <View style={{marginVertical: 30}}>
+                        
+
+                        <View style={{marginTop: 30}}>
                             <TouchableOpacity
                                 style={{
                                     backgroundColor: Colors.default.secondaryColor, width: '100%', flexDirection: 'row', height: 50,
@@ -183,60 +185,35 @@ class SingleProduct extends React.Component<any, any> {
                                 
                                 {
                                     !loading ?
-                                    <Text style={{ fontFamily: 'Poppins-Light', fontSize: 14, color: '#FFF' }}>Agregar al carro</Text>
+                                        <Text style={{ fontFamily: 'Poppins-Light', fontSize: 14, color: '#FFF' }}>Agregar al carro</Text>
                                     :
                                     <Spinner color="white" size={20}></Spinner>
                                 }
                             </TouchableOpacity>
                         </View>
+
+                        <View style={{marginTop: 5, marginBottom: 30}}>
+                            <TouchableOpacity
+                                style={{
+                                    borderColor: Colors.default.secondaryColor, borderWidth: 1, width: '100%', flexDirection: 'row', height: 50,
+                                    justifyContent: 'center', alignItems: 'center', borderRadius: 5
+                                }}
+                                disabled={loading}
+                                onPress={() => this.toggleFavorite()}>
+                                    <Text style={{ fontFamily: 'Poppins-Light', fontSize: 14, color: Colors.default.secondaryColor }}>Agregar a Favoritos</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
+                    <View style={{paddingBottom: 50}}>
                     {
                         relatedProducts ?
                         <CategoryComponent navigation={this.props.navigation} title="Productos relacionados" data={relatedProducts}></CategoryComponent>
                         :
                         <View><Spinner color="black" size={20}></Spinner></View>
                     }
+                    </View>
                 </ScrollView>
-                {
-                    !in_cart_item ?
-                    <View style={{ position: 'absolute', bottom: 10, left: 0, width, paddingHorizontal: 20 }}>
-                        <TouchableOpacity
-                            style={{
-                                backgroundColor: Colors.default.primaryColor, width: '100%', flexDirection: 'row', height: 50,
-                                justifyContent: 'center', alignItems: 'center', borderRadius: 5
-                            }}
-                            disabled={loading}
-                            onPress={() => this.addToCart()}>
-                            <FontAwesome name="shopping-cart" color="white" size={17} style={{ marginRight: 15 }}></FontAwesome>
-                            
-                            {
-                                !loading ?
-                                <Text style={{ fontFamily: 'Poppins-Regular', color: 'white' }}>Agregar al carro</Text>
-                                :
-                                <Spinner color="white" size={20}></Spinner>
-                            }
-                        </TouchableOpacity>
-                    </View>
-                    :
-                    
-                    <View style={{ position: 'absolute', bottom: 10, right: 0, width: width*0.5, paddingHorizontal: 20 }}>
-                        <TouchableOpacity
-                            style={{
-                                backgroundColor: Colors.default.accentColor, width: '100%', flexDirection: 'row', height: 50,
-                                justifyContent: 'center', alignItems: 'center', borderRadius: 5
-                            }}
-                            disabled={loading}
-                            onPress={() => this.removeToCart()}>
-                            <FontAwesome name="shopping-cart" color="white" size={17} style={{ marginRight: 15 }}></FontAwesome>
-                            {
-                                !loading ?
-                                <Text style={{ fontFamily: 'Poppins-Regular', color: 'white' }}>Quitar</Text>
-                                :
-                                <Spinner color="white" size={20}></Spinner>
-                            }
-                        </TouchableOpacity>
-                    </View>
-                }
+                
             </View>
         )
     }

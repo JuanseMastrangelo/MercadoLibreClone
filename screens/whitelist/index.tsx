@@ -1,10 +1,10 @@
 import { FontAwesome } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-community/async-storage';
 import { StackActions } from '@react-navigation/native';
-import { Spinner, Toast } from 'native-base';
+import { Button, Icon, Spinner, SwipeRow, Toast } from 'native-base';
 import * as React from 'react';
 import { Dimensions, Text, View, Image, RefreshControl } from 'react-native';
-import { FlatList, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import { FlatList, ScrollView, TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import Colors from '../../constants/Colors';
 import { HttpService } from '../../constants/HttpService';
 import { authKey } from '../../constants/KeyConfig';
@@ -15,6 +15,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { actionCreators as actions } from '../../utils/actions/favorite';
 import { Card } from 'react-native-ui-lib';
+import AutoHeightImage from 'react-native-auto-height-image';
 
 class WhiteList extends React.Component<any, any> {
     httpService: any = null;
@@ -23,7 +24,8 @@ class WhiteList extends React.Component<any, any> {
         super(props)
         this.httpService = new HttpService();
         this.state = {
-            refreshing: false
+            refreshing: false,
+            removeOpen: false
         }
     }
 
@@ -36,21 +38,20 @@ class WhiteList extends React.Component<any, any> {
     }
 
     toggleFavorite = (item:any) => {
-        /* let { items } = this.props.state.favorites;
+        let { items } = this.props.state.favorites;
         const is_favorite = items.filter((el: any) => el.id === item.id).length > 0;
         this.httpService.post('/favorites', {postId: item.id}).then((_:any) => {
-            Toast.show({
+            /* Toast.show({
                 text: is_favorite ? 'Eliminado de favorito' : 'Agregado a favorito',
-                type: 'success',
                 position: 'top'
-            })
+            }) */
 
             if (is_favorite) { // Si es favorito, lo eliminamos de la lista
                 this.props.favoriteRemove(item.id);
             } else {
                 this.props.addFavorite(item);
             }
-        }); */
+        });
     }
 
     refreshWhiteList = () => {
@@ -63,31 +64,57 @@ class WhiteList extends React.Component<any, any> {
     
 
     renderItem = (item: any, index: number) => {
+        const { removeOpen } = this.state;
         const favItems = this.props.state.favorites.items;
         const is_favorite = favItems.filter((favItem: any) => favItem.id === item.id).length > 0;
-        return (
-            <Card
-                style={{ width: width / 2.3, marginTop: 10, height: 280, marginHorizontal: 10, borderWidth: 1, borderColor: 'rgba(200,200,200,.2)', backgroundColor: 'white',
-                 }}
+        
+            {/* <TouchableWithoutFeedback
+                style={{ width: '100%', paddingVertical: 20, borderBottomWidth: 1, borderColor: '#eee', backgroundColor: 'white'}}
                 onPress={() => this.goToProduct(item)}>
-                <View style={{ width: '100%', height: '70%', borderRadius: 10, borderBottomWidth: 0.4, borderBottomColor: 'rgba(200,200,200,.4)'}}>
-                    <Image source={{ uri: JSON.parse(favItems[index].files)[0].path }} resizeMode="contain" style={{ width: '100%', height: '100%', borderRadius: 10 }}></Image>
-                </View>
-                <View style={{ marginTop: 10, paddingHorizontal: 10 }}>
-                    <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 10, }}>{item.title}</Text>
-                    <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 15, fontWeight: 'bold' }}>$ {item.saleValue}</Text>
-                    <View style={{ flexDirection: 'row' }}>
-                        {[...Array(item.rating)].map((x, i) =>
-                            <FontAwesome name="star" color="#F7D970"></FontAwesome>
-                        )}
+
+                <View style={{paddingHorizontal: 10, flexDirection: 'row'}}>
+                    <Image source={{ uri: JSON.parse(favItems[index].files)[0].path }} resizeMode="contain" style={{ width: '40%', height: '100%' }}></Image>
+                
+                    <View style={{ width: '60%' }}>
+                        <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 10, }}>{item.title}</Text>
+                        <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 15, fontWeight: 'bold' }}>$ {item.saleValue}</Text>
+                        <View style={{ flexDirection: 'row' }}>
+                            {[...Array(item.rating)].map((x, i) =>
+                                <FontAwesome name="star" color="#F7D970"></FontAwesome>
+                            )}
+                        </View>
                     </View>
                 </View>
-                <View style={{position: 'absolute', top: 10, right: 15}}>
-                    <TouchableOpacity onPress={() => this.toggleFavorite(item)}>
-                        <FontAwesome size={23} name={is_favorite ? 'heart' : 'heart-o'} color={is_favorite ? Colors.default.accentColor : Colors.default.greyColor}></FontAwesome>
-                    </TouchableOpacity>
+            </TouchableWithoutFeedback> */}
+        return (
+            <SwipeRow
+            style={{backgroundColor: '#FFF', borderBottomWidth: 2, borderColor: '#eee'}}
+            rightOpenValue={-width*.2}
+            disableRightSwipe={true}
+            onRowOpen={() => this.setState({removeOpen: true})}
+            body={
+                <View style={{paddingHorizontal: 10, flexDirection: 'row'}}>
+                    <AutoHeightImage
+                        width={140}
+                        source={{uri: JSON.parse(favItems[index].files)[0].path}}
+                    />
+                
+                    <View style={{ width: '60%' }}>
+                        <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 20 }}>$ {item.saleValue}</Text>
+                        <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 13, color: '#aaa' }}>{item.title}</Text>
+
+                        <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 10, marginTop: 10,
+                        color: Colors.default.secondaryColor}}
+                        onPress={() => this.goToProduct(item)}>Ver producto</Text>
+                    </View>
                 </View>
-            </Card>
+            }
+            right={
+              <Button danger onPress={() => this.toggleFavorite(item)}>
+                <Icon active name="trash" />
+              </Button>
+            }
+          />
         )
     }
 
@@ -95,8 +122,8 @@ class WhiteList extends React.Component<any, any> {
         <ScrollView showsVerticalScrollIndicator={false} style={{ height: height * 0.75 }} scrollEnabled={false}>
             <View style={{ justifyContent: 'center', alignItems: 'center', height: height * 0.45, marginTop: 80}}>
                 <View style={{ alignItems: 'center', paddingHorizontal: 50 }}>
-                    <View style={{ width: 100, height: 100, borderRadius: 1000, backgroundColor: '#FFF', justifyContent: 'center', alignItems: 'center' }}>
-                        {/* <FontAwesome color="red" size={40} name="heart-o"></FontAwesome> */}
+                    {/* <View style={{ width: 100, height: 100, borderRadius: 1000, backgroundColor: '#FFF', justifyContent: 'center', alignItems: 'center' }}>
+                        
                         <Image
                             resizeMode="cover"
                             source={require('../../assets/images/whitelist.gif')}
@@ -104,7 +131,7 @@ class WhiteList extends React.Component<any, any> {
                             style={{ width: 150, height: 150, borderRadius: 10000 }}
                         />
                         
-                    </View>
+                    </View> */}
                     <Text style={{ fontSize: 25, fontFamily: 'Poppins-Regular', fontWeight: 'bold', marginTop: 60 }}>WhiteList vacío</Text>
                     <Text style={{ fontSize: 12, fontFamily: 'Poppins-Medium', fontWeight: 'bold', textAlign: 'center', color: Colors.default.greyColor, marginTop: 10 }}>
                         Agrega productos a favoritos para que aparezcan en esta area
@@ -136,11 +163,10 @@ class WhiteList extends React.Component<any, any> {
                                 />
                             }
                             data={items}
-                            style={{paddingTop: 14, paddingBottom: 10, minHeight: height}}
+                            style={{paddingBottom: 10, minHeight: height, width}}
                             horizontal={false}
                             renderItem={({item, index}) => this.renderItem(item, index)}
                             showsVerticalScrollIndicator={false}
-                            numColumns={2}
                             showsHorizontalScrollIndicator={false}
                         />
                     :

@@ -32,7 +32,8 @@ class InitialSyncApp extends React.Component<any, any> {
             syncFavorites: false,
             syncLocation: false,
             modalVisible: false,
-            inputCP: ''
+            inputCP: '',
+            error: false
         }
         this.httpService = new HttpService();
     }
@@ -49,7 +50,6 @@ class InitialSyncApp extends React.Component<any, any> {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer '+ userId,
         });
-        console.log(userId);
 
         this.setState({syncCart: false, syncLocation: false, syncFavorites: false});
         this.httpService.get('/cart', header).then((res:any) => res.json()).then((cartItems: any) => {
@@ -61,6 +61,7 @@ class InitialSyncApp extends React.Component<any, any> {
                 type: 'warning',
                 position: 'top'
             })
+            this.setState({error: true})
         })
 
         this.httpService.get('/favorites', header).then((res:any) => res.json()).then((favoritesItems: any) => {
@@ -72,6 +73,7 @@ class InitialSyncApp extends React.Component<any, any> {
                 type: 'warning',
                 position: 'top'
             })
+            this.setState({error: true})
         })
 
         this.httpService.get('/UserLocations', header).then((res:any) => res.json()).then((location: any) => {
@@ -87,6 +89,7 @@ class InitialSyncApp extends React.Component<any, any> {
                 type: 'warning',
                 position: 'top'
             })
+            this.setState({error: true})
         })
 
         this.getMessages();
@@ -124,7 +127,7 @@ class InitialSyncApp extends React.Component<any, any> {
     }
 
     render() {
-        const { syncCart, syncFavorites, syncLocation, modalVisible, inputCP } = this.state;
+        const { syncCart, syncFavorites, syncLocation, modalVisible, inputCP, error } = this.state;
         const syncronization = syncCart && syncFavorites && syncLocation;
         if (syncronization) {
             this.redirectTo('Root')
@@ -132,6 +135,12 @@ class InitialSyncApp extends React.Component<any, any> {
                 text: 'Sincronizado exitosamente',
                 position: 'top'
             })
+        }
+
+        if (error) {
+            AsyncStorage.removeItem(authKey);
+            this.setState({error: false});
+            this.redirectTo('LoginScreen');
         }
         
         return (

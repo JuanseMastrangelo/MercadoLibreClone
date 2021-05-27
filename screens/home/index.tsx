@@ -78,8 +78,8 @@ export class Home extends React.Component<any, any> {
                     <LinearGradient
                         start={{ x: 0, y: 0 }}
                         end={{ x: 0, y: 1 }}
-                        colors={[Colors.default.primaryColor, 'rgba(250,250,250,.7)']}
-                        style={{ width, height: height * .2, position: 'absolute', top: 0, left: 0 }}
+                        colors={[Colors.default.primaryColor, '#FFF']}
+                        style={{ width, height: height * .30, position: 'absolute', top: 0, left: 0 }}
                     ></LinearGradient>
 
                     <Carousel data={SlideImages} />
