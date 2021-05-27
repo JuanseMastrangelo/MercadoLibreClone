@@ -2,7 +2,7 @@ import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
 import { ColorSchemeName, Dimensions, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 
 import { RootStackParamList } from '../types';
 import {BottomTabNavigator} from './BottomTabNavigator';
@@ -23,6 +23,7 @@ import Colors from '../constants/Colors';
 import { Text } from 'native-base';
 import SearchBar from './searchBar';
 import ChatRoomsScreen from '../components/chat/rooms';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
@@ -82,7 +83,7 @@ function ComponentsNavigator({navigation}: any) {
               name="SingleProduct"
               component={SingleProduct}
               options={{
-                cardStyle: { backgroundColor: '#FFF' },
+                cardStyle: { backgroundColor: '#F2F2F2' },
                 headerStyle: { backgroundColor: Colors.default.primaryColor}, 
                 headerTintColor: 'transparent',
                 headerBackImage: ()=>(<Ionicons name="md-arrow-back" size={20} color="black" style={{paddingHorizontal: 10,fontSize: 24}} />),
@@ -101,7 +102,7 @@ function ComponentsNavigator({navigation}: any) {
               component={ChatScreen}
               options={{
                 headerStyle: { backgroundColor: Colors.default.primaryColor, shadowColor: 'transparent' },
-                cardStyle: { backgroundColor: '#FFF' },
+                cardStyle: { backgroundColor: '#F2F2F2' },
                 headerTintColor: 'white',
                 headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="white" style={{marginLeft: 30,fontSize: 24}} />),
                 headerBackTitleVisible: false,
@@ -117,7 +118,7 @@ function ComponentsNavigator({navigation}: any) {
                 headerTitle: () => (
                     <Text style={{ fontSize: 16, color: 'white' }}>Vendedores</Text>
                 ),
-                cardStyle: { backgroundColor: '#FFF' },
+                cardStyle: { backgroundColor: '#F2F2F2' },
                 headerTintColor: 'transparent',
                 headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="white" style={{marginLeft: 30,fontSize: 24}} />),
                 headerBackTitleVisible: false,
@@ -131,7 +132,7 @@ function ComponentsNavigator({navigation}: any) {
               component={SearchScreen}
               options={{
                 headerStyle: { backgroundColor: Colors.default.primaryColor, shadowColor: 'transparent' },
-                headerTitle: null,
+                headerTitle: '',
                 cardStyle: { backgroundColor: '#FFF' },
                 headerTintColor: 'transparent',
                 headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="white" style={{marginLeft: 30,fontSize: 24}} />),
@@ -148,11 +149,15 @@ function ComponentsNavigator({navigation}: any) {
               name="ColumnGridView"
               component={ColumnGridViewComponent}
               options={{
-                cardStyle: { backgroundColor: '#F9F9F9' },
-                headerStyle: { backgroundColor: Colors.default.primaryColor, shadowColor: 'transparent' },
-                headerTitleStyle: { color: 'white'},
-                headerBackTitleVisible: false,
-                headerBackImage: ()=>(<Ionicons name="ios-arrow-back" size={20} color="white" style={{marginLeft: 30,fontSize: 24}} />),
+                cardStyle: { backgroundColor: '#F2F2F2' },
+                headerStyle: { backgroundColor: Colors.default.primaryColor, elevation: 0},
+                headerTitleStyle: { textAlign: 'center', color: '#000', fontSize: 14, fontFamily: 'Poppins-Light', marginTop: 5, letterSpacing: .5 },
+                headerBackImage: ()=>(<Ionicons name="md-arrow-back" size={20} color="black" style={{paddingHorizontal: 10,fontSize: 24}} />),
+                headerRight: () => (
+                  <TouchableOpacity onPress={() => navigation.push('Components', { screen: 'SearchScreen', params: {searchValue: ''} })}>
+                    <FontAwesome name="search" color="#000" style={{fontSize: 20, paddingHorizontal: 20}}></FontAwesome>
+                  </TouchableOpacity>
+              )
               }}
             />
         </ComponentsStack.Navigator>

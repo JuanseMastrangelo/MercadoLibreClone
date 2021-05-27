@@ -18,6 +18,7 @@ export default {
   },
   default: {
     primaryColor: '#F2DA00',
+    primaryColorLight: '#F0E423',
     secondaryColor: '#3483FA',
     accentColor: '#f85f6a',
     darkColor: '#827E7A',

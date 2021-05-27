@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { Spinner, Toast } from 'native-base';
 import * as React from 'react';
 import { Dimensions, Image, Text, View } from 'react-native';
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
+import { FlatList, ScrollView, TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 const { width, height } = Dimensions.get('window');
 import Colors from '../../constants/Colors';
 import { HttpService } from '../../constants/HttpService';
@@ -88,76 +88,105 @@ class ColumnGridViewComponent extends React.Component<any, any> {
         const favItems = this.props.state.favorites.items;
         const is_favorite = favItems.filter((favItem: any) => favItem.id === item.id).length > 0;
         return (
-            <TouchableOpacity
-                style={{ width: width / 2.3, marginTop: 10, height: 280, marginHorizontal: 10,
-                    borderWidth: 1, borderColor: 'rgba(200,200,200,.2)', backgroundColor: 'white' }}
+            <TouchableWithoutFeedback
+                style={{ width: width / 2.3, marginTop: 10, height: 300, marginHorizontal: 10, borderRadius: 5, backgroundColor: 'white', padding: 10 }}
                 onPress={() => this.goToProduct(item)}>
-                <View style={{ width: '100%', height: '70%', borderRadius: 10 }}>
-                    <Image resizeMode="contain" source={{ uri: JSON.parse(this.state.products[index].files)[0].path }} style={{ width: '100%', height: '100%', borderRadius: 10 }}></Image>
+                <View style={{ width: '100%', height: '50%', borderTopLeftRadius: 5, borderTopRightRadius: 5, borderBottomWidth: 1,
+                borderColor: '#ccc' }}>
+                    <Image resizeMode="contain" source={{ uri: JSON.parse(this.state.products[index].files)[0].path }}
+                    style={{ width: '100%', height: '100%', paddingVertical: 5 }}></Image>
                 </View>
-                <View style={{ marginTop: 10, paddingHorizontal: 10 }}>
-                    <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 10, }}>{item.title}</Text>
-                    <Text style={{ fontFamily: 'Poppins-SemiBold', fontSize: 15, fontWeight: 'bold' }}>$ {item.saleValue}</Text>
-                    <View style={{ flexDirection: 'row' }}>
-                        {[...Array(item.rating)].map((x, i) =>
-                            <FontAwesome name="star" color="#F7D970"></FontAwesome>
-                        )}
-                    </View>
+                <View style={{ marginTop: 10, paddingHorizontal: 5 }}>
+                    <Text style={{ fontFamily: 'Poppins-Light', fontSize: 16 }}>$ {item.saleValue}</Text>
+                    <Text style={{ fontFamily: 'Poppins-Light', color: Colors.default.green, fontSize: 10 }}>En 12X $ {(item.saleValue / 12).toFixed(2)}</Text>
+                    <Text style={{ fontFamily: 'Poppins-Light', color: Colors.default.green, fontSize: 10 }}>Envios a todo el país</Text>
+                    <Text style={{ fontFamily: 'Poppins-Light', fontSize: 10, color: '#222' }}>{item.title}</Text>
                 </View>
-                <View style={{position: 'absolute', top: 10, right: 15}}>
-                    <TouchableOpacity onPress={() => this.toggleFavorite(item)}>
-                        <FontAwesome size={23} name={is_favorite ? 'heart' : 'heart-o'} color={is_favorite ? Colors.default.accentColor : Colors.default.greyColor}></FontAwesome>
-                    </TouchableOpacity>
-                </View>
-            </TouchableOpacity>
+            </TouchableWithoutFeedback>
         )
     }
 
-    renderCategoriesChild = (item: any) => {
+    renderCategoriesChild = (item: any, index: number) => {
+        const { childsCategories } = this.state;
         return (
-            <TouchableOpacity
-                style={{borderWidth: 1, borderColor: 'rgba(200,200,200,.2)', backgroundColor: 'rgba(200,200,200,.5)',
-                        marginHorizontal: 10, height: 30, justifyContent: 'center', paddingHorizontal: 10, borderRadius: 5}}
-                onPress={() => this.viewCategorie(item)}>
-                <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 14 }}>{item.name}</Text>
-            </TouchableOpacity>
+            <TouchableWithoutFeedback style={{width: width*.2, margin: 5, height: 100, borderRadius: 5, backgroundColor: 'white', elevation: 6}}
+            onPress={() => this.viewCategorie(item)}>
+                <View style={{ width: '100%', height: '70%', backgroundColor: '#eee', paddingVertical: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5}}>
+                    {
+                        childsCategories[index].files && (JSON.parse(childsCategories[index].files).length > 0) &&
+                        <Image resizeMode="contain" source={{ uri: JSON.parse(childsCategories[index].files)[0].path }} style={{ width: '100%', height: '100%', borderRadius: 10 }}></Image>
+                    }
+                </View>
+                <View style={{ width: '100%', height: '30%', alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={{ fontFamily: 'Poppins-Light', fontSize: 10, letterSpacing: .5 }}>
+                        {item.name.toUpperCase()}
+                    </Text>
+                </View>
+            </TouchableWithoutFeedback>
+        )
+    }
+
+    renderListCategories = () => {
+        const { childsCategories } = this.state;
+        return (
+            <View style={{ marginVertical: 30 }}>
+                <View style={{alignItems: 'center'}}>
+                    <Text style={{ fontFamily: 'Poppins-Light', fontSize: 13, letterSpacing: .5 }}>COMPRÁ POR MARCA</Text>
+                </View>
+                <View style={{alignItems: 'center'}}>
+                    <FlatList
+                        contentContainerStyle={{alignItems: 'center'}}
+                        data={childsCategories}
+                        horizontal={false}
+                        numColumns={4}
+                        renderItem={({ item, index }) => this.renderCategoriesChild(item, index)}
+                    ></FlatList>
+                </View>
+            </View>
         )
     }
 
     render() {
-        const { products, childsCategories } = this.state
+        const { products, childsCategories } = this.state;
         return (
-            <View style={{marginTop: 0}}>
+            <ScrollView style={{marginTop: 0}}>
+                <View style={{ width, height: 80 }}>
+                    <View style={{ width: '100%', height: '100%' }}>
+                        <Image style={{ width: '100%', height: '100%' }} resizeMode="cover" source={{uri:'https://http2.mlstatic.com/storage/splinter-admin/o:f_webp,q_auto:best/1606747219853-celularesheader-desktop.jpg'}}></Image>
+                    </View>
+                </View>
                 {
                     childsCategories.length > 0 &&
-                    <FlatList
-                        data={childsCategories}
-                        style={{paddingTop: 14, paddingBottom: 10}}
-                        horizontal={true}
-                        renderItem={({item}) => this.renderCategoriesChild(item)}
-                        showsVerticalScrollIndicator={false}
-                        showsHorizontalScrollIndicator={false}
-                    />
+                    this.renderListCategories()
                 }
                 
                 {
                     products ? 
-                    products.length > 0 ?
-                        <FlatList
-                            data={products}
-                            style={{height: height-120}}
-                            horizontal={false}
-                            renderItem={({item, index}) => this.renderItem(item, index)}
-                            showsVerticalScrollIndicator={false}
-                            numColumns={2}
-                            showsHorizontalScrollIndicator={false}
-                        />
-                    :
-                    <Text style={{textAlign: 'center'}}>No se han encontrado productos</Text>
+                    (
+                        <View>
+                            <Text style={{fontSize: 20, fontFamily: 'Poppins-Light', fontWeight: 'bold', color: '#222', paddingVertical: 10, paddingHorizontal: 20,
+                            marginTop: 15, letterSpacing: .5}}>Productos</Text>
+
+                            { 
+                                products.length > 0 ?
+                                <View style={{alignItems: 'center', flexDirection: 'row', width}}>
+                                    <FlatList
+                                        contentContainerStyle={{alignItems: 'center'}}
+                                        data={products}
+                                        horizontal={false}
+                                        numColumns={2}
+                                        renderItem={({ item, index }) => this.renderItem(item, index)}
+                                    ></FlatList>
+                                </View>
+                            :
+                            <Text style={{textAlign: 'center'}}>No se han encontrado productos</Text>
+                            }
+                        </View>
+                    )
                 :
                 <View><Spinner color="black" size={20}></Spinner></View>
                 }
-            </View>
+            </ScrollView>
         )
     }
 }
