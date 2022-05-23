@@ -1,4 +1,4 @@
-## AccTecno - MercadoLibre Clone ![GitHub last commit](https://img.shields.io/github/last-commit/JuanseMastrangelo/AccTecno) [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FJuanseMastrangelo%2FAccTecno&count_bg=%2379C83D&title_bg=%23555555&icon=ghostery.svg&icon_color=%23E7E7E7&title=visitas&edge_flat=false)](https://hits.seeyoufarm.com)
+## AccTecno - MercadoLibre Clone ![GitHub last commit](https://img.shields.io/github/last-commit/JuanseMastrangelo/AccTecno) 
 React Native E-Commerce app. Panel de administración [aquí](http://paback.host/).
 https://dev.to/juansemastrangelo/mercadolibre-clone-using-react-native-4b6c
 
