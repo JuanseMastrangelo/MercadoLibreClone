@@ -1,6 +1,8 @@
-## MercadoLibre Clone
+## MercadoLibre Full Clone
 
 https://dev.to/juansemastrangelo/mercadolibre-clone-using-react-native-4b6c
+
+![](https://github.com/JuanseMastrangelo/AccTecno/blob/master/screenshots/banner.jpg?raw=true)
 
 ## Screenshots
   HomePage                 |   Detalle de Producto        |  Carro       |  Pago
